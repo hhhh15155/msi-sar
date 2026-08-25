@@ -1,0 +1,21 @@
+name: yrd2509new
+display_name: Yellow River Delta 2025 Conservative Review Tiles
+path: data/yrd2509new
+data_file: data.mat
+label_file: label.mat
+data_key: data
+label_key: label
+num_channels: 14
+num_classes: 9
+undefined_label: 0
+normalization: per_channel_minmax
+class_names:
+  - Artificial facilities
+  - Tamarix chinensis
+  - River water
+  - Suaeda salsa
+  - Pond water
+  - Phragmites communis
+  - Bare soil
+  - Natural willow forest
+  - Tidal flat

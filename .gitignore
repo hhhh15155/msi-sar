@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+runs/
+*.pth
+*.pt
+
+# Keep dataset configs in git, but avoid committing large local arrays by accident.
+data/**/*.mat
+data/**/*.dat
+data/**/*.hdr
+data/**/*.ovr
+data/**/*.enp
+data/**/*.xml
+
+# Local datasets, experiment outputs, caches, IDE settings, and archives.
+data/
+runs_fewshot/
+experiment_logs/
+tmp/
+.idea/
+.claude/
+.agents/
+*.log
+*.tar.gz
+*.tif
+*.png

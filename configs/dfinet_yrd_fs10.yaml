@@ -1,0 +1,39 @@
+model: dfinet
+dataset: yrd
+dataset_config: configs/datasets/yrd.yaml
+output_root: runs_fewshot/fs10
+device: cuda:0
+patch_size: 11
+train_ratio: 0.0025
+val_ratio: 0.0025
+test_ratio: 0.995
+split:
+  method: fixed_counts
+  train_counts: [10, 10, 10, 10, 10, 10, 10, 10]
+  val_counts: [10, 10, 10, 10, 10, 10, 10, 10]
+
+batch_size: 128
+epochs: 200
+num_runs: 5
+seeds: [202201, 202202, 202203, 202204, 202205]
+learning_rate: 0.001
+weight_decay: 0.0001
+eval:
+  enabled: true
+  run_index: best
+  batch_size: 512
+  save_labeled_maps: true
+infer:
+  batch_size: 512
+  save_full_map: true
+palette:
+  background: [0, 0, 0]
+  colors:
+    - [62, 69, 191]
+    - [224, 190, 82]
+    - [158, 219, 74]
+    - [77, 214, 83]
+    - [63, 197, 153]
+    - [174, 205, 45]
+    - [181, 77, 218]
+    - [255, 250, 0]

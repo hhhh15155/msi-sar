@@ -1,0 +1,19 @@
+name: yrd
+display_name: Yellow River Delta
+path: data/yrd
+data_file: data.mat
+label_file: label.mat
+data_key: data
+label_key: label
+num_channels: 14
+num_classes: 8
+undefined_label: 0
+class_names:
+  - Waterbody
+  - Spartina alterniflora
+  - Phragmites communis
+  - Tamarix chinensis
+  - Suaeda salsa
+  - Tidal flat
+  - Natural willow forest
+  - Cultivated land

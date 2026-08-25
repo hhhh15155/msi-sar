@@ -1,0 +1,57 @@
+model: softformer
+dataset: yrd2509new
+dataset_config: configs/datasets/yrd2509new.yaml
+output_root: runs_fewshot/fs5
+device: cuda:0
+patch_size: 11
+model_img_size: 8
+hsi_channels: 10
+aux_channels: 4
+pad_mode: constant
+stem_chans: 16
+embed_dim: [24, 48, 96]
+num_heads: [4, 8, 16]
+mlp_ratio: 4.0
+depths: [2, 8, 2]
+drop: 0.0
+attn_drop: 0.1
+drop_path_rate: 0.1
+use_isa: true
+use_validation: true
+split:
+  method: fixed_counts
+  train_count_per_class: 5
+  val_count_per_class: 5
+batch_size: 128
+epochs: 200
+num_runs: 5
+seeds: [202201, 202202, 202203, 202204, 202205]
+data_aug: true
+learning_rate: 0.001
+weight_decay: 0.0001
+eta_min: 0.0
+eval:
+  enabled: true
+  run_index: best
+  batch_size: 512
+  save_labeled_maps: true
+infer:
+  batch_size: 512
+  save_full_map: true
+palette:
+  background: [0, 0, 0]
+  colors:
+    - [31, 120, 180]
+    - [78, 205, 196]
+    - [51, 160, 44]
+    - [246, 204, 92]
+    - [8, 81, 156]
+    - [227, 26, 28]
+    - [106, 61, 154]
+    - [255, 127, 0]
+    - [0, 109, 44]
+    - [166, 206, 227]
+    - [178, 223, 138]
+    - [251, 154, 153]
+    - [80, 80, 80]
+

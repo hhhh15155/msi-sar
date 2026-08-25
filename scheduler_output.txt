@@ -1,0 +1,86 @@
+==============================================
+  Experiments : 56
+  Concurrency : 4 (2 GPUs x 2 tasks)
+  Batch sizes : train 128, eval 1024, infer 1024
+  Logs        : /home/wwl/gjc/msi-sar/experiment_logs
+==============================================
+[09:32:52] SKIP dfinet_yrd_fs5 (already done)
+[09:32:52] SKIP dfinet_yrd2509_fs5 (already done)
+[09:32:52] SKIP dfinet_yrd_fs10 (already done)
+[09:32:52] SKIP dfinet_yrd2509_fs10 (already done)
+[09:32:52] SKIP dfinet_yrd_fs20 (already done)
+[09:32:52] SKIP dfinet_yrd2509_fs20 (already done)
+[09:32:52] SKIP dfinet_yrd_fs50 (already done)
+[09:32:52] SKIP dfinet_yrd2509_fs50 (already done)
+[09:32:52] SKIP dfinet_yrd_fs100 (already done)
+[09:32:52] SKIP dfinet_yrd2509_fs100 (already done)
+[09:32:52] START dfinet_yrd_fs150 on GPU0
+[09:32:52] START dfinet_yrd2509_fs150 on GPU1
+[09:32:52] START dfinet_yrd_fs200 on GPU0
+[09:32:52] START dfinet_yrd2509_fs200 on GPU1
+[09:44:36] DONE  dfinet_yrd2509_fs150
+[09:44:38] SKIP frekfuse_yrd_fs5 (already done)
+[09:44:38] SKIP frekfuse_yrd2509_fs5 (already done)
+[09:44:38] SKIP frekfuse_yrd_fs10 (already done)
+[09:44:38] SKIP frekfuse_yrd2509_fs10 (already done)
+[09:44:38] SKIP frekfuse_yrd_fs20 (already done)
+[09:44:38] SKIP frekfuse_yrd2509_fs20 (already done)
+[09:44:38] SKIP frekfuse_yrd_fs50 (already done)
+[09:44:38] SKIP frekfuse_yrd2509_fs50 (already done)
+[09:44:38] SKIP frekfuse_yrd_fs100 (already done)
+[09:44:38] SKIP frekfuse_yrd2509_fs100 (already done)
+[09:44:38] START frekfuse_yrd_fs150 on GPU1
+[09:46:48] DONE  dfinet_yrd2509_fs200
+[09:46:50] START frekfuse_yrd2509_fs150 on GPU1
+[09:57:03] DONE  frekfuse_yrd2509_fs150
+[09:57:05] START frekfuse_yrd_fs200 on GPU1
+[09:59:01] DONE  dfinet_yrd_fs150
+[09:59:03] START frekfuse_yrd2509_fs200 on GPU0
+[10:01:03] DONE  dfinet_yrd_fs200
+[10:01:06] SKIP mghofnet_yrd_fs5 (already done)
+[10:01:06] SKIP mghofnet_yrd2509_fs5 (already done)
+[10:01:06] SKIP mghofnet_yrd_fs10 (already done)
+[10:01:06] SKIP mghofnet_yrd2509_fs10 (already done)
+[10:01:06] SKIP mghofnet_yrd_fs20 (already done)
+[10:01:06] SKIP mghofnet_yrd2509_fs20 (already done)
+[10:01:06] SKIP mghofnet_yrd_fs50 (already done)
+[10:01:06] SKIP mghofnet_yrd2509_fs50 (already done)
+[10:01:06] SKIP mghofnet_yrd_fs100 (already done)
+[10:01:06] SKIP mghofnet_yrd2509_fs100 (already done)
+[10:01:06] START mghofnet_yrd_fs150 on GPU0
+[10:08:47] DONE  frekfuse_yrd_fs150
+[10:08:48] START mghofnet_yrd2509_fs150 on GPU1
+[10:12:33] DONE  frekfuse_yrd2509_fs200
+[10:12:33] START mghofnet_yrd_fs200 on GPU0
+[10:25:09] DONE  frekfuse_yrd_fs200
+[10:25:10] START mghofnet_yrd2509_fs200 on GPU1
+[10:31:47] DONE  mghofnet_yrd2509_fs150
+[10:31:47] SKIP softformer_yrd_fs5 (already done)
+[10:31:47] SKIP softformer_yrd2509_fs5 (already done)
+[10:31:47] SKIP softformer_yrd_fs10 (already done)
+[10:31:47] SKIP softformer_yrd2509_fs10 (already done)
+[10:31:47] SKIP softformer_yrd_fs20 (already done)
+[10:31:47] SKIP softformer_yrd2509_fs20 (already done)
+[10:31:47] SKIP softformer_yrd_fs50 (already done)
+[10:31:47] SKIP softformer_yrd2509_fs50 (already done)
+[10:31:47] SKIP softformer_yrd_fs100 (already done)
+[10:31:47] SKIP softformer_yrd2509_fs100 (already done)
+[10:31:47] START softformer_yrd_fs150 on GPU1
+[10:54:36] DONE  mghofnet_yrd2509_fs200
+[10:54:36] START softformer_yrd2509_fs150 on GPU1
+[10:57:24] DONE  mghofnet_yrd_fs150
+[10:57:25] START softformer_yrd_fs200 on GPU0
+[11:12:23] DONE  mghofnet_yrd_fs200
+[11:12:26] START softformer_yrd2509_fs200 on GPU0
+[11:57:23] DONE  softformer_yrd2509_fs150
+[12:23:48] DONE  softformer_yrd_fs150
+[12:29:12] DONE  softformer_yrd2509_fs200
+[12:58:44] DONE  softformer_yrd_fs200
+
+==============================================
+  COMPLETE
+  Total:   56
+  Done:    16
+  Skipped: 40
+  Failed:  0
+==============================================

@@ -1,0 +1,11 @@
+# MSFMamba runtime (Gao et al., IEEE TGRS 2025).
+# The paper's original pins (causal-conv1d==1.1.1, mamba-ssm==1.0.1) predate
+# Blackwell. The adapter only calls mamba_ssm's selective-scan operator;
+# causal-conv1d is not used by the official MSFMamba blocks.
+#
+# On a Torch 2.11 + cu128 environment, install these exact versions with
+# --no-deps --no-build-isolation. This prevents pip from replacing the pinned
+# CUDA-enabled Torch wheel while resolving Mamba optional packages.
+transformers>=4.36,<5
+mamba-ssm==2.2.6.post3
+timm==0.6.13

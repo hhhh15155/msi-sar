@@ -1,0 +1,20 @@
+name: yrd2509_landuse_9c
+display_name: Yellow River Delta 2025-09 Landuse Labels 9 Classes
+path: data/yrd2509_landuse_9c
+data_file: data.mat
+label_file: label.mat
+data_key: data
+label_key: label
+num_channels: 12
+num_classes: 9
+undefined_label: 0
+class_names:
+  - 人工设施
+  - 柽柳林
+  - 河流水面
+  - 碱蓬
+  - 坑塘水面
+  - 芦苇
+  - 裸土地
+  - 天然柳林
+  - 沿海滩涂

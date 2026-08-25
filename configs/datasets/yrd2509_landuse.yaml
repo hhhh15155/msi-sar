@@ -1,0 +1,26 @@
+name: yrd2509_landuse
+display_name: Yellow River Delta 2025-09 Landuse Labels
+path: data/yrd2509_landuse
+data_file: data.mat
+label_file: label.mat
+data_key: data
+label_key: label
+num_channels: 12
+num_classes: 15
+undefined_label: 0
+class_names:
+  - 仓储用地
+  - 潮沟
+  - 柽柳林
+  - 道路
+  - 房屋用地
+  - 沟渠
+  - 河流水面
+  - 互花米草
+  - 碱蓬
+  - 坑塘水面
+  - 芦苇
+  - 裸土地
+  - 天然柳林
+  - 沿海滩涂
+  - 油田

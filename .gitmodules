@@ -1,0 +1,3 @@
+[submodule "vendor/MSFMamba-original"]
+	path = vendor/MSFMamba-original
+	url = https://github.com/oucailab/MSFMamba.git
