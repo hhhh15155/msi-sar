@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the complete YRD, YRD2509, and YRD2509NEW few-shot grid.
+# Run the selected YRD and YRD2509NEW few-shot grid.
 set -o pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,19 +12,11 @@ MAX_PROCS=$((GPU_COUNT * PROCS_PER_GPU))
 LOG_DIR="$ROOT/experiment_logs"
 mkdir -p "$LOG_DIR"
 
-QUEUE=()
-add_exp() { QUEUE+=("$1|$2|$3"); }
-
-for model in dfinet frekfuse mghofnet softformer; do
-    for shot in 5 10 20 50 100 150 200; do
-        for dataset in yrd yrd2509 yrd2509new; do
-            add_exp \
-                "scripts/train_eval_${model}.py" \
-                "configs/${model}_${dataset}_fs${shot}.yaml" \
-                "${model}_${dataset}_fs${shot}"
-        done
-    done
-done
+if ! GRID_OUTPUT="$("$PYTHON" scripts/experiment_grid.py --root "$ROOT")"; then
+    echo "Failed to build experiment grid." >&2
+    exit 2
+fi
+mapfile -t QUEUE <<<"$GRID_OUTPUT"
 
 TOTAL=${#QUEUE[@]}
 echo "=============================================="
@@ -33,16 +25,22 @@ echo "  Concurrency : ${MAX_PROCS} (${GPU_COUNT} GPUs x ${PROCS_PER_GPU} tasks)"
 echo "  Logs        : ${LOG_DIR}"
 echo "=============================================="
 
-is_done() {
-    local config="$1"
-    if [[ "$config" =~ configs/(.+)_(yrd2509new|yrd2509|yrd)_fs([0-9]+)\.yaml ]]; then
-        local model="${BASH_REMATCH[1]}"
-        local dataset="${BASH_REMATCH[2]}"
-        local shot="${BASH_REMATCH[3]}"
-        [[ -f "$ROOT/runs_fewshot/fs${shot}/${model}/${dataset}/run_001/metrics.json" ]] && return 0
-    fi
-    return 1
-}
+if [[ "${DRY_RUN:-0}" == "1" ]]; then
+    SKIPPED=0
+    PENDING=0
+    for entry in "${QUEUE[@]}"; do
+        IFS='|' read -r _script _config name already_done <<<"$entry"
+        if [[ "$already_done" == "1" ]]; then
+            echo "SKIP      ${name} (already done)"
+            SKIPPED=$((SKIPPED + 1))
+        else
+            echo "WOULD RUN ${name}"
+            PENDING=$((PENDING + 1))
+        fi
+    done
+    echo "Dry run: ${TOTAL} total, ${SKIPPED} complete, ${PENDING} pending"
+    exit 0
+fi
 
 run_one() {
     local gpu_id="$1"
@@ -98,9 +96,9 @@ while true; do
 
     active=${#PID_GPU[@]}
     while [[ $active -lt $MAX_PROCS && $CURRENT -lt $TOTAL ]]; do
-        IFS='|' read -r script config name <<<"${QUEUE[$CURRENT]}"
+        IFS='|' read -r script config name already_done <<<"${QUEUE[$CURRENT]}"
         CURRENT=$((CURRENT + 1))
-        if is_done "$config"; then
+        if [[ "$already_done" == "1" ]]; then
             echo "[$(date '+%H:%M:%S')] SKIP ${name} (already done)"
             SKIPPED=$((SKIPPED + 1))
             continue
