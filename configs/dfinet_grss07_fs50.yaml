@@ -1,0 +1,53 @@
+model: dfinet
+dataset: grss07
+dataset_config: configs/datasets/grss07.yaml
+output_root: runs_fewshot/fs50
+device: cuda:0
+patch_size: 11
+use_validation: true
+split:
+  method: fixed_counts
+  train_count_per_class: 50
+  val_count_per_class: 50
+epochs: 200
+num_runs: 5
+seeds:
+- 202201
+- 202202
+- 202203
+- 202204
+- 202205
+eval:
+  enabled: true
+  run_index: best
+  batch_size: 512
+  save_labeled_maps: true
+infer:
+  batch_size: 512
+  save_full_map: true
+palette:
+  background:
+  - 0
+  - 0
+  - 0
+  colors:
+  - - 230
+    - 25
+    - 75
+  - - 255
+    - 225
+    - 25
+  - - 245
+    - 130
+    - 48
+  - - 0
+    - 130
+    - 200
+  - - 60
+    - 180
+    - 75
+spectral_channels: 6
+sar_channels: 1
+batch_size: 128
+learning_rate: 0.001
+weight_decay: 0.0001

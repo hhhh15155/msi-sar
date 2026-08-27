@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the selected YRD and YRD2509NEW few-shot grid.
+# Run the default YRD grids or an explicit DATASETS_FILTER subset.
 set -o pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,7 +12,13 @@ MAX_PROCS=$((GPU_COUNT * PROCS_PER_GPU))
 LOG_DIR="$ROOT/experiment_logs"
 mkdir -p "$LOG_DIR"
 
-if ! GRID_OUTPUT="$("$PYTHON" scripts/experiment_grid.py --root "$ROOT")"; then
+GRID_ARGS=(--root "$ROOT")
+if [[ -n "${DATASETS_FILTER:-}" ]]; then
+    read -r -a FILTERED_DATASETS <<<"$DATASETS_FILTER"
+    GRID_ARGS+=(--datasets "${FILTERED_DATASETS[@]}")
+fi
+
+if ! GRID_OUTPUT="$("$PYTHON" scripts/experiment_grid.py "${GRID_ARGS[@]}")"; then
     echo "Failed to build experiment grid." >&2
     exit 2
 fi

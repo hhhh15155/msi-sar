@@ -1,0 +1,17 @@
+name: grss07
+display_name: IEEE GRSS Data Fusion Contest 2007 (Landsat 1994 + ERS 1994-10-03)
+path: data/grss07
+data_file: data.mat
+label_file: label.mat
+data_key: data
+label_key: label
+num_channels: 7
+num_classes: 5
+undefined_label: 0
+normalization: per_channel_minmax
+class_names:
+  - City Center
+  - Residential Areas
+  - Sparse Buildings
+  - Water
+  - Vegetation

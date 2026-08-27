@@ -16,6 +16,8 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from .channel_policy import required_spectral_channels
+
 
 def _selective_scan_torch(
     u: torch.Tensor,
@@ -129,8 +131,9 @@ class MSFMamba(nn.Module):
     """Official MSFMamba architecture with configurable modality dimensions.
 
     The paper's first stage uses a 9-band spectral kernel and a 3x3 spatial
-    kernel. Therefore this adapter intentionally supports the official 11x11
-    patch, one-layer setting for 10-band MSI plus SAR experiments.
+    kernel. Inputs with fewer than nine optical bands are zero-padded along
+    the spectral axis so the released layer can be reused without inventing
+    additional observations.
     """
 
     def __init__(
@@ -146,8 +149,8 @@ class MSFMamba(nn.Module):
         super().__init__()
         if patch_size != 11:
             raise ValueError("MSFMamba's released architecture is configured for patch_size=11")
-        if ms_channels < 9:
-            raise ValueError("MSFMamba requires at least 9 MSI/HSI channels")
+        if ms_channels < 1:
+            raise ValueError("MSFMamba requires at least one MSI/HSI channel")
         if sar_channels < 1:
             raise ValueError("MSFMamba requires at least one SAR channel")
         if num_layers != 1:
@@ -157,10 +160,13 @@ class MSFMamba(nn.Module):
 
         SynLayer = _official_syn_layer()
         hsi_out, sar_out = 8, 64
-        spectral_after_conv = ms_channels - 8  # Conv3d spectral kernel=9.
+        layer_ms_channels = required_spectral_channels(ms_channels)
+        self.ms_channels = ms_channels
+        self.spectral_padding = layer_ms_channels - ms_channels
+        spectral_after_conv = layer_ms_channels - 8  # Conv3d spectral kernel=9.
         spatial_after_conv = patch_size - 2
         self.layer = SynLayer(
-            1, hsi_out, sar_channels, sar_out, ms_channels, patch_size, d_state, 0, expand
+            1, hsi_out, sar_channels, sar_out, layer_ms_channels, patch_size, d_state, 0, expand
         )
         self.classifier = nn.Linear(
             (sar_out + hsi_out * spectral_after_conv) * spatial_after_conv**2,
@@ -170,6 +176,10 @@ class MSFMamba(nn.Module):
     def forward(self, ms: torch.Tensor, sar: torch.Tensor) -> torch.Tensor:
         if ms.ndim != 4 or sar.ndim != 4:
             raise ValueError("MSFMamba expects ms and sar tensors shaped [B, C, H, W]")
+        if ms.shape[1] != self.ms_channels:
+            raise ValueError(f"Expected {self.ms_channels} MSI/HSI channels, got {ms.shape[1]}")
+        if self.spectral_padding:
+            ms = F.pad(ms, (0, 0, 0, 0, 0, self.spectral_padding))
         hsi, sar = self.layer(ms.unsqueeze(1), sar)
         batch, channels, spectral, height, width = hsi.shape
         hsi = hsi.reshape(batch, channels * spectral, height, width)

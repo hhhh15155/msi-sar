@@ -8,6 +8,7 @@ from typing import Iterator
 
 MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
 DATASETS = ("yrd", "yrd2509new")
+AVAILABLE_DATASETS = DATASETS + ("grss07",)
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 
 
@@ -30,10 +31,12 @@ class Experiment:
         return f"{self.model}_{self.dataset}_fs{self.shot}"
 
 
-def iter_experiments() -> Iterator[Experiment]:
+def iter_experiments(datasets: tuple[str, ...] = DATASETS) -> Iterator[Experiment]:
     for model in MODELS:
         for shot in SHOTS:
-            for dataset in DATASETS:
+            for dataset in datasets:
+                if dataset not in AVAILABLE_DATASETS:
+                    raise ValueError(f"Unsupported dataset: {dataset}")
                 yield Experiment(model=model, dataset=dataset, shot=shot)
 
 
@@ -45,10 +48,11 @@ def is_complete(root: Path, experiment: Experiment) -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Print the selected few-shot experiment grid as pipe-separated rows.")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--datasets", nargs="+", choices=AVAILABLE_DATASETS, default=list(DATASETS))
     args = parser.parse_args()
     root = args.root.resolve()
 
-    for experiment in iter_experiments():
+    for experiment in iter_experiments(tuple(args.datasets)):
         for relative_path in (experiment.script, experiment.config):
             if not (root / relative_path).is_file():
                 raise FileNotFoundError(f"Missing required experiment file: {relative_path}")

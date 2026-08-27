@@ -37,6 +37,13 @@ class ExperimentGridTests(unittest.TestCase):
             )
             self.assertTrue(is_complete(root, experiment))
 
+    def test_grid_can_select_grss07_without_changing_the_default_datasets(self) -> None:
+        experiments = list(iter_experiments(("grss07",)))
+
+        self.assertEqual(len(experiments), 35)
+        self.assertEqual({experiment.dataset for experiment in experiments}, {"grss07"})
+        self.assertEqual(DATASETS, ("yrd", "yrd2509new"))
+
     def test_all_yrd2509new_configs_match_dataset_channels_and_classes(self) -> None:
         dataset_config = yaml.safe_load((ROOT / "configs/datasets/yrd2509new.yaml").read_text(encoding="utf-8"))
         self.assertEqual(dataset_config["path"], "data/yrd2509new")

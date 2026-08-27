@@ -12,6 +12,11 @@ when the input only has ten bands). The remaining 2 or 4 bands form the SAR
 input. This is an input adaptation, not a structural change to the official
 `Syn_layer` and Mamba blocks.
 
+GRSS-DFC-2007 has six optical bands. The adapter zero-pads that spectral axis
+to nine bands at model entry so the released fixed 9-band convolution remains
+usable. No synthetic observations are added, and the stored dataset remains
+the original six-band Landsat data plus one ERS channel.
+
 For the paper's original software stack, the authors list
 `causal-conv1d==1.1.1` and `mamba-ssm==1.0.1`. For current Blackwell GPUs and
 PyTorch 2.11, use the newer compatible packages in this project instead. The

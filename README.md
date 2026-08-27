@@ -14,10 +14,13 @@ baselines/
   softformer/          SoftFormer comparison method
 configs/
   datasets/yrd.yaml    Dataset description
+  datasets/grss07.yaml GRSS-DFC-2007 dataset description
   *_yrd_fs{5,10,20,50,100}.yaml  Fixed-count few-shot experiment configs
 data/
   yrd/data.mat
   yrd/label.mat
+  grss07/data.mat       6 Landsat channels followed by 1 ERS channel
+  grss07/label.mat      Labels 0-5; 0 is undefined
 runs/                  Experiment outputs
 runs_fewshot/fs5/      5-shot experiment outputs
 runs_fewshot/fs10/     10-shot experiment outputs
@@ -31,6 +34,12 @@ vendor/                Original third-party code snapshots
 ## Commands
 
 ```bash
+python scripts/prepare_grss07.py \
+  --source /path/to/GRSS07_SAR_MS.mat \
+  --output data/grss07
+python scripts/generate_grss07_configs.py
+python scripts/check_dataset.py --dataset grss07
+
 python scripts/check_dataset.py --dataset yrd
 python scripts/train_dfinet.py --config configs/dfinet_yrd_fs5.yaml
 python scripts/train_eval_dfinet.py --config configs/dfinet_yrd_fs5.yaml
@@ -56,6 +65,28 @@ python scripts/train_softformer.py --config configs/softformer_yrd_fs5.yaml
 python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs5.yaml
 python scripts/eval_softformer.py --run runs_fewshot/fs5/softformer/yrd/run_001
 python scripts/infer_softformer.py --run runs_fewshot/fs5/softformer/yrd/run_001
+```
+
+## GRSS-DFC-2007 Experiments
+
+The NCGLF2 subset uses the official 1994 Landsat image (six optical bands),
+the ERS acquisition from 1994-10-03 (one SAR band), and the five-class ground
+truth. The conversion script concatenates these arrays without changing their
+pixel values. Configs cover all five baselines and the `fs5`, `fs10`, `fs20`,
+`fs50`, `fs100`, `fs150`, and `fs200` settings.
+
+Run the complete GRSS07 grid in the `gjc` environment with one GPU and two
+concurrent jobs by default:
+
+```bash
+bash scripts/run_grss07_experiments.sh
+```
+
+Preview the queue or override concurrency:
+
+```bash
+DRY_RUN=1 bash scripts/run_grss07_experiments.sh
+GPU_COUNT=1 PROCS_PER_GPU=1 bash scripts/run_grss07_experiments.sh
 ```
 
 ## Few-Shot Commands
@@ -151,3 +182,8 @@ its pinned runtime without allowing pip to upgrade the project's Torch wheel.
 The 10 MSI channels feed its spectral branch and the remaining
 2/4 channels feed its SAR branch. Configs for YRD and YRD2509NEW are
 generated reproducibly with `python scripts/generate_msfmamba_configs.py`.
+
+GRSS07 has only six optical bands. For this dataset, the MSFMamba adapter
+zero-pads the spectral axis to nine bands before the released fixed 9-band
+spectral convolution. This adds no synthetic observation values and leaves the
+rest of the official layer unchanged.
