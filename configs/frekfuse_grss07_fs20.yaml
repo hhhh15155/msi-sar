@@ -4,11 +4,12 @@ dataset_config: configs/datasets/grss07.yaml
 output_root: runs_fewshot/fs20
 device: cuda:0
 patch_size: 11
-use_validation: true
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_count_per_class: 20
-  val_count_per_class: 20
+use_validation: false
+select_best_by: test
+test_interval: 20
 epochs: 200
 num_runs: 5
 seeds:

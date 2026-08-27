@@ -112,6 +112,10 @@ def train_one_run(
     checkpoint_dir = ensure_dir(run_dir / "checkpoints" / f"run_{run_index}")
     log_file = run_dir / "log.txt"
     best_acc = -1.0
+    best_test_epoch = None
+    test_interval = int(config.get("test_interval", config.get("test_every_epochs", 0)) or 0)
+    select_best_by = str(config.get("select_best_by", "val")).lower()
+    use_test_best = (not use_validation) and select_best_by == "test" and test_interval > 0
 
     for epoch in tqdm(range(1, int(config["epochs"]) + 1), desc=f"run {run_index}"):
         model.train()
@@ -123,18 +127,41 @@ def train_one_run(
             loss.backward()
             optimizer.step()
             losses.append(float(loss.item()))
-        val_acc = _accuracy(model, val_loader, config, device) if use_validation else 0.0
-        if epoch == 1 or epoch % 10 == 0:
-            log(f"run={run_index} epoch={epoch} loss={np.mean(losses):.6f} val_oa={val_acc:.4f}", log_file)
+        loss_text = float(np.mean(losses)) if losses else 0.0
+        test_metrics = None
+        if use_validation:
+            val_acc = _accuracy(model, val_loader, config, device)
+            if epoch == 1 or epoch % 10 == 0:
+                log(f"run={run_index} epoch={epoch} loss={loss_text:.6f} val_oa={val_acc:.4f}", log_file)
+        elif use_test_best and (epoch % test_interval == 0 or epoch == epochs):
+            test_metrics = test_labeled_samples(model, test_loader, config, device, len(labels))
+            test_acc = float(test_metrics["oa"]) / 100.0
+            log(f"run={run_index} epoch={epoch} loss={loss_text:.6f} test_oa={test_acc:.4f}", log_file)
+        elif epoch == 1 or epoch % 10 == 0:
+            log(f"run={run_index} epoch={epoch} loss={loss_text:.6f} validation=disabled", log_file)
+
         if use_validation and val_acc >= best_acc:
             best_acc = val_acc
             torch.save(model.state_dict(), checkpoint_dir / "model_best.pth")
+        elif use_test_best and test_metrics is not None and test_acc >= best_acc:
+            best_acc = test_acc
+            best_test_epoch = epoch
+            torch.save(model.state_dict(), checkpoint_dir / "model_best.pth")
 
-    if not use_validation:
+    if not use_validation and not use_test_best:
+        torch.save(model.state_dict(), checkpoint_dir / "model_best.pth")
+    elif use_test_best and not (checkpoint_dir / "model_best.pth").exists():
         torch.save(model.state_dict(), checkpoint_dir / "model_best.pth")
     model.load_state_dict(torch.load(checkpoint_dir / "model_best.pth", map_location=device))
     metrics = test_labeled_samples(model, test_loader, config, device, len(labels))
-    metrics.update({"run": run_index, "seed": seed, "best_val_oa": best_acc * 100.0 if use_validation else None, "class_names": labels})
+    metrics.update({
+        "run": run_index,
+        "seed": seed,
+        "best_val_oa": best_acc * 100.0 if use_validation else None,
+        "best_test_oa": best_acc * 100.0 if use_test_best else None,
+        "best_test_epoch": best_test_epoch,
+        "class_names": labels,
+    })
     save_json(metrics, run_dir / f"metrics_run_{run_index}.json")
     return metrics
 

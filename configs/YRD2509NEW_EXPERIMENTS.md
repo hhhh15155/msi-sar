@@ -34,5 +34,5 @@ exists. Existing YRD/YRD2509 results are therefore not rerun.
 ## Bare-soil support
 
 Class 7 contains 571 trusted pixels after expanding its continuous land-use
-interior core. The 200-shot protocol therefore retains 200 training, 200
-validation, and 171 test pixels for this class.
+interior core. The 200-shot protocol therefore retains 200 training pixels and
+uses the remaining 371 labeled pixels for testing.

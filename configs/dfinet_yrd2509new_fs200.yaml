@@ -6,11 +6,12 @@ device: cuda:0
 patch_size: 11
 spectral_channels: 10
 sar_channels: 4
-use_validation: true
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_count_per_class: 200
-  val_count_per_class: 200
+use_validation: false
+select_best_by: test
+test_interval: 20
 batch_size: 128
 epochs: 200
 num_runs: 5

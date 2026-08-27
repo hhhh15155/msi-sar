@@ -13,13 +13,12 @@ emb_dim: 128
 depth: 2
 drop_path_rate: 0.2
 
-train_ratio: 0.0025
-val_ratio: 0.0025
-test_ratio: 0.995
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_counts: [10, 10, 10, 10, 10, 10, 10, 10]
-  val_counts: [10, 10, 10, 10, 10, 10, 10, 10]
+use_validation: false
+select_best_by: test
+test_interval: 20
 batch_size: 128
 epochs: 200
 num_runs: 5

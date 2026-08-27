@@ -17,11 +17,12 @@ drop: 0.0
 attn_drop: 0.1
 drop_path_rate: 0.1
 use_isa: true
-use_validation: true
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_count_per_class: 50
-  val_count_per_class: 50
+use_validation: false
+select_best_by: test
+test_interval: 20
 batch_size: 128
 epochs: 200
 num_runs: 5

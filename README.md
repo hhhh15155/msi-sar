@@ -91,8 +91,10 @@ GPU_COUNT=1 PROCS_PER_GPU=1 bash scripts/run_grss07_experiments.sh
 
 ## Few-Shot Commands
 
-Few-shot configs use fixed per-class train/validation counts. Results are saved
-under one folder per shot setting.
+Few-shot configs use fixed per-class train counts and no validation set: the
+model is tested on the test set every 20 epochs during training, and the
+checkpoint with the best test OA is reloaded for the final evaluation. Results
+are saved under one folder per shot setting.
 
 ```bash
 python scripts/train_eval_dfinet.py --config configs/dfinet_yrd_fs5.yaml
@@ -129,18 +131,18 @@ python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs100.ya
 Few-shot settings:
 
 ```text
-fs5:  train/class=5,  val/class=5,  train total=40,  val total=40
-fs10: train/class=10, val/class=10, train total=80,  val total=80
-fs20: train/class=20, val/class=20, train total=160, val total=160
-fs50: train/class=50, val/class=50, train total=400, val total=400
-fs100: train/class=100, val/class=100, train total=800, val total=800
+fs5:  train/class=5,  train total=40
+fs10: train/class=10, train total=80
+fs20: train/class=20, train total=160
+fs50: train/class=50, train total=400
+fs100: train/class=100, train total=800
 ```
 
 DFI-Net accepts the `patch_size` set in `configs/dfinet_yrd_fs5.yaml`. Training
 tests only labeled test samples by default; run `infer_dfinet.py` only when a
 full-scene map is needed. The default YRD configuration is 5-shot: five
-training and five validation pixels per class. Select another shot config as
-needed.
+training pixels per class, all remaining labeled pixels are used for testing.
+Select another shot config as needed.
 
 `train_eval_dfinet.py` also saves labeled-sample maps for the selected run:
 

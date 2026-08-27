@@ -19,7 +19,7 @@ DEFAULT_SHOTS = [5, 10, 20, 50, 100, 150, 200]
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Run YRD2509NEW few-shot train/validation/test experiments."
+        description="Run YRD2509NEW few-shot train/test experiments (no validation, test every 20 epochs)."
     )
     parser.add_argument(
         "--models",

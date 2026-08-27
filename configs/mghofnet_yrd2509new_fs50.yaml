@@ -10,11 +10,12 @@ pad_mode: constant
 emb_dim: 128
 depth: 2
 drop_path_rate: 0.2
-use_validation: true
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_count_per_class: 50
-  val_count_per_class: 50
+use_validation: false
+select_best_by: test
+test_interval: 20
 batch_size: 128
 epochs: 200
 num_runs: 5

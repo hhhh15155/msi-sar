@@ -10,11 +10,12 @@ embed_dim: 128
 spline_order: 2
 dropout: 0.5
 lite: true
-use_validation: true
 split:
-  method: fixed_counts
+  method: fixed_train_counts
   train_count_per_class: 50
-  val_count_per_class: 50
+use_validation: false
+select_best_by: test
+test_interval: 20
 batch_size: 64
 epochs: 200
 num_runs: 5
