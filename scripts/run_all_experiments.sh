@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the default YRD grids or an explicit DATASETS_FILTER subset.
+# Run the default YRD/GRSS07 grids or an explicit DATASETS_FILTER subset.
 set -o pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

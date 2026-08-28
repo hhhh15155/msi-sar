@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs_fewshot"
 OUT = ROOT / "experiment_logs"
 MODELS = ("dfinet", "frekfuse", "mghofnet", "softformer")
-DATASETS = ("yrd", "yrd2509", "yrd2509new")
+DATASETS = ("yrd", "yrd2509new", "grss07")
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 
 

@@ -63,7 +63,11 @@ class Grss07ConfigTests(unittest.TestCase):
                 self.assertEqual(config[primary_key], 6)
                 self.assertEqual(config[sar_key], 1)
                 self.assertEqual(config["split"]["train_count_per_class"], shot)
-                self.assertEqual(config["split"]["val_count_per_class"], shot)
+                self.assertEqual(config["split"]["method"], "fixed_train_counts")
+                self.assertNotIn("val_count_per_class", config["split"])
+                self.assertFalse(config["use_validation"])
+                self.assertEqual(config["select_best_by"], "test")
+                self.assertEqual(config["test_interval"], 20)
                 self.assertEqual(config["output_root"], f"runs_fewshot/fs{shot}")
 
 

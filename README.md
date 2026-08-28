@@ -75,6 +75,11 @@ truth. The conversion script concatenates these arrays without changing their
 pixel values. Configs cover all five baselines and the `fs5`, `fs10`, `fs20`,
 `fs50`, `fs100`, `fs150`, and `fs200` settings.
 
+GRSS07 uses the same fixed per-class training-count protocol as YRD and
+YRD2509NEW. Its seven-band input remains dataset-specific: six optical bands
+and one SAR band. The default experiment grid includes `yrd`, `yrd2509new`,
+and `grss07`.
+
 Run the complete GRSS07 grid in the `gjc` environment with one GPU and two
 concurrent jobs by default:
 

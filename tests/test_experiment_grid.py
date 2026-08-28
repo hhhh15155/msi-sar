@@ -13,13 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ExperimentGridTests(unittest.TestCase):
-    def test_grid_contains_only_the_two_selected_datasets(self) -> None:
+    def test_grid_contains_the_three_selected_datasets(self) -> None:
         experiments = list(iter_experiments())
 
         self.assertEqual(MODELS, ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer"))
-        self.assertEqual(DATASETS, ("yrd", "yrd2509new"))
+        self.assertEqual(DATASETS, ("yrd", "yrd2509new", "grss07"))
         self.assertEqual(SHOTS, (5, 10, 20, 50, 100, 150, 200))
-        self.assertEqual(len(experiments), 70)
+        self.assertEqual(len(experiments), 105)
         self.assertNotIn("yrd2509", {experiment.dataset for experiment in experiments})
         self.assertNotIn("yrd2509_landuse_9c", {experiment.dataset for experiment in experiments})
 
@@ -37,12 +37,12 @@ class ExperimentGridTests(unittest.TestCase):
             )
             self.assertTrue(is_complete(root, experiment))
 
-    def test_grid_can_select_grss07_without_changing_the_default_datasets(self) -> None:
+    def test_grid_can_select_grss07_explicitly(self) -> None:
         experiments = list(iter_experiments(("grss07",)))
 
         self.assertEqual(len(experiments), 35)
         self.assertEqual({experiment.dataset for experiment in experiments}, {"grss07"})
-        self.assertEqual(DATASETS, ("yrd", "yrd2509new"))
+        self.assertEqual(DATASETS, ("yrd", "yrd2509new", "grss07"))
 
     def test_all_yrd2509new_configs_match_dataset_channels_and_classes(self) -> None:
         dataset_config = yaml.safe_load((ROOT / "configs/datasets/yrd2509new.yaml").read_text(encoding="utf-8"))
@@ -70,7 +70,11 @@ class ExperimentGridTests(unittest.TestCase):
             self.assertEqual(config[primary_key], 10)
             self.assertEqual(config[auxiliary_key], 4)
             self.assertEqual(config["split"]["train_count_per_class"], experiment.shot)
-            self.assertEqual(config["split"]["val_count_per_class"], experiment.shot)
+            self.assertEqual(config["split"]["method"], "fixed_train_counts")
+            self.assertNotIn("val_count_per_class", config["split"])
+            self.assertFalse(config["use_validation"])
+            self.assertEqual(config["select_best_by"], "test")
+            self.assertEqual(config["test_interval"], 20)
 
 
 if __name__ == "__main__":
