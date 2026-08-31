@@ -8,6 +8,7 @@ cd "$ROOT"
 PYTHON="${PYTHON:-$(conda run -n gjc which python)}"
 GPU_COUNT="${GPU_COUNT:-2}"
 PROCS_PER_GPU="${PROCS_PER_GPU:-2}"
+FORCE_RERUN="${FORCE_RERUN:-0}"
 MAX_PROCS=$((GPU_COUNT * PROCS_PER_GPU))
 LOG_DIR="$ROOT/experiment_logs"
 mkdir -p "$LOG_DIR"
@@ -36,7 +37,7 @@ if [[ "${DRY_RUN:-0}" == "1" ]]; then
     PENDING=0
     for entry in "${QUEUE[@]}"; do
         IFS='|' read -r _script _config name already_done <<<"$entry"
-        if [[ "$already_done" == "1" ]]; then
+        if [[ "$already_done" == "1" && "$FORCE_RERUN" != "1" ]]; then
             echo "SKIP      ${name} (already done)"
             SKIPPED=$((SKIPPED + 1))
         else
@@ -104,7 +105,7 @@ while true; do
     while [[ $active -lt $MAX_PROCS && $CURRENT -lt $TOTAL ]]; do
         IFS='|' read -r script config name already_done <<<"${QUEUE[$CURRENT]}"
         CURRENT=$((CURRENT + 1))
-        if [[ "$already_done" == "1" ]]; then
+        if [[ "$already_done" == "1" && "$FORCE_RERUN" != "1" ]]; then
             echo "[$(date '+%H:%M:%S')] SKIP ${name} (already done)"
             SKIPPED=$((SKIPPED + 1))
             continue
