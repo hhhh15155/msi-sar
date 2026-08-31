@@ -96,13 +96,13 @@ GPU_COUNT=1 PROCS_PER_GPU=1 bash scripts/run_grss07_experiments.sh
 
 ## Few-Shot Commands
 
-Few-shot configs use fixed per-class train counts and no validation set: the
-model is tested on the test set every 20 epochs during training, and the
-checkpoint with the best test OA is reloaded for the final evaluation. Results
-are saved under one folder per shot setting.
+Few-shot configs use fixed per-class train counts and no validation set. Models
+train for 200 epochs without intermediate test passes, then the final
+checkpoint is evaluated on the test set once. Results are saved under one
+folder per shot setting.
 
 All experiment configs use `batch_size: 128` for training, `test_batch_size:
-1024` for the periodic and final training-loop test passes, and
+1024` for the final training-loop test pass, and
 `eval.batch_size: 1024` for the labeled-map evaluation. Full-scene inference
 keeps its separate `infer.batch_size` setting.
 

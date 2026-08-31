@@ -33,8 +33,8 @@ split:
   method: fixed_train_counts
   train_count_per_class: {shot}
 use_validation: false
-select_best_by: test
-test_interval: 20
+select_best_by: last
+test_interval: 0
 batch_size: 128
 test_batch_size: 1024
 epochs: 200

@@ -73,8 +73,9 @@ class ExperimentGridTests(unittest.TestCase):
             self.assertEqual(config["split"]["method"], "fixed_train_counts")
             self.assertNotIn("val_count_per_class", config["split"])
             self.assertFalse(config["use_validation"])
-            self.assertEqual(config["select_best_by"], "test")
-            self.assertEqual(config["test_interval"], 20)
+            self.assertEqual(config["select_best_by"], "last")
+            self.assertEqual(config["test_interval"], 0)
+            self.assertEqual(config["epochs"], 200)
 
     def test_all_experiment_configs_use_standard_training_and_test_batch_sizes(self) -> None:
         for experiment in iter_experiments():
