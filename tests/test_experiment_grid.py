@@ -76,6 +76,15 @@ class ExperimentGridTests(unittest.TestCase):
             self.assertEqual(config["select_best_by"], "test")
             self.assertEqual(config["test_interval"], 20)
 
+    def test_all_experiment_configs_use_standard_training_and_test_batch_sizes(self) -> None:
+        for experiment in iter_experiments():
+            config_path = ROOT / experiment.config
+            config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+
+            self.assertEqual(config["batch_size"], 128, config_path)
+            self.assertEqual(config["test_batch_size"], 1024, config_path)
+            self.assertEqual(config["eval"]["batch_size"], 1024, config_path)
+
 
 if __name__ == "__main__":
     unittest.main()

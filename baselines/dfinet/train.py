@@ -86,7 +86,8 @@ def train_one_run(config: dict, image: np.ndarray, gt: np.ndarray, labels: list[
         if use_validation
         else None
     )
-    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=int(config["batch_size"]), shuffle=False)
+    test_batch_size = int(config.get("test_batch_size", 1024))
+    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=test_batch_size, shuffle=False)
 
     model = DFINet(
         num_classes=len(labels),

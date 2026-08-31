@@ -68,6 +68,9 @@ class Grss07ConfigTests(unittest.TestCase):
                 self.assertFalse(config["use_validation"])
                 self.assertEqual(config["select_best_by"], "test")
                 self.assertEqual(config["test_interval"], 20)
+                self.assertEqual(config["batch_size"], 128)
+                self.assertEqual(config["test_batch_size"], 1024)
+                self.assertEqual(config["eval"]["batch_size"], 1024)
                 self.assertEqual(config["output_root"], f"runs_fewshot/fs{shot}")
 
 

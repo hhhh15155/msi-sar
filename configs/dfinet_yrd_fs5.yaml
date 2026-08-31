@@ -12,6 +12,7 @@ select_best_by: test
 test_interval: 20
 
 batch_size: 128
+test_batch_size: 1024
 epochs: 200
 num_runs: 5
 seeds: [202201, 202202, 202203, 202204, 202205]
@@ -20,7 +21,7 @@ weight_decay: 0.0001
 eval:
   enabled: true
   run_index: best
-  batch_size: 512
+  batch_size: 1024
   save_labeled_maps: true
 infer:
   batch_size: 512

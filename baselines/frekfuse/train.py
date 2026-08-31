@@ -128,7 +128,8 @@ def train_one_run(
         if use_validation
         else None
     )
-    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=int(config["batch_size"]), shuffle=False)
+    test_batch_size = int(config.get("test_batch_size", 1024))
+    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=test_batch_size, shuffle=False)
 
     model = build_model(config, len(labels)).to(device)
 

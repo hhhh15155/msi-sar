@@ -101,6 +101,11 @@ model is tested on the test set every 20 epochs during training, and the
 checkpoint with the best test OA is reloaded for the final evaluation. Results
 are saved under one folder per shot setting.
 
+All experiment configs use `batch_size: 128` for training, `test_batch_size:
+1024` for the periodic and final training-loop test passes, and
+`eval.batch_size: 1024` for the labeled-map evaluation. Full-scene inference
+keeps its separate `infer.batch_size` setting.
+
 ```bash
 python scripts/train_eval_dfinet.py --config configs/dfinet_yrd_fs5.yaml
 python scripts/train_eval_dfinet.py --config configs/dfinet_yrd_fs10.yaml

@@ -44,7 +44,14 @@ def log(message: str, log_file: Path) -> None:
         f.write(message + "\n")
 
 
-def _make_loader(config: dict, image: np.ndarray, gt: np.ndarray, data_aug: bool, shuffle: bool) -> DataLoader:
+def _make_loader(
+    config: dict,
+    image: np.ndarray,
+    gt: np.ndarray,
+    data_aug: bool,
+    shuffle: bool,
+    batch_size: int | None = None,
+) -> DataLoader:
     dataset = FusionPatchDataset(
         image,
         gt,
@@ -54,7 +61,8 @@ def _make_loader(config: dict, image: np.ndarray, gt: np.ndarray, data_aug: bool
         data_aug=data_aug,
         pad_mode=config.get("pad_mode", "constant"),
     )
-    return DataLoader(dataset, batch_size=int(config["batch_size"]), shuffle=shuffle)
+    loader_batch_size = int(config["batch_size"] if batch_size is None else batch_size)
+    return DataLoader(dataset, batch_size=loader_batch_size, shuffle=shuffle)
 
 
 def validate(model: nn.Module, loader: DataLoader, device: torch.device) -> float:
@@ -107,7 +115,14 @@ def train_one_run(
     train_loader = _make_loader(config, image, train_gt, data_aug=bool(config.get("data_aug", True)), shuffle=True)
     use_validation = bool(config.get("use_validation", True)) and bool(np.any(val_gt >= 0))
     val_loader = _make_loader(config, image, val_gt, data_aug=False, shuffle=False) if use_validation else None
-    test_loader = _make_loader(config, image, test_gt, data_aug=False, shuffle=False)
+    test_loader = _make_loader(
+        config,
+        image,
+        test_gt,
+        data_aug=False,
+        shuffle=False,
+        batch_size=int(config.get("test_batch_size", 1024)),
+    )
 
     model = SoftFormerBaseline(
         img_size=int(config.get("model_img_size", 8)),

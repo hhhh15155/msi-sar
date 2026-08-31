@@ -100,11 +100,12 @@ def train_one_run(
     np.savez_compressed(run_dir / "splits" / f"run_{run_index}.npz", train_gt=train_gt, val_gt=val_gt, test_gt=test_gt)
 
     patch_size, batch_size = int(config["patch_size"]), int(config["batch_size"])
+    test_batch_size = int(config.get("test_batch_size", 1024))
     data_aug = bool(config.get("data_aug", True))
     train_loader = DataLoader(PatchDataset(image, train_gt, patch_size, data_aug=data_aug), batch_size=batch_size, shuffle=True)
     use_validation = bool(config.get("use_validation", True)) and bool(np.any(val_gt >= 0))
     val_loader = DataLoader(PatchDataset(image, val_gt, patch_size, data_aug=False), batch_size=batch_size) if use_validation else None
-    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=batch_size)
+    test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=test_batch_size)
 
     model = build_model(config, len(labels)).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=float(config.get("learning_rate", 1e-4)), weight_decay=float(config.get("weight_decay", 0.0)))

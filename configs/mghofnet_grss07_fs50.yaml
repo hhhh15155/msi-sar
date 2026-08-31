@@ -21,7 +21,7 @@ seeds:
 eval:
   enabled: true
   run_index: best
-  batch_size: 512
+  batch_size: 1024
   save_labeled_maps: true
 infer:
   batch_size: 512
@@ -54,6 +54,7 @@ emb_dim: 128
 depth: 2
 drop_path_rate: 0.2
 batch_size: 128
+test_batch_size: 1024
 data_aug: true
 learning_rate: 0.001
 weight_decay: 0.01

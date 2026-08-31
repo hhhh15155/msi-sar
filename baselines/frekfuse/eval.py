@@ -28,7 +28,7 @@ def predict_labeled_samples(
     device: torch.device,
 ) -> np.ndarray:
     patch_size = int(config["patch_size"])
-    batch_size = int(config.get("eval", {}).get("batch_size", config.get("batch_size", 64)))
+    batch_size = int(config.get("eval", {}).get("batch_size", config.get("test_batch_size", 1024)))
     ms_c = int(config.get("ms_channels", 10))
     sar_c = int(config.get("sar_channels", 4))
 

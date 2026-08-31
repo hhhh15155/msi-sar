@@ -22,7 +22,7 @@ def load_model(config: dict, labels: list[str], checkpoint: Path, device: torch.
 
 def predict_labeled_samples(model: torch.nn.Module, image: np.ndarray, gt: np.ndarray, config: dict, device: torch.device) -> np.ndarray:
     dataset = PatchDataset(image, gt, int(config["patch_size"]), data_aug=False)
-    loader = DataLoader(dataset, batch_size=int(config.get("eval", {}).get("batch_size", config["batch_size"])))
+    loader = DataLoader(dataset, batch_size=int(config.get("eval", {}).get("batch_size", config.get("test_batch_size", 1024))))
     prediction = np.full_like(gt, -1)
     offset = 0
     model.eval()

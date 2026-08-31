@@ -90,7 +90,7 @@ def save_labeled_maps(run_dir: str | Path, run_index: int = 0) -> dict:
     model = load_model(config, labels, run_dir / "checkpoints" / f"run_{run_index}" / "model_best.pth", device)
     eval_config = config.get("eval", {})
     palette = config.get("palette")
-    batch_size = int(eval_config.get("batch_size", config.get("batch_size", 128)))
+    batch_size = int(eval_config.get("batch_size", config.get("test_batch_size", 1024)))
 
     prediction = predict_labeled_samples(model, image, gt, int(config["patch_size"]), batch_size, device)
     mask = gt >= 0
