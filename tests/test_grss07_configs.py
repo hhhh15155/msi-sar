@@ -27,19 +27,23 @@ class Grss07ConfigTests(unittest.TestCase):
         self.assertEqual(required_spectral_channels(9), 9)
         self.assertEqual(required_spectral_channels(10), 10)
 
-    def test_generator_writes_all_five_models_and_seven_shot_settings(self) -> None:
+    def test_generator_writes_standard_and_custom_grss07_settings(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             output = Path(temp_dir)
 
             generated = generate_configs(output)
 
-            self.assertEqual(len(generated), 35)
+            self.assertEqual(len(generated), 40)
             self.assertEqual(
                 {path.name for path in generated},
                 {
                     f"{model}_grss07_fs{shot}.yaml"
                     for model in ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
                     for shot in (5, 10, 20, 50, 100, 150, 200)
+                }
+                | {
+                    f"{model}_grss07_custom.yaml"
+                    for model in ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
                 },
             )
 
@@ -57,12 +61,10 @@ class Grss07ConfigTests(unittest.TestCase):
             for path in generated:
                 config = yaml.safe_load(path.read_text(encoding="utf-8"))
                 primary_key, sar_key = channel_keys[config["model"]]
-                shot = int(path.stem.rsplit("fs", 1)[1])
                 self.assertEqual(config["dataset"], "grss07")
                 self.assertEqual(config["dataset_config"], "configs/datasets/grss07.yaml")
                 self.assertEqual(config[primary_key], 6)
                 self.assertEqual(config[sar_key], 1)
-                self.assertEqual(config["split"]["train_count_per_class"], shot)
                 self.assertEqual(config["split"]["method"], "fixed_train_counts")
                 self.assertNotIn("val_count_per_class", config["split"])
                 self.assertFalse(config["use_validation"])
@@ -72,7 +74,13 @@ class Grss07ConfigTests(unittest.TestCase):
                 self.assertEqual(config["batch_size"], 128)
                 self.assertEqual(config["test_batch_size"], 1024)
                 self.assertEqual(config["eval"]["batch_size"], 1024)
-                self.assertEqual(config["output_root"], f"runs_fewshot/fs{shot}")
+                if path.name.endswith("_custom.yaml"):
+                    self.assertEqual(config["split"]["train_counts"], [674, 1481, 752, 45, 30])
+                    self.assertEqual(config["output_root"], "runs_fewshot/grss07_custom")
+                else:
+                    shot = int(path.stem.rsplit("fs", 1)[1])
+                    self.assertEqual(config["split"]["train_count_per_class"], shot)
+                    self.assertEqual(config["output_root"], f"runs_fewshot/fs{shot}")
 
 
 if __name__ == "__main__":

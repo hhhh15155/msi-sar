@@ -80,6 +80,16 @@ YRD2509NEW. Its seven-band input remains dataset-specific: six optical bands
 and one SAR band. The default experiment grid includes `yrd`, `yrd2509new`,
 and `grss07`.
 
+An additional GRSS07 custom-count configuration uses per-class training counts
+`[674, 1481, 752, 45, 30]` in the order City Center, Residential Areas,
+Sparse Buildings, Water, and Vegetation. Generate and run these five model
+configs with:
+
+```bash
+python scripts/generate_grss07_configs.py
+bash scripts/run_grss07_custom_experiments.sh
+```
+
 Run the complete GRSS07 grid in the `gjc` environment with one GPU and two
 concurrent jobs by default:
 

@@ -10,6 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
+CUSTOM_TRAIN_COUNTS = [674, 1481, 752, 45, 30]
 PALETTE = [
     [230, 25, 75],
     [255, 225, 25],
@@ -120,6 +121,16 @@ def _model_config(model: str, shot: int) -> dict:
     return config
 
 
+def _custom_model_config(model: str) -> dict:
+    config = _model_config(model, 0)
+    config["output_root"] = "runs_fewshot/grss07_custom"
+    config["split"] = {
+        "method": "fixed_train_counts",
+        "train_counts": list(CUSTOM_TRAIN_COUNTS),
+    }
+    return config
+
+
 def generate_configs(output_dir: Path) -> list[Path]:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -132,6 +143,13 @@ def generate_configs(output_dir: Path) -> list[Path]:
                 encoding="utf-8",
             )
             generated.append(target)
+    for model in MODELS:
+        target = output_dir / f"{model}_grss07_custom.yaml"
+        target.write_text(
+            yaml.safe_dump(_custom_model_config(model), sort_keys=False, allow_unicode=True),
+            encoding="utf-8",
+        )
+        generated.append(target)
     return generated
 
 

@@ -12,6 +12,7 @@ select_best_by: last
 test_interval: 0
 epochs: 200
 num_runs: 5
+test_batch_size: 1024
 seeds:
 - 202201
 - 202202
@@ -53,7 +54,6 @@ num_layers: 1
 d_state: 16
 expand: 0.75
 batch_size: 128
-test_batch_size: 1024
 data_aug: true
 learning_rate: 0.0001
 weight_decay: 0.0

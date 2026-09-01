@@ -12,6 +12,7 @@ select_best_by: last
 test_interval: 0
 epochs: 200
 num_runs: 5
+test_batch_size: 1024
 seeds:
 - 202201
 - 202202
@@ -50,6 +51,5 @@ palette:
 spectral_channels: 6
 sar_channels: 1
 batch_size: 128
-test_batch_size: 1024
 learning_rate: 0.001
 weight_decay: 0.0001

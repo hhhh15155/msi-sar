@@ -12,6 +12,7 @@ select_best_by: last
 test_interval: 0
 epochs: 200
 num_runs: 5
+test_batch_size: 1024
 seeds:
 - 202201
 - 202202
@@ -70,7 +71,6 @@ attn_drop: 0.1
 drop_path_rate: 0.1
 use_isa: true
 batch_size: 128
-test_batch_size: 1024
 data_aug: true
 learning_rate: 0.001
 weight_decay: 0.0001
