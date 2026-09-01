@@ -158,7 +158,7 @@ def choose_tiles(data: np.ndarray, source_label: np.ndarray) -> tuple[np.ndarray
         # recorded instead of pretending that they satisfy the strict core rule.
         buffers = (INTERIOR_BUFFER,) if class_id not in (1, 7) else (6, 5, 4, 3)
         # The two fragmented classes use 3x3 review tiles; retain enough
-        # independent candidates for a 100-shot train/validation experiment.
+                    # independent candidates for a 100-shot training experiment.
         target = 40 if class_id in (2, 4) else (45 if class_id in (1, 7) else 25)
         selected: list[tuple[int, int, float]] = []
         final_buffer = INTERIOR_BUFFER

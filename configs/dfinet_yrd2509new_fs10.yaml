@@ -9,9 +9,6 @@ sar_channels: 4
 split:
   method: fixed_train_counts
   train_count_per_class: 10
-use_validation: false
-select_best_by: last
-test_interval: 0
 batch_size: 128
 test_batch_size: 1024
 epochs: 200

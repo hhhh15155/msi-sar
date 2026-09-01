@@ -7,8 +7,8 @@ import h5py
 import numpy as np
 import torch
 from scipy import io as scipy_io
-from sklearn.model_selection import train_test_split
 
+from baselines.split import split_from_config
 from .io import resolve_path
 
 
@@ -95,112 +95,6 @@ def load_dataset(config: dict[str, Any]) -> tuple[np.ndarray, np.ndarray, list[s
 
     gt = label.astype("int64") - int(config.get("undefined_label", 0)) - 1
     return image, gt, list(config["class_names"])
-
-
-def sample_gt(gt: np.ndarray, percentage: float, seed: int) -> tuple[np.ndarray, np.ndarray]:
-    indices = np.where(gt >= 0)
-    x = list(zip(*indices))
-    y = gt[indices].ravel()
-    selected_gt = np.full_like(gt, fill_value=-1)
-    rest_gt = np.full_like(gt, fill_value=-1)
-    selected_indices, rest_indices = train_test_split(
-        x,
-        train_size=percentage,
-        random_state=seed,
-        stratify=y,
-    )
-    selected_indices = [list(t) for t in zip(*selected_indices)]
-    rest_indices = [list(t) for t in zip(*rest_indices)]
-    selected_gt[tuple(selected_indices)] = gt[tuple(selected_indices)]
-    rest_gt[tuple(rest_indices)] = gt[tuple(rest_indices)]
-    return selected_gt, rest_gt
-
-
-def split_train_val_test(gt: np.ndarray, train_ratio: float, val_ratio: float, seed: int):
-    train_val_gt, test_gt = sample_gt(gt, train_ratio + val_ratio, seed)
-    train_gt, val_gt = sample_gt(train_val_gt, train_ratio / (train_ratio + val_ratio), seed)
-    return train_gt, val_gt, test_gt
-
-
-def _expand_class_counts(counts: list[int] | int, n_classes: int, name: str) -> list[int]:
-    if isinstance(counts, int):
-        return [counts] * n_classes
-    if len(counts) != n_classes:
-        raise ValueError(f"Expected {n_classes} {name} counts, got {len(counts)}")
-    return counts
-
-
-def split_fixed_counts(gt: np.ndarray, train_counts: list[int] | int, val_counts: list[int] | int, seed: int):
-    n_classes = int(np.max(gt)) + 1
-    train_counts = _expand_class_counts(train_counts, n_classes, "train")
-    val_counts = _expand_class_counts(val_counts, n_classes, "val")
-
-    rng = np.random.default_rng(seed)
-    train_gt = np.full_like(gt, fill_value=-1)
-    val_gt = np.full_like(gt, fill_value=-1)
-    test_gt = np.full_like(gt, fill_value=-1)
-
-    for class_index in range(n_classes):
-        coords = np.column_stack(np.where(gt == class_index))
-        rng.shuffle(coords)
-        train_count = int(train_counts[class_index])
-        val_count = int(val_counts[class_index])
-        if train_count + val_count > len(coords):
-            raise ValueError(
-                f"Class {class_index} has {len(coords)} samples, "
-                f"but train+val requires {train_count + val_count}"
-            )
-
-        train_coords = coords[:train_count]
-        val_coords = coords[train_count : train_count + val_count]
-        test_coords = coords[train_count + val_count :]
-
-        train_gt[train_coords[:, 0], train_coords[:, 1]] = class_index
-        val_gt[val_coords[:, 0], val_coords[:, 1]] = class_index
-        test_gt[test_coords[:, 0], test_coords[:, 1]] = class_index
-
-    return train_gt, val_gt, test_gt
-
-
-def split_fixed_train_counts(gt: np.ndarray, train_counts: list[int] | int, seed: int):
-    n_classes = int(np.max(gt)) + 1
-    train_counts = _expand_class_counts(train_counts, n_classes, "train")
-
-    rng = np.random.default_rng(seed)
-    train_gt = np.full_like(gt, fill_value=-1)
-    val_gt = np.full_like(gt, fill_value=-1)
-    test_gt = np.full_like(gt, fill_value=-1)
-
-    for class_index in range(n_classes):
-        coords = np.column_stack(np.where(gt == class_index))
-        rng.shuffle(coords)
-        train_count = int(train_counts[class_index])
-        if train_count > len(coords):
-            raise ValueError(f"Class {class_index} has {len(coords)} samples, but train requires {train_count}")
-
-        train_coords = coords[:train_count]
-        test_coords = coords[train_count:]
-
-        train_gt[train_coords[:, 0], train_coords[:, 1]] = class_index
-        test_gt[test_coords[:, 0], test_coords[:, 1]] = class_index
-
-    return train_gt, val_gt, test_gt
-
-
-def split_from_config(gt: np.ndarray, config: dict[str, Any], seed: int):
-    split_config = config.get("split", {})
-    if split_config.get("method") == "fixed_counts":
-        train_counts = split_config.get("train_counts", split_config.get("train_count_per_class"))
-        val_counts = split_config.get("val_counts", split_config.get("val_count_per_class"))
-        if train_counts is None or val_counts is None:
-            raise ValueError("fixed_counts requires train/val counts or train/val count_per_class")
-        return split_fixed_counts(gt, train_counts, val_counts, seed)
-    if split_config.get("method") == "fixed_train_counts":
-        train_counts = split_config.get("train_counts", split_config.get("train_count_per_class"))
-        if train_counts is None:
-            raise ValueError("fixed_train_counts requires train_counts or train_count_per_class")
-        return split_fixed_train_counts(gt, train_counts, seed)
-    return split_train_val_test(gt, float(config["train_ratio"]), float(config["val_ratio"]), seed)
 
 
 class PatchDataset(torch.utils.data.Dataset):

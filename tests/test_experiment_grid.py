@@ -72,10 +72,23 @@ class ExperimentGridTests(unittest.TestCase):
             self.assertEqual(config["split"]["train_count_per_class"], experiment.shot)
             self.assertEqual(config["split"]["method"], "fixed_train_counts")
             self.assertNotIn("val_count_per_class", config["split"])
-            self.assertFalse(config["use_validation"])
-            self.assertEqual(config["select_best_by"], "last")
-            self.assertEqual(config["test_interval"], 0)
+            self.assertNotIn("use_validation", config)
+            self.assertNotIn("select_best_by", config)
+            self.assertNotIn("test_interval", config)
             self.assertEqual(config["epochs"], 200)
+
+    def test_configs_have_no_legacy_validation_controls(self) -> None:
+        for config_path in (ROOT / "configs").glob("*.yaml"):
+            config = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+            for key in ("use_validation", "select_best_by", "test_interval", "test_every_epochs"):
+                self.assertNotIn(key, config, config_path)
+            split = config.get("split", {})
+            self.assertNotIn("val_counts", split, config_path)
+            self.assertNotIn("val_count_per_class", split, config_path)
+
+    def test_legacy_validation_migration_and_verification_scripts_are_removed(self) -> None:
+        self.assertFalse((ROOT / "_migrate_configs.py").exists())
+        self.assertFalse((ROOT / "_verify_configs.py").exists())
 
     def test_all_experiment_configs_use_standard_training_and_test_batch_sizes(self) -> None:
         for experiment in iter_experiments():
