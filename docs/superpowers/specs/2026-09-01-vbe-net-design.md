@@ -199,7 +199,7 @@ E_c    = F_c(R1, alpha1)
 
 原型使用合成 SPD 矩阵和合成均值，不依赖数据集或完整编码器。拟实现文件：
 
-- `models/vbe_geometry.py`：SPD 算子、Gaussian Bures 距离、分组距离、Bures 重心、责任更新与类别能量；
+- `models/vbe_net.py`：单文件包含空间编码器、类别原型、SPD 算子、Gaussian Bures 距离、分组距离、Bures 重心、责任更新、类别能量与完整 `VBENet`；
 - `scripts/prototype_vbe_solver.py`：数值实验、速度和内存基准、结构化报告；
 - `tests/test_vbe_geometry.py`：确定性单元测试和梯度测试；
 - `docs/figures/vbe-net-architecture.svg`：从本规范架构生成的静态矢量图。

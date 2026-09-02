@@ -3,16 +3,330 @@
 from __future__ import annotations
 
 import math
-from typing import NamedTuple, Union
+from dataclasses import dataclass
+from typing import NamedTuple, Optional, Union
 
 import torch
 from torch import Tensor, nn
+from torch.nn import functional as F
 
-from .vbe_geometry import (
-    estimate_grouped_gaussian,
-    spd_from_raw_tril,
-    variational_bures_energy,
-)
+
+@dataclass
+class GroupedGaussian:
+    """Grouped Gaussian parameters and their OAS shrinkage values."""
+
+    mean: Tensor
+    covariance: Tensor
+    shrinkage: Tensor
+
+
+class Barycenter(NamedTuple):
+    """Mean and covariance of a grouped-Gaussian Bures barycenter."""
+
+    mean: Tensor
+    covariance: Tensor
+
+
+class VBEResult(NamedTuple):
+    """Class energies, responsibilities, and fused Gaussian parameters."""
+
+    energy: Tensor
+    responsibility: Tensor
+    fused_mean: Tensor
+    fused_covariance: Tensor
+
+
+def symmetrize(matrix: Tensor) -> Tensor:
+    """Return the symmetric part of a matrix or matrix batch."""
+
+    return 0.5 * (matrix + matrix.transpose(-1, -2))
+
+
+class _StableMatrixSquareRoot(torch.autograd.Function):
+    """SPD square root with a repeated-eigenvalue-safe first derivative."""
+
+    @staticmethod
+    def forward(ctx, matrix: Tensor, eps: float) -> Tensor:
+        values, vectors = torch.linalg.eigh(symmetrize(matrix))
+        root_values = values.clamp_min(eps).sqrt()
+        ctx.save_for_backward(vectors, root_values)
+        root = (vectors * root_values.unsqueeze(-2)) @ vectors.transpose(-1, -2)
+        return symmetrize(root)
+
+    @staticmethod
+    def backward(ctx, gradient: Tensor):
+        vectors, root_values = ctx.saved_tensors
+        local_gradient = (
+            vectors.transpose(-1, -2) @ symmetrize(gradient) @ vectors
+        )
+        denominator = root_values.unsqueeze(-1) + root_values.unsqueeze(-2)
+        local_gradient = local_gradient / denominator
+        input_gradient = vectors @ local_gradient @ vectors.transpose(-1, -2)
+        return symmetrize(input_gradient), None
+
+
+def project_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
+    """Shift a symmetric matrix batch onto the positive-definite cone."""
+
+    matrix = symmetrize(matrix)
+    with torch.no_grad():
+        minimum = torch.linalg.eigvalsh(matrix).amin(dim=-1)
+        shift = (eps - minimum).clamp_min(0)
+    identity = torch.eye(
+        matrix.shape[-1], dtype=matrix.dtype, device=matrix.device
+    )
+    return symmetrize(matrix + shift[..., None, None] * identity)
+
+
+def matrix_sqrt_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
+    """Compute a stable symmetric positive-definite matrix square root."""
+
+    return _StableMatrixSquareRoot.apply(project_spd(matrix, eps), eps)
+
+
+def matrix_invsqrt_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
+    """Compute a stable symmetric positive-definite inverse square root."""
+
+    root = matrix_sqrt_spd(matrix, eps)
+    identity = torch.eye(
+        root.shape[-1], dtype=root.dtype, device=root.device
+    ).expand_as(root)
+    return symmetrize(torch.linalg.solve(root, identity))
+
+
+def spd_from_raw_tril(
+    raw: Tensor,
+    eps: float = 1e-4,
+    diagonal_floor: float = 1e-3,
+) -> Tensor:
+    """Map unconstrained lower-triangular parameters to SPD covariance."""
+
+    lower = torch.tril(raw, diagonal=-1)
+    diagonal = F.softplus(torch.diagonal(raw, dim1=-2, dim2=-1))
+    diagonal = diagonal + diagonal_floor
+    lower = lower + torch.diag_embed(diagonal)
+    identity = torch.eye(raw.shape[-1], dtype=raw.dtype, device=raw.device)
+    return symmetrize(lower @ lower.transpose(-1, -2) + eps * identity)
+
+
+def estimate_grouped_gaussian(
+    tokens: Tensor,
+    groups: int = 8,
+    eps: float = 1e-4,
+) -> GroupedGaussian:
+    """Estimate grouped means and OAS-shrunk covariance matrices."""
+
+    if tokens.ndim != 3:
+        raise ValueError("tokens must have shape [B,N,D]")
+    batch, samples, channels = tokens.shape
+    if channels % groups:
+        raise ValueError("channels must be divisible by groups")
+    group_dim = channels // groups
+    grouped = tokens.reshape(
+        batch, samples, groups, group_dim
+    ).transpose(1, 2)
+    mean = grouped.mean(dim=-2)
+    centered = grouped - mean.unsqueeze(-2)
+    empirical = centered.transpose(-1, -2) @ centered / samples
+    trace = torch.diagonal(empirical, dim1=-2, dim2=-1).sum(dim=-1)
+    trace_square = empirical.square().sum(dim=(-2, -1))
+    numerator = (1.0 - 2.0 / group_dim) * trace_square + trace.square()
+    denominator = (samples + 1.0 - 2.0 / group_dim) * (
+        trace_square - trace.square() / group_dim
+    )
+    shrinkage = (numerator / denominator.clamp_min(1e-12)).clamp(0.0, 1.0)
+    identity = torch.eye(
+        group_dim, dtype=tokens.dtype, device=tokens.device
+    )
+    target = (trace / group_dim)[..., None, None] * identity
+    covariance = (
+        (1.0 - shrinkage)[..., None, None] * empirical
+        + shrinkage[..., None, None] * target
+        + eps * identity
+    )
+    return GroupedGaussian(mean, symmetrize(covariance), shrinkage)
+
+
+def gaussian_bures_distance_sq(
+    mean_a: Tensor,
+    covariance_a: Tensor,
+    mean_b: Tensor,
+    covariance_b: Tensor,
+    eps: float = 1e-4,
+) -> Tensor:
+    """Squared 2-Wasserstein/Bures distance between Gaussian batches."""
+
+    covariance_a = project_spd(covariance_a, eps)
+    covariance_b = project_spd(covariance_b, eps)
+    root_a = matrix_sqrt_spd(covariance_a, eps)
+    cross_root = matrix_sqrt_spd(root_a @ covariance_b @ root_a, eps)
+    mean_term = (mean_a - mean_b).square().sum(dim=-1)
+    covariance_term = torch.diagonal(
+        covariance_a + covariance_b - 2.0 * cross_root,
+        dim1=-2,
+        dim2=-1,
+    ).sum(dim=-1)
+    return (mean_term + covariance_term).clamp_min(0.0)
+
+
+def product_bures_distance_sq(
+    mean_a: Tensor,
+    covariance_a: Tensor,
+    mean_b: Tensor,
+    covariance_b: Tensor,
+    eps: float = 1e-4,
+    normalize: bool = True,
+) -> Tensor:
+    """Squared Bures distance summed over Gaussian groups."""
+
+    per_group = gaussian_bures_distance_sq(
+        mean_a, covariance_a, mean_b, covariance_b, eps
+    )
+    total = per_group.sum(dim=-1)
+    if normalize:
+        total = total / (mean_a.shape[-2] * mean_a.shape[-1])
+    return total
+
+
+def bures_barycenter(
+    means: Tensor,
+    covariances: Tensor,
+    weights: Tensor,
+    inner_iters: int = 3,
+    eps: float = 1e-4,
+) -> Barycenter:
+    """Compute a weighted grouped-Gaussian Bures barycenter."""
+
+    weights = weights / weights.sum(dim=-1, keepdim=True)
+    mean = (weights[..., :, None, None] * means).sum(dim=-3)
+    covariance_weights = weights[..., :, None, None, None]
+    covariance = project_spd(
+        (covariance_weights * covariances).sum(dim=-4), eps
+    )
+    for _ in range(inner_iters):
+        root = matrix_sqrt_spd(covariance, eps)
+        inverse_root = matrix_invsqrt_spd(covariance, eps)
+        transported = matrix_sqrt_spd(
+            root.unsqueeze(-4) @ covariances @ root.unsqueeze(-4), eps
+        )
+        average = (covariance_weights * transported).sum(dim=-4)
+        covariance = project_spd(
+            inverse_root @ average @ average @ inverse_root, eps
+        )
+    return Barycenter(mean, covariance)
+
+
+def responsibility_from_distances(
+    distances: Tensor,
+    tau_r: float = 0.3,
+    prior: Optional[Tensor] = None,
+) -> Tensor:
+    """Return entropy-regularized modal responsibilities on the simplex."""
+
+    if prior is None:
+        prior = distances.new_full(
+            (distances.shape[-1],), 1.0 / distances.shape[-1]
+        )
+    return torch.softmax(prior.log() - distances / tau_r, dim=-1)
+
+
+def variational_bures_energy(
+    prototype_mean: Tensor,
+    prototype_covariance: Tensor,
+    modality_mean: Tensor,
+    modality_covariance: Tensor,
+    lambda_proto: float = 1.0,
+    tau_r: float = 0.3,
+    inner_iters: int = 3,
+    outer_updates: int = 1,
+    eps: float = 1e-4,
+    prior: Optional[Tensor] = None,
+) -> VBEResult:
+    """Approximately minimize the class-conditional VBE objective."""
+
+    batch, modality_count, groups, group_dim = modality_mean.shape
+    classes = prototype_mean.shape[0]
+    prototype_means = prototype_mean[None].expand(
+        batch, classes, groups, group_dim
+    )
+    prototype_covariances = prototype_covariance[None].expand(
+        batch, classes, groups, group_dim, group_dim
+    )
+    modality_means = modality_mean[:, None].expand(
+        batch, classes, modality_count, groups, group_dim
+    )
+    modality_covariances = modality_covariance[:, None].expand(
+        batch, classes, modality_count, groups, group_dim, group_dim
+    )
+    if prior is None:
+        prior = prototype_mean.new_full(
+            (modality_count,), 1.0 / modality_count
+        )
+    responsibility = prior.expand(batch, classes, modality_count)
+
+    def fuse(current_responsibility: Tensor) -> Barycenter:
+        means = torch.cat(
+            (prototype_means.unsqueeze(2), modality_means), dim=2
+        )
+        covariances = torch.cat(
+            (prototype_covariances.unsqueeze(2), modality_covariances), dim=2
+        )
+        weights = torch.cat(
+            (
+                torch.full_like(
+                    current_responsibility[..., :1], lambda_proto
+                ),
+                current_responsibility,
+            ),
+            dim=-1,
+        )
+        return bures_barycenter(
+            means, covariances, weights, inner_iters, eps
+        )
+
+    fused = fuse(responsibility)
+    for _ in range(outer_updates):
+        modality_distance = product_bures_distance_sq(
+            fused.mean.unsqueeze(2),
+            fused.covariance.unsqueeze(2),
+            modality_means,
+            modality_covariances,
+            eps,
+        )
+        responsibility = responsibility_from_distances(
+            modality_distance, tau_r, prior
+        )
+        fused = fuse(responsibility)
+
+    prototype_distance = product_bures_distance_sq(
+        fused.mean,
+        fused.covariance,
+        prototype_means,
+        prototype_covariances,
+        eps,
+    )
+    modality_distance = product_bures_distance_sq(
+        fused.mean.unsqueeze(2),
+        fused.covariance.unsqueeze(2),
+        modality_means,
+        modality_covariances,
+        eps,
+    )
+    safe_responsibility = responsibility.clamp_min(
+        torch.finfo(responsibility.dtype).tiny
+    )
+    safe_prior = prior.clamp_min(torch.finfo(prior.dtype).tiny)
+    kl = (
+        responsibility * (safe_responsibility.log() - safe_prior.log())
+    ).sum(dim=-1)
+    energy = (
+        lambda_proto * prototype_distance
+        + (responsibility * modality_distance).sum(dim=-1)
+        + tau_r * kl
+    )
+    return VBEResult(
+        energy, responsibility, fused.mean, fused.covariance
+    )
 
 
 class VBEModelOutput(NamedTuple):
@@ -289,6 +603,20 @@ class VBENet(nn.Module):
 
 
 __all__ = [
+    "GroupedGaussian",
+    "Barycenter",
+    "VBEResult",
+    "symmetrize",
+    "project_spd",
+    "matrix_sqrt_spd",
+    "matrix_invsqrt_spd",
+    "spd_from_raw_tril",
+    "estimate_grouped_gaussian",
+    "gaussian_bures_distance_sq",
+    "product_bures_distance_sq",
+    "bures_barycenter",
+    "responsibility_from_distances",
+    "variational_bures_energy",
     "LayerNorm2d",
     "ModalityStem",
     "SemiSharedResidualBlock",

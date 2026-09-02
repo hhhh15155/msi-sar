@@ -2,7 +2,7 @@ import unittest
 
 import torch
 
-from models.vbe_geometry import (
+from models.vbe_net import (
     bures_barycenter,
     estimate_grouped_gaussian,
     gaussian_bures_distance_sq,
