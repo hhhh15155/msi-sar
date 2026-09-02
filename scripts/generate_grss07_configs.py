@@ -37,7 +37,7 @@ def _common(model: str, shot: int) -> dict:
         "test_batch_size": 1024,
         "seeds": [202201, 202202, 202203, 202204, 202205],
         "eval": {"enabled": True, "run_index": "best", "batch_size": 1024, "save_labeled_maps": True},
-        "infer": {"batch_size": 512, "save_full_map": True},
+        "infer": {"batch_size": 1024, "save_full_map": True},
         "palette": {"background": [0, 0, 0], "colors": PALETTE},
     }
 

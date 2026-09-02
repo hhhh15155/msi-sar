@@ -21,7 +21,7 @@ eval:
   batch_size: 1024
   save_labeled_maps: true
 infer:
-  batch_size: 512
+  batch_size: 1024
   save_full_map: true
 palette:
   background: [0, 0, 0]
