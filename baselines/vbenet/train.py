@@ -9,6 +9,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from baselines.mghofnet.dataset import split_from_config
 from baselines.mghofnet.io import ensure_dir, load_yaml, save_json, save_yaml
 from models import VBENet
 
@@ -127,8 +128,6 @@ def test_labeled_samples(
     num_classes: int,
 ) -> dict:
     from baselines.mghofnet.metrics import classification_metrics
-
-    from baselines.mghofnet.dataset import split_from_config
 
     model.eval()
     predictions: list[np.ndarray] = []
