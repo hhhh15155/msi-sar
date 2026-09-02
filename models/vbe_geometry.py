@@ -1,6 +1,7 @@
 """Small SPD and grouped-Gaussian primitives for the VBE numerical prototype."""
 
 from dataclasses import dataclass
+from typing import NamedTuple, Optional
 
 import torch
 from torch import Tensor
@@ -14,6 +15,22 @@ class GroupedGaussian:
     mean: Tensor
     covariance: Tensor
     shrinkage: Tensor
+
+
+class Barycenter(NamedTuple):
+    """Mean and covariance of a Bures barycenter."""
+
+    mean: Tensor
+    covariance: Tensor
+
+
+class VBEResult(NamedTuple):
+    """Class energies, modal responsibilities, and fused Gaussian parameters."""
+
+    energy: Tensor
+    responsibility: Tensor
+    fused_mean: Tensor
+    fused_covariance: Tensor
 
 
 def symmetrize(matrix: Tensor) -> Tensor:
@@ -127,14 +144,145 @@ def product_bures_distance_sq(
     return total / (mean_a.shape[-2] * mean_a.shape[-1]) if normalize else total
 
 
+def bures_barycenter(
+    means: Tensor,
+    covariances: Tensor,
+    weights: Tensor,
+    inner_iters: int = 3,
+    eps: float = 1e-4,
+) -> Barycenter:
+    """Compute a weighted grouped-Gaussian Bures barycenter by fixed points."""
+
+    weights = weights / weights.sum(-1, keepdim=True)
+    mean = (weights[..., :, None, None] * means).sum(-3)
+    covariance_weights = weights[..., :, None, None, None]
+    covariance = project_spd((covariance_weights * covariances).sum(-4), eps)
+    for _ in range(inner_iters):
+        root = matrix_sqrt_spd(covariance, eps)
+        invroot = matrix_invsqrt_spd(covariance, eps)
+        transported = matrix_sqrt_spd(
+            root.unsqueeze(-4) @ covariances @ root.unsqueeze(-4), eps
+        )
+        average = (covariance_weights * transported).sum(-4)
+        covariance = project_spd(invroot @ average @ average @ invroot, eps)
+    return Barycenter(mean, covariance)
+
+
+def responsibility_from_distances(
+    distances: Tensor, tau_r: float = 0.3, prior: Optional[Tensor] = None
+) -> Tensor:
+    """Return entropy-regularized modal responsibilities on the simplex."""
+
+    if prior is None:
+        prior = distances.new_full(
+            (distances.shape[-1],), 1 / distances.shape[-1]
+        )
+    return torch.softmax(prior.log() - distances / tau_r, dim=-1)
+
+
+def variational_bures_energy(
+    prototype_mean: Tensor,
+    prototype_covariance: Tensor,
+    modality_mean: Tensor,
+    modality_covariance: Tensor,
+    lambda_proto: float = 1.0,
+    tau_r: float = 0.3,
+    inner_iters: int = 3,
+    outer_updates: int = 1,
+    eps: float = 1e-4,
+    prior: Optional[Tensor] = None,
+) -> VBEResult:
+    """Minimize the class-conditional variational Bures energy approximately."""
+
+    batch, modality_count, groups, group_dim = modality_mean.shape
+    classes = prototype_mean.shape[0]
+    prototype_means = prototype_mean[None].expand(batch, classes, groups, group_dim)
+    prototype_covariances = prototype_covariance[None].expand(
+        batch, classes, groups, group_dim, group_dim
+    )
+    modality_means = modality_mean[:, None].expand(
+        batch, classes, modality_count, groups, group_dim
+    )
+    modality_covariances = modality_covariance[:, None].expand(
+        batch, classes, modality_count, groups, group_dim, group_dim
+    )
+    if prior is None:
+        prior = prototype_mean.new_full((modality_count,), 1 / modality_count)
+    responsibility = prior.expand(batch, classes, modality_count)
+
+    def fuse(current_responsibility: Tensor) -> Barycenter:
+        means = torch.cat((prototype_means.unsqueeze(2), modality_means), dim=2)
+        covariances = torch.cat(
+            (prototype_covariances.unsqueeze(2), modality_covariances), dim=2
+        )
+        weights = torch.cat(
+            (
+                torch.full_like(
+                    current_responsibility[..., :1], lambda_proto
+                ),
+                current_responsibility,
+            ),
+            dim=-1,
+        )
+        return bures_barycenter(means, covariances, weights, inner_iters, eps)
+
+    fused = fuse(responsibility)
+    for _ in range(outer_updates):
+        modality_distance = product_bures_distance_sq(
+            fused.mean.unsqueeze(2),
+            fused.covariance.unsqueeze(2),
+            modality_means,
+            modality_covariances,
+            eps,
+        )
+        responsibility = responsibility_from_distances(
+            modality_distance, tau_r, prior
+        )
+        fused = fuse(responsibility)
+
+    prototype_distance = product_bures_distance_sq(
+        fused.mean,
+        fused.covariance,
+        prototype_means,
+        prototype_covariances,
+        eps,
+    )
+    modality_distance = product_bures_distance_sq(
+        fused.mean.unsqueeze(2),
+        fused.covariance.unsqueeze(2),
+        modality_means,
+        modality_covariances,
+        eps,
+    )
+    safe_responsibility = responsibility.clamp_min(
+        torch.finfo(responsibility.dtype).tiny
+    )
+    safe_prior = prior.clamp_min(torch.finfo(prior.dtype).tiny)
+    kl = (
+        responsibility
+        * (safe_responsibility.log() - safe_prior.log())
+    ).sum(-1)
+    energy = (
+        lambda_proto * prototype_distance
+        + (responsibility * modality_distance).sum(-1)
+        + tau_r * kl
+    )
+    return VBEResult(energy, responsibility, fused.mean, fused.covariance)
+
+
 __all__ = [
     "GroupedGaussian",
+    "Barycenter",
+    "VBEResult",
+    "bures_barycenter",
     "estimate_grouped_gaussian",
     "gaussian_bures_distance_sq",
     "matrix_invsqrt_spd",
     "matrix_sqrt_spd",
     "product_bures_distance_sq",
     "project_spd",
+    "responsibility_from_distances",
     "spd_from_raw_tril",
     "symmetrize",
+    "variational_bures_energy",
 ]
