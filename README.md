@@ -148,6 +148,18 @@ python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs50.yam
 python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs100.yaml
 ```
 
+VBE-Net uses the same split, optimizer, epoch, seed, batch-size, evaluation,
+and output-directory protocol. Generate its checked-in configuration grid and
+run one setting with:
+
+```bash
+python scripts/generate_vbenet_configs.py
+python scripts/train_eval_vbenet.py --config configs/vbenet_yrd_fs20.yaml
+```
+
+It is also included in `scripts/experiment_grid.py`, so the existing
+`run_all_experiments.sh` and GRSS07 launchers schedule it automatically.
+
 Few-shot settings:
 
 ```text

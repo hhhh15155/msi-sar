@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs_fewshot"
 OUT = ROOT / "experiment_logs"
-MODELS = ("dfinet", "frekfuse", "mghofnet", "softformer")
+MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "vbenet")
 DATASETS = ("yrd", "yrd2509new", "grss07")
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 

@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-models = ["dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer"]
+models = ["dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "vbenet"]
 shots = [5, 10, 20, 50, 100, 150, 200]
 
 for model in models:

@@ -16,10 +16,10 @@ class ExperimentGridTests(unittest.TestCase):
     def test_grid_contains_the_three_selected_datasets(self) -> None:
         experiments = list(iter_experiments())
 
-        self.assertEqual(MODELS, ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer"))
+        self.assertEqual(MODELS, ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "vbenet"))
         self.assertEqual(DATASETS, ("yrd", "yrd2509new", "grss07"))
         self.assertEqual(SHOTS, (5, 10, 20, 50, 100, 150, 200))
-        self.assertEqual(len(experiments), 105)
+        self.assertEqual(len(experiments), 126)
         self.assertNotIn("yrd2509", {experiment.dataset for experiment in experiments})
         self.assertNotIn("yrd2509_landuse_9c", {experiment.dataset for experiment in experiments})
 
@@ -40,7 +40,7 @@ class ExperimentGridTests(unittest.TestCase):
     def test_grid_can_select_grss07_explicitly(self) -> None:
         experiments = list(iter_experiments(("grss07",)))
 
-        self.assertEqual(len(experiments), 35)
+        self.assertEqual(len(experiments), 42)
         self.assertEqual({experiment.dataset for experiment in experiments}, {"grss07"})
         self.assertEqual(DATASETS, ("yrd", "yrd2509new", "grss07"))
 
@@ -57,6 +57,7 @@ class ExperimentGridTests(unittest.TestCase):
             "mghofnet": ("hsi_channels", "aux_channels"),
             "msfmamba": ("ms_channels", "sar_channels"),
             "softformer": ("hsi_channels", "aux_channels"),
+            "vbenet": ("ms_channels", "sar_channels"),
         }
         for experiment in iter_experiments():
             if experiment.dataset != "yrd2509new":

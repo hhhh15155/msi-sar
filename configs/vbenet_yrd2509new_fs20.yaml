@@ -1,0 +1,90 @@
+model: vbenet
+dataset: yrd2509new
+dataset_config: configs/datasets/yrd2509new.yaml
+output_root: runs_fewshot/fs20
+device: cuda:0
+patch_size: 11
+pad_mode: constant
+split:
+  method: fixed_train_counts
+  train_count_per_class: 20
+batch_size: 128
+test_batch_size: 1024
+epochs: 200
+num_runs: 5
+seeds:
+- 202201
+- 202202
+- 202203
+- 202204
+- 202205
+data_aug: true
+learning_rate: 0.001
+weight_decay: 0.01
+eta_min: 1.0e-06
+eval:
+  enabled: true
+  run_index: best
+  batch_size: 1024
+  save_labeled_maps: true
+infer:
+  batch_size: 512
+  save_full_map: true
+palette:
+  background:
+  - 0
+  - 0
+  - 0
+  colors:
+  - - 31
+    - 120
+    - 180
+  - - 78
+    - 205
+    - 196
+  - - 51
+    - 160
+    - 44
+  - - 246
+    - 204
+    - 92
+  - - 8
+    - 81
+    - 156
+  - - 227
+    - 26
+    - 28
+  - - 106
+    - 61
+    - 154
+  - - 255
+    - 127
+    - 0
+  - - 0
+    - 109
+    - 44
+  - - 166
+    - 206
+    - 227
+  - - 178
+    - 223
+    - 138
+  - - 251
+    - 154
+    - 153
+  - - 80
+    - 80
+    - 80
+ms_channels: 10
+sar_channels: 4
+width: 64
+encoder_depth: 5
+groups: 8
+expansion: 4
+lambda_proto: 1.0
+tau_r: 0.3
+tau_c: 0.1
+inner_iters: 3
+outer_updates: 1
+modality_dropout: 0.1
+geometry_eps: 0.0001

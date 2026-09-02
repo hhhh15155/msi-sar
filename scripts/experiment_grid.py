@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Iterator
 
 
-MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
+MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "vbenet")
 DATASETS = ("yrd", "yrd2509new", "grss07")
 AVAILABLE_DATASETS = DATASETS
 SHOTS = (5, 10, 20, 50, 100, 150, 200)

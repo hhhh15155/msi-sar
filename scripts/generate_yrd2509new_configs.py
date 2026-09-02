@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIGS = ROOT / "configs"
-MODELS = ("dfinet", "frekfuse", "mghofnet", "softformer")
+MODELS = ("dfinet", "frekfuse", "mghofnet", "softformer", "vbenet")
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 
 
