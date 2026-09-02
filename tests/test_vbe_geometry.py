@@ -9,9 +9,24 @@ from models.vbe_geometry import (
     matrix_invsqrt_spd,
     matrix_sqrt_spd,
     product_bures_distance_sq,
+    project_spd,
     responsibility_from_distances,
     variational_bures_energy,
 )
+
+
+class SpectralGradientRegressionTests(unittest.TestCase):
+    def test_isotropic_spd_spectral_maps_have_finite_gradient(self) -> None:
+        covariance = (2.0 * torch.eye(4)).requires_grad_()
+
+        mapped = (
+            project_spd(covariance)
+            + matrix_sqrt_spd(covariance)
+            + matrix_invsqrt_spd(covariance)
+        ).square().sum()
+        gradient, = torch.autograd.grad(mapped, covariance)
+
+        self.assertTrue(torch.isfinite(gradient).all())
 
 
 def _make_spd(shape, dtype, *, offset=0.5):

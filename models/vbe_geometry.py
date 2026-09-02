@@ -39,28 +39,57 @@ def symmetrize(matrix: Tensor) -> Tensor:
     return 0.5 * (matrix + matrix.transpose(-1, -2))
 
 
-def _spectral_map(matrix: Tensor, transform, eps: float) -> Tensor:
-    values, vectors = torch.linalg.eigh(symmetrize(matrix))
-    mapped = transform(values.clamp_min(eps))
-    return symmetrize((vectors * mapped.unsqueeze(-2)) @ vectors.transpose(-1, -2))
+class _StableMatrixSquareRoot(torch.autograd.Function):
+    """SPD square root with a repeated-eigenvalue-safe first derivative."""
+
+    @staticmethod
+    def forward(ctx, matrix: Tensor, eps: float) -> Tensor:
+        values, vectors = torch.linalg.eigh(symmetrize(matrix))
+        root_values = values.clamp_min(eps).sqrt()
+        ctx.save_for_backward(vectors, root_values)
+        root = (vectors * root_values.unsqueeze(-2)) @ vectors.transpose(-1, -2)
+        return symmetrize(root)
+
+    @staticmethod
+    def backward(ctx, gradient: Tensor):
+        vectors, root_values = ctx.saved_tensors
+        gradient = symmetrize(gradient)
+        local_gradient = (
+            vectors.transpose(-1, -2) @ gradient @ vectors
+        )
+        denominator = root_values.unsqueeze(-1) + root_values.unsqueeze(-2)
+        local_gradient = local_gradient / denominator
+        input_gradient = vectors @ local_gradient @ vectors.transpose(-1, -2)
+        return symmetrize(input_gradient), None
 
 
 def project_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
     """Project a symmetric matrix onto the positive-definite cone."""
 
-    return _spectral_map(matrix, lambda value: value, eps)
+    matrix = symmetrize(matrix)
+    with torch.no_grad():
+        minimum = torch.linalg.eigvalsh(matrix).amin(dim=-1)
+        shift = (eps - minimum).clamp_min(0)
+    identity = torch.eye(
+        matrix.shape[-1], dtype=matrix.dtype, device=matrix.device
+    )
+    return symmetrize(matrix + shift[..., None, None] * identity)
 
 
 def matrix_sqrt_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
     """Compute a symmetric positive-definite matrix square root."""
 
-    return _spectral_map(matrix, torch.sqrt, eps)
+    return _StableMatrixSquareRoot.apply(project_spd(matrix, eps), eps)
 
 
 def matrix_invsqrt_spd(matrix: Tensor, eps: float = 1e-4) -> Tensor:
     """Compute a symmetric positive-definite matrix inverse square root."""
 
-    return _spectral_map(matrix, torch.rsqrt, eps)
+    root = matrix_sqrt_spd(matrix, eps)
+    identity = torch.eye(
+        root.shape[-1], dtype=root.dtype, device=root.device
+    ).expand_as(root)
+    return symmetrize(torch.linalg.solve(root, identity))
 
 
 def spd_from_raw_tril(
