@@ -239,11 +239,11 @@ def train_impl(manifest, experiment_id):
     torch.cuda.manual_seed_all(seed)
     torch.set_num_threads(int(manifest.get('cpu_threads_per_worker', 2)))
     torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.deterministic = False
+    torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = True
     device = torch.device('cuda:0')
-    amp = config.get('precision', 'bf16') == 'bf16'
+    amp = config.get('precision', 'fp32') == 'bf16'
     if amp and not torch.cuda.is_bf16_supported():
         raise RuntimeError('Configured BF16 is not supported by this GPU')
     generator = torch.Generator().manual_seed(seed)
@@ -284,7 +284,8 @@ def train_impl(manifest, experiment_id):
                                             'python': sys.version, 'executable': sys.executable,
                                             'torch': torch.__version__, 'cuda': torch.version.cuda,
                                             'gpu': torch.cuda.get_device_name(0), 'precision': config['precision'],
-                                            'tf32': True, 'seed': seed, 'pid': os.getpid()})
+                                            'matmul_tf32': False, 'cudnn_tf32': True,
+                                            'seed': seed, 'pid': os.getpid()})
     torch.cuda.reset_peak_memory_stats()
     started = time.monotonic()
     parameters = sum(p.numel() for p in model.parameters())
@@ -380,6 +381,17 @@ def summarize(manifest):
     return results
 
 
+def external_gpu_processes(allowed_pids):
+    text = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid,used_gpu_memory',
+                                    '--format=csv,noheader,nounits'], text=True)
+    external = []
+    for line in text.strip().splitlines():
+        parts = [part.strip() for part in line.split(',')]
+        if parts and parts[0].isdigit() and int(parts[0]) not in allowed_pids:
+            external.append({'pid': int(parts[0]), 'memory_mib': parts[1] if len(parts) > 1 else None})
+    return external
+
+
 def queue(manifest, manifest_path):
     import fcntl
     root = run_root(manifest)
@@ -412,8 +424,18 @@ def queue(manifest, manifest_path):
             else:
                 pending.append(item)
         active = []
+        last_blockers = None
         while pending or active:
+            blockers = external_gpu_processes({process.pid for _, process, _ in active}) \
+                if manifest.get('wait_for_gpu_idle', True) else []
+            blocker_pids = tuple(item['pid'] for item in blockers)
+            if blocker_pids != last_blockers:
+                if blockers:
+                    print(f'WAIT GPU: other compute processes {blockers}', flush=True)
+                last_blockers = blocker_pids
             while pending and len(active) < int(manifest['workers']):
+                if blockers:
+                    break
                 item = pending.pop(0)
                 folder = root / item['id']
                 folder.mkdir(parents=True, exist_ok=True)
@@ -435,9 +457,11 @@ def queue(manifest, manifest_path):
                     log.close()
                     active.remove((item, process, log))
                     summarize(manifest)
-            state.update({'pid': os.getpid(), 'updated': time.time(), 'phase': 'running', 'variant': variant})
+            state.update({'pid': os.getpid(), 'updated': time.time(),
+                          'phase': 'waiting_gpu' if blockers and not active else 'running',
+                          'gpu_blockers': blockers, 'variant': variant})
             atomic_json(state_path, state)
-            if active:
+            if active or pending:
                 time.sleep(5)
     summarize(manifest)
     state.update({'phase': 'finished', 'updated': time.time()})
@@ -459,16 +483,26 @@ def launch(manifest, manifest_path):
             raise RuntimeError(f'Queue already running: {old}')
     log_dir = ROOT / manifest['log_root']
     log_dir.mkdir(parents=True, exist_ok=True)
-    with (log_dir / 'queue.log').open('a', encoding='utf-8') as log:
-        process = subprocess.Popen([sys.executable, '-u', str(Path(__file__).resolve()), '--manifest',
-                                    str(manifest_path), 'queue'], cwd=ROOT, stdin=subprocess.DEVNULL,
-                                   stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
-                                   env={**os.environ, 'CUDA_VISIBLE_DEVICES': '0', 'OMP_NUM_THREADS': '2',
-                                        'MKL_NUM_THREADS': '2', 'PYTHONUNBUFFERED': '1'})
-    time.sleep(2)
-    if process.poll() is not None:
-        raise RuntimeError(f'Queue exited immediately; inspect {log_dir / "queue.log"}')
-    print(json.dumps({'pid': process.pid, 'log': str(log_dir / 'queue.log'), 'output': str(root)}, indent=2))
+    session = manifest['screen_session']
+    existing = subprocess.run(['screen', '-ls', session], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    if existing.returncode == 0:
+        raise RuntimeError(f'screen session already exists: {session}')
+    # Positional arguments avoid interpolation of paths into shell source.
+    subprocess.run(['screen', '-dmS', session, 'bash', '-c', 'exec "$@" >>"$MAIN_QUEUE_LOG" 2>&1',
+                    'main-queue', sys.executable, '-u', str(Path(__file__).resolve()), '--manifest',
+                    str(manifest_path), 'queue'], cwd=ROOT, check=True,
+                   env={**os.environ, 'CUDA_VISIBLE_DEVICES': '0', 'OMP_NUM_THREADS': '2',
+                        'MKL_NUM_THREADS': '2', 'PYTHONUNBUFFERED': '1', 'MAIN_QUEUE_LOG': str(log_dir / 'queue.log')})
+    for _ in range(20):
+        time.sleep(0.5)
+        if pid_path.exists():
+            info = read_json(pid_path)
+            command = Path(f'/proc/{info["pid"]}/cmdline')
+            if command.exists() and b'main_experiment.py' in command.read_bytes():
+                print(json.dumps({'screen_session': session, 'pid': info['pid'],
+                                  'log': str(log_dir / 'queue.log'), 'output': str(root)}, indent=2))
+                return
+    raise RuntimeError(f'Queue not confirmed; inspect screen -ls and {log_dir / "queue.log"}')
 
 
 def main():

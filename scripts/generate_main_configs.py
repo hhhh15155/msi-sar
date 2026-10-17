@@ -20,7 +20,7 @@ def main():
             config = {'variant': variant, 'dataset': dataset, 'dataset_config': f'configs/datasets/{dataset}.yaml',
                       'ms_channels': data['ms_channels'], 'sar_channels': data['sar_channels'],
                       'seed': 202201, 'num_runs': 1, 'patch_size': 11, 'epochs': 200, 'batch_size': 128,
-                      'test_batch_size': 512, 'precision': 'bf16', 'learning_rate': 0.0005, 'weight_decay': 0.0001,
+                      'test_batch_size': 128, 'precision': 'fp32', 'learning_rate': 0.0005, 'weight_decay': 0.0001,
                       'embed_dim': 192 if variant == 'v6_current' else 128,
                       'num_heads': 6 if variant == 'v6_current' else 4,
                       'dropout': 0.1, 'pretrained': False,
@@ -34,6 +34,7 @@ def main():
             jobs.append({'id': name, 'variant': variant, 'dataset': dataset,
                          'config': path.relative_to(root).as_posix()})
     manifest = {'name': 'main_first_pass_20261017', 'seed': 202201, 'workers': 2,
+                'screen_session': 'msi_cls_main_20261017', 'wait_for_gpu_idle': True,
                 'cpu_threads_per_worker': 2, 'output_root': 'runs/main_first_pass_20261017',
                 'log_root': 'experiment_logs/main_first_pass_20261017', 'datasets': datasets,
                 'experiments': jobs}

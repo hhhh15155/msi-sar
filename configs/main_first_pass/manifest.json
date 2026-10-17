@@ -2,6 +2,8 @@
   "name": "main_first_pass_20261017",
   "seed": 202201,
   "workers": 2,
+  "screen_session": "msi_cls_main_20261017",
+  "wait_for_gpu_idle": true,
   "cpu_threads_per_worker": 2,
   "output_root": "runs/main_first_pass_20261017",
   "log_root": "experiment_logs/main_first_pass_20261017",

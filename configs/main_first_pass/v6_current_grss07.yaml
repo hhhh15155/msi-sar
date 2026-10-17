@@ -8,8 +8,8 @@ num_runs: 1
 patch_size: 11
 epochs: 200
 batch_size: 128
-test_batch_size: 512
-precision: bf16
+test_batch_size: 128
+precision: fp32
 learning_rate: 0.0005
 weight_decay: 0.0001
 embed_dim: 192

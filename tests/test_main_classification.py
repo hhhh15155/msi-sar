@@ -92,6 +92,13 @@ class MainClassificationTests(unittest.TestCase):
                 with self.assertRaises(BlockingIOError):
                     engine.train(manifest, 'already_running')
 
+    def test_gpu_admission_distinguishes_external_and_own_workers(self):
+        from unittest.mock import patch
+        from scripts import main_experiment as engine
+        with patch.object(engine.subprocess, 'check_output', return_value='123, 12000\n456, 3000\n'):
+            self.assertEqual(engine.external_gpu_processes({456}), [{'pid': 123, 'memory_mib': '12000'}])
+            self.assertEqual(engine.external_gpu_processes({123, 456}), [])
+
     def test_shared_dual_encoders_and_head_have_identical_initial_weights(self):
         reference = None
         for mode in ('concat', 'fcm_ffm', 'mafi', 'fuzzy'):
