@@ -2,6 +2,14 @@
 
 当前数据为 [yrd2509new.yaml](../../configs/datasets/yrd2509new.yaml)：14 通道（MSI 10＋SAR 4）、9 类。不要与历史 12 通道 `yrd2509`／land-use 版本混用。数据和标签生成过程需要结合来源元数据及数据处理脚本追踪，本轮没有重建。
 
+## 主实验设置（2026-10-17 用户确定）
+
+默认以 **每类 50 个训练样本** 为主实验，9 类共 **450** 个训练像元，配置为 `configs/<model>_yrd2509new_fs50.yaml`。其他 shot 档位保留作样本量对照。
+
+各类按种子随机抽样，其余有标注像元用于测试，没有独立验证集。正式实验沿用现有配置的 5 个种子 `202201..202205`，报告均值与标准差。Fuzzy Transformer 对应 [50-shot 配置](../../configs/fuzzy_transformer_yrd2509new_fs50.yaml)。
+
+这里确定的是主实验选择，没有修改专项脚本的默认 shots。运行时显式传入 `--shots 50` 或选择上述 YAML，避免启动全部档位；完整协议与已有比较限制见 [实验说明](README.md)。
+
 ## 当前入口
 
 [train_eval_yrd2509new_fewshot.py](../../scripts/train_eval_yrd2509new_fewshot.py) 默认依次运行 DFI-Net、FreKFuse、MGHOFNet、MSFMamba 和 SoftFormer；Fuzzy Transformer 已支持，但默认不启用。

@@ -2,6 +2,20 @@
 
 以下按当前脚本与配置整理。本轮只改文档，没有安装依赖、加载模型、训练、评估或重新计算 OA。运行条件尚未在 server110 完整验证。
 
+## 已确定的主实验设置
+
+用户于 2026-10-17 确定：**YRD、YRD2509NEW 默认以每类 50 个训练样本为主实验；GRSS07 以现有 custom 配置为主实验。** 这不是每个数据集总共 50 个样本。
+
+| 数据集 | 主实验每类训练数量 | 训练总量 | 配置命名 | 专项说明 |
+| --- | --- | --- | --- | --- |
+| `yrd` | `[50,50,50,50,50,50,50,50]` | 400 | `configs/<model>_yrd_fs50.yaml` | [YRD](yrd.md) |
+| `yrd2509new` | 9 类各 50 个 | 450 | `configs/<model>_yrd2509new_fs50.yaml` | [YRD2509NEW](yrd2509new.md) |
+| `grss07` | `[674,1481,752,45,30]` | 2982 | `configs/<model>_grss07_custom.yaml` | [GRSS07](grss07.md) |
+
+GRSS07 计数按 City Center、Residential Areas、Sparse Buildings、Water、Vegetation 排列。用户反馈已核对其他论文采用该计数；具体来源状态见 [GRSS07 文献依据说明](grss07.md)。
+
+现有配置采用 5 个种子 `202201..202205`，正式汇报全部种子的均值与标准差。其他 shot 档位保留作样本量对照，不作为默认主实验。本文档更新没有改变 YAML、训练代码或调度器的默认网格；实际运行须显式选择上述配置，不能直接无筛选地启动全网格。
+
 ## 单个实验
 
 在项目根目录执行，将模型名、数据标识和 shot 设为实际配置对应值。例如：
@@ -19,7 +33,7 @@ python scripts/infer_fuzzy_transformer.py --run runs_fewshot/fs50/fuzzy_transfor
 ## 当前划分与训练规则
 
 - 当前默认数据网格：`yrd`、`yrd2509new`、`grss07`。默认五个比较方法为 DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer；Fuzzy Transformer 需显式选择。
-- 每类训练数量：`5, 10, 20, 50, 100, 150, 200`。`fixed_train_counts` 从每类按种子抽样，其余有标注像元为测试集，没有验证集；不是 episodic few-shot。
+- 可用 uniform-shot 档位：`5, 10, 20, 50, 100, 150, 200`；其中 YRD、YRD2509NEW 以 50-shot 为主实验，GRSS07 以 custom 为主实验。`fixed_train_counts` 从每类按种子抽样，其余有标注像元为测试集，没有验证集；不是 episodic few-shot。
 - 当前示例采用 200 epochs、5 个种子 `202201..202205`。这些是配置值，不是入口对任意配置的统一强制条件。
 - 对已查看的基线训练路径，训练循环不逐 epoch 评估测试集，结束后测试最终权重。旧基线仍把该最终状态命名为 `model_best.pth`；Fuzzy Transformer 明确命名为 `model_last.pth`。不能由文件名推断存在验证集最优选模。
 - 多数既有基线配置的训练 batch 为 128、最终测试／评估为 1024；Fuzzy Transformer 示例相应值为 128。推理另读 `infer.batch_size`，运行前应看具体 YAML。
