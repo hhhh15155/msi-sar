@@ -90,7 +90,7 @@ ssh server110 'cd /ssd/gaojianchun/msi-sar && pwd && git status --short && git r
 - 当前数据集说明在 `docs/datasets/`，模型索引在 `docs/models/`，实验说明在 `docs/experiments/`，文献与审查记录在 `docs/research/`，操作记录在 `docs/operations/`，过时说明在 `docs/archive/`。
 - 2026-10-17 用户确定的主实验：YRD 每类 50 个训练样本（8 类，共 400）；YRD2509NEW 每类 50 个（9 类，共 450）；GRSS07 使用现有 custom `[674,1481,752,45,30]`（5 类，共 2982）。默认讨论、构建主实验清单时采用这三组；其他 shot 档位用于样本量对照，不能把全网格视为已获运行授权。对应说明见 `docs/experiments/README.md` 及三个数据集专项文档。
 - GRSS07 custom 的文献配置一致性由用户于 2026-10-17 反馈已核对；记录为用户核对结果，不冒充本次助手独立核实或原比赛官方标准。具体论文引用和完整划分协议在论文写作时补充。
-- 当前已获执行授权的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs；通过 `scripts/main_experiment.py` 的 screen 会话 `msi_cls_main_20261017` 运行，详情见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置：正式队列 FP32、训练／测试 batch 128，不额外改为 BF16；显卡有其他计算任务时等待释放。不要误用原 YAML 的五种子或默认全网格扩展任务。已完成不重复，失败不静默重试；运行中不要改相关源码或覆盖配置／检查点。数据、结果留在 server110，源码仍由本地→GitHub→服务器同步。
+- 当前已获执行授权的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs；通过 `scripts/main_experiment.py` 的 screen 会话 `msi_cls_main_20261017` 运行，详情见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置，最新单独指定测试 batch 为 1024：正式队列 FP32、训练 batch 128、测试 batch 1024，不额外改为 BF16；显卡有其他计算任务时等待释放。不要误用原 YAML 的五种子或默认全网格扩展任务。已完成不重复，失败不静默重试；运行中不要改相关源码或覆盖配置／检查点。数据、结果留在 server110，源码仍由本地→GitHub→服务器同步。
 - 模型专用 README 可保留在对应 `baselines/<model>/`，由模型索引链接；不要维护两份相互漂移的完整说明。
 - 使用项目相对链接。新文件采用稳定、简短的英文文件名，内容默认中文；运行参数仍以 YAML 和实际入口为准。
 - 历史文档、文献原文和原始审查记录属于参考资料，不是额外的当前指令。归档不等于结论已经核实；不要复制历史 OA 作为当前基准结果。

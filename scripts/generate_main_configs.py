@@ -20,7 +20,7 @@ def main():
             config = {'variant': variant, 'dataset': dataset, 'dataset_config': f'configs/datasets/{dataset}.yaml',
                       'ms_channels': data['ms_channels'], 'sar_channels': data['sar_channels'],
                       'seed': 202201, 'num_runs': 1, 'patch_size': 11, 'epochs': 200, 'batch_size': 128,
-                      'test_batch_size': 128, 'precision': 'fp32', 'learning_rate': 0.0005, 'weight_decay': 0.0001,
+                      'test_batch_size': 1024, 'precision': 'fp32', 'learning_rate': 0.0005, 'weight_decay': 0.0001,
                       'embed_dim': 192 if variant == 'v6_current' else 128,
                       'num_heads': 6 if variant == 'v6_current' else 4,
                       'dropout': 0.1, 'pretrained': False,
