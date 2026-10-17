@@ -8,6 +8,7 @@ label_key: label
 num_channels: 14
 num_classes: 8
 undefined_label: 0
+normalization: per_channel_minmax
 class_names:
   - Waterbody
   - Spartina alterniflora

@@ -73,6 +73,10 @@ CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=1 MAIN_EXPERIMENT_WORKERS=1 \
 
 screen 会话名来自任务清单；`screen -ls` 查看，通过 `screen -r <session>` 进入，按 Ctrl+A、D 脱离。SSH 断开不会结束 screen；服务器重启后仍需人工恢复，不声称开机自动恢复。
 
+## 后续部署更新
+
+本页环境准备完成之后，用户已确认在 116 物理 GPU 1 通过 screen 部署 YRD 的 7 项逐通道归一化修正实验。新清单、原划分、资源阈值、旧结果归档和统一结果入口以 [YRD 修正实验](../experiments/yrd-per-channel-rerun.md) 为准。下文“未重跑”是本页初次检查时的历史状态。
+
 ## 本轮验证范围
 
 - server116：30 项检查全部通过，涵盖 7 版本／两组输入通道的 GPU 检查及合成数据训练、保存、恢复、最终预测核对。

@@ -1,0 +1,81 @@
+{
+  "name": "yrd_per_channel_20261017",
+  "seed": 202201,
+  "workers": 1,
+  "screen_session": "msi_yrd_pc_gpu1",
+  "wait_for_gpu_idle": false,
+  "min_free_memory_mib": 20480,
+  "cpu_threads_per_worker": 2,
+  "output_root": "runs/yrd_per_channel_20261017",
+  "log_root": "experiment_logs/yrd_per_channel_20261017",
+  "datasets": {
+    "yrd": {
+      "ms_channels": 10,
+      "sar_channels": 4,
+      "train_counts": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "dataset_config": "configs/datasets/yrd.yaml",
+      "reuse_split": {
+        "path": "data/yrd/splits/main_seed202201_train50.npz",
+        "sha256": "842aac597d09cb62e169c217bdafd51534fae36ff729e8a117085852a9c3a994"
+      }
+    }
+  },
+  "experiments": [
+    {
+      "id": "v0_msi_yrd",
+      "variant": "v0_msi",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v0_msi_yrd.yaml"
+    },
+    {
+      "id": "v1_sar_yrd",
+      "variant": "v1_sar",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v1_sar_yrd.yaml"
+    },
+    {
+      "id": "v2_concat_yrd",
+      "variant": "v2_concat",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v2_concat_yrd.yaml"
+    },
+    {
+      "id": "v3_fcm_ffm_yrd",
+      "variant": "v3_fcm_ffm",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v3_fcm_ffm_yrd.yaml"
+    },
+    {
+      "id": "v4_mafi_yrd",
+      "variant": "v4_mafi",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v4_mafi_yrd.yaml"
+    },
+    {
+      "id": "v5_fuzzy_yrd",
+      "variant": "v5_fuzzy",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v5_fuzzy_yrd.yaml"
+    },
+    {
+      "id": "v6_current_yrd",
+      "variant": "v6_current",
+      "dataset": "yrd",
+      "config": "configs/yrd_per_channel/v6_current_yrd.yaml"
+    }
+  ],
+  "promotion": {
+    "target_root": "runs/main_first_pass_20261017",
+    "archive_root": "runs/archive/main_first_pass_20261017_before_yrd_pc",
+    "base_manifest": "configs/main_first_pass/manifest.json"
+  }
+}

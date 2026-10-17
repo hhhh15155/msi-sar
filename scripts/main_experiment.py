@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import random
+import shutil
 import socket
 import subprocess
 import sys
@@ -59,8 +60,11 @@ def read_json(path):
 
 def read_manifest(path):
     manifest = read_json(path)
-    if len(manifest['experiments']) != 21 or len({x['id'] for x in manifest['experiments']}) != 21:
-        raise ValueError('Expected exactly 21 distinct experiments')
+    expected = {(variant, dataset) for variant in VARIANTS for dataset in manifest['datasets']}
+    jobs = manifest['experiments']
+    actual = {(job['variant'], job['dataset']) for job in jobs}
+    if not expected or len(jobs) != len(expected) or actual != expected or len({job['id'] for job in jobs}) != len(jobs):
+        raise ValueError('Expected one distinct experiment per variant and selected dataset')
     return manifest
 
 
@@ -83,15 +87,23 @@ def prepare(manifest):
     for dataset in manifest['datasets']:
         target = output / 'prepared' / dataset
         metadata_path = target / 'metadata.json'
-        data_config = yaml.safe_load((ROOT / f'configs/datasets/{dataset}.yaml').read_text(encoding='utf-8'))
+        specification = manifest['datasets'][dataset]
+        data_config_path = ROOT / specification.get('dataset_config', f'configs/datasets/{dataset}.yaml')
+        data_config = yaml.safe_load(data_config_path.read_text(encoding='utf-8'))
         files = [ROOT / data_config['path'] / data_config.get(key, default)
                  for key, default in (('data_file', 'data.mat'), ('label_file', 'label.mat'))]
         hashes = {str(path.relative_to(ROOT)): digest(path) for path in files}
         counts = manifest['datasets'][dataset]['train_counts']
-        fingerprint = {'data_sha256': hashes, 'dataset_config_sha256': digest(ROOT / f'configs/datasets/{dataset}.yaml'),
+        fingerprint = {'data_sha256': hashes, 'dataset_config_sha256': digest(data_config_path),
                        'reader_sha256': digest(ROOT / 'baselines/dfinet/dataset.py'),
                        'splitter_sha256': digest(ROOT / 'baselines/split.py'),
                        'seed': manifest['seed'], 'train_counts': counts}
+        reuse = specification.get('reuse_split')
+        if reuse:
+            reference_split = ROOT / reuse['path']
+            if digest(reference_split) != reuse['sha256']:
+                raise ValueError(f'{dataset}: reference split SHA256 mismatch')
+            fingerprint['reference_split_sha256'] = reuse['sha256']
         if metadata_path.exists():
             old = read_json(metadata_path)
             if old['fingerprint'] != fingerprint:
@@ -106,13 +118,20 @@ def prepare(manifest):
         image, gt, names = load_dataset(data_config)
         if not np.isfinite(image).all() or len(names) != len(counts):
             raise ValueError(f'{dataset}: nonfinite image or mismatched classes')
-        train_gt, test_gt = split_from_config(gt, {'split': {'method': 'fixed_train_counts', 'train_counts': counts}},
-                                             manifest['seed'])
-        train, test = np.flatnonzero(train_gt.reshape(-1) >= 0), np.flatnonzero(test_gt.reshape(-1) >= 0)
+        if reuse:
+            with np.load(reference_split) as split:
+                train, test = split['train_indices'], split['test_indices']
+        else:
+            train_gt, test_gt = split_from_config(gt, {'split': {'method': 'fixed_train_counts', 'train_counts': counts}},
+                                                 manifest['seed'])
+            train, test = np.flatnonzero(train_gt.reshape(-1) >= 0), np.flatnonzero(test_gt.reshape(-1) >= 0)
         validate_split(gt, train, test, counts)
         np.save(target / 'image.npy', image)
         np.save(target / 'gt.npy', gt)
-        np.savez_compressed(target / 'split.npz', train_indices=train, test_indices=test)
+        if reuse:
+            shutil.copyfile(reference_split, target / 'split.npz')
+        else:
+            np.savez_compressed(target / 'split.npz', train_indices=train, test_indices=test)
         atomic_json(metadata_path, {'fingerprint': fingerprint, 'shape': list(image.shape), 'class_names': names,
                                    'normalization': data_config.get('normalization', 'global_minmax_center'),
                                    'normalization_scope': 'whole_image_unlabeled', 'padding': 'reflect',
@@ -418,6 +437,12 @@ def external_gpu_processes(allowed_pids):
     return external
 
 
+def available_gpu_memory_mib():
+    value = subprocess.check_output(['nvidia-smi', '--id=' + selected_gpu(),
+                                     '--query-gpu=memory.free', '--format=csv,noheader,nounits'], text=True)
+    return int(value.strip())
+
+
 def queue(manifest, manifest_path):
     import fcntl
     root = run_root(manifest)
@@ -456,7 +481,12 @@ def queue(manifest, manifest_path):
         while pending or active:
             blockers = external_gpu_processes({process.pid for _, process, _ in active}) \
                 if manifest.get('wait_for_gpu_idle', True) else []
-            blocker_pids = tuple(item['pid'] for item in blockers)
+            if pending and len(active) < workers and manifest.get('min_free_memory_mib'):
+                free = available_gpu_memory_mib()
+                if free < int(manifest['min_free_memory_mib']):
+                    blockers.append({'reason': 'insufficient_free_memory', 'free_mib': free,
+                                     'required_mib': int(manifest['min_free_memory_mib'])})
+            blocker_pids = tuple(str(item) for item in blockers)
             if blocker_pids != last_blockers:
                 if blockers:
                     print(f'WAIT GPU: other compute processes {blockers}', flush=True)
@@ -493,7 +523,19 @@ def queue(manifest, manifest_path):
             if active or pending:
                 time.sleep(5)
     summarize(manifest)
-    state.update({'phase': 'finished', 'updated': time.time()})
+    complete = all(state['experiments'].get(job['id'], {}).get('status') == 'completed'
+                   for job in manifest['experiments'])
+    if complete and manifest.get('promotion'):
+        state.update({'phase': 'publishing', 'updated': time.time()})
+        atomic_json(state_path, state)
+        try:
+            from scripts.promote_yrd_results import promote_results
+            state['promotion'] = promote_results(manifest)
+        except Exception as error:
+            state.update({'phase': 'publication_failed', 'error': repr(error), 'updated': time.time()})
+            atomic_json(state_path, state)
+            raise
+    state.update({'phase': 'finished' if complete else 'finished_with_errors', 'updated': time.time()})
     atomic_json(state_path, state)
     print('QUEUE FINISHED', flush=True)
 

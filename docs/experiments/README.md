@@ -1,6 +1,6 @@
 # 实验入口、协议与结果解释
 
-以下按当前脚本与配置整理。本轮只改文档，没有安装依赖、加载模型、训练、评估或重新计算 OA。运行条件尚未在 server110 完整验证。
+以下包含历史包装协议与当前主实验入口。第一轮 21 项已在 server110 完成；YRD 归一化修正后的 7 项按 [修正实验与 server116 部署](yrd-per-channel-rerun.md) 执行，不能将旧 YRD 与新结果混用。
 
 ## 已确定的主实验设置
 
@@ -87,7 +87,7 @@ MODELS_FILTER=fuzzy_transformer GPU_ID=0 bash scripts/run_grss07_custom_experime
 
 ## 已确认的比较限制
 
-1. **预处理不完全一致。** YRD 的共享读取器默认全局 min-max＋通道中心化，MGHOFNet／SoftFormer 独立读取器逐通道 min-max；边界 `reflect` 与 `constant` 也有差异。详见 [数据集说明](../datasets/README.md)。本轮记录差异，没有改变数据或重新跑分。
+1. **历史预处理不完全一致。** 旧 YRD 的共享读取器采用全局 min-max＋通道中心化，MGHOFNet／SoftFormer 独立读取器逐通道 min-max；边界也有差异。当前 YRD 已明确逐通道 min-max，7 项修正实验统一采用 reflect 并复用原划分，详见 [修正实验](yrd-per-channel-rerun.md)。其他旧入口仍须分别核对。
 2. **不是空间留区评估。** 固定数量随机像元划分可能使训练与测试 patch 的空间邻域重叠；与跨区域、跨时相或空间隔离结果不能直接比较。
 3. **整图统计不等于训练集拟合。** 当前归一化在划分前利用全图影像统计，未使用测试标签拟合，但仍不同于严格仅在训练数据上拟合预处理的设置。
 4. **最佳种子绘图不等于总体精度。** 例如 FreKFuse 的旧包装在 `eval.run_index: best` 时按测试 OA 选择标注图使用的 run；MGHOFNet 旧说明也描述这种选择。Fuzzy Transformer 使用固定整数 run。报告均值、标准差和全部种子，不把旧包装选出的最佳 OA 当成总体表现。

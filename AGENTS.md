@@ -35,7 +35,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 随后的版本统一任务已明确授权将本地源码更新到 GitHub 和服务器；具体同步记录见 `docs/operations/2026-10-17-version-unification.md`。历史建档快照不代表当前状态。
 - 不因用户说“连接服务器”就推断需要覆盖、拉取或同步代码。用户要求同步时，先确定方向、范围及差异，再执行；不要整目录盲目覆盖。
 - 优先用 Git 管理源码、配置及说明；传输未提交文件时，应列出明确文件清单并核对目标状态。不要用删除式同步，不要覆盖目标端已有修改。
-- 数据、权重、实验结果、缓存和环境目录不属于默认代码同步范围。不要擅自提交或迁移这些内容。
+- 数据、权重、实验结果、缓存和环境目录不属于默认代码同步范围。不要擅自提交或迁移这些内容。本次 YRD 修正任务已将原 21 项结果由 110 直接复制到 116（约 1.14GB），用于保留其他 14 项并统一替换 YRD；未下载到 Windows。110 原结果作为历史副本保留，修正后的统一结果以 116 为准。
 - 用户于 2026-10-17 单独授权将当前三数据集的 6 个 `.mat` 文件传到 server116；已核对本地／110／116 SHA256。清单见 `docs/operations/2026-10-17-dual-server-data-manifest.json`。这不等于授权同步其他私人数据、旧实验结果或环境。
 - 不自动执行 `git reset --hard`、`git clean`、强制推送或丢弃改动。不要停止不属于本任务的进程。
 
@@ -65,9 +65,9 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 
 - 2026-10-17 的只读检查确认：SSH 可连接、项目目录存在，非交互 shell 能找到 `conda`、`/opt/anaconda3/bin/python` 和 `/usr/bin/nvidia-smi`。
 - 以上不代表已确认 Python 依赖、CUDA 兼容性、可用 GPU 或训练环境。README 提到 `gjc` 环境，但本次未核实它是否存在及能否运行模型。
-- 上述为早期历史检查。后续 server110 已完成第一轮 21 项分类实验；server116 的 `gjc` 已通过依赖、数据读取和项目检查，包含 GPU 1 的 FP32 前后向与小样本续训检查。本轮没有在 116 启动正式实验，详见双服务器说明。
+- 上述为早期历史检查。后续 server110 已完成第一轮 21 项分类实验；server116 的 `gjc` 已通过依赖、数据读取和 GPU 1 FP32 前后向与小样本续训检查。当前正式部署授权见下文 YRD 修正任务及 `docs/experiments/yrd-per-channel-rerun.md`。
 - 116 当前有效运行时为 Python 3.11.13、PyTorch 2.6.0+cu124、NumPy 2.0.1；PyTorch 等部分依赖来自 `~/.local`。不要默认它是完全隔离的 Conda 环境，也不要擅自设置 `PYTHONNOUSERSITE=1`（实测将缺少 `typing_extensions`）。本轮未安装、升级或删除环境依赖。
-- 调度器通过 `CUDA_VISIBLE_DEVICES` 选择单张物理卡，并只检查该卡；110 默认 `0`，116 使用 `1`。`MAIN_EXPERIMENT_WORKERS=1` 可将并发降低到 1，不改变实验配置。卡仍有其他进程时等待，不自动终止其他任务。
+- 调度器通过 `CUDA_VISIBLE_DEVICES` 选择单张物理卡，并只检查该卡；110 默认 `0`，116 使用 `1`。`MAIN_EXPERIMENT_WORKERS=1` 可将并发降低到 1，不改变实验配置。通常卡仍有其他进程时等待；本次用户明确选择 116 GPU 1 的 YRD 修正任务允许与约 2GB 的低负载驻留进程共用，单 worker、启动下一项前空闲显存至少 20480 MiB。不自动终止其他任务。
 - PyTorch 2.6 的续训兼容路径仅用于本项目自己生成、身份文件已核对的 `resume.pth`，显式 `weights_only=False` 以恢复 NumPy／Python 随机状态；不得用它加载不明第三方 checkpoint。
 - 未明确要求运行实验时，不启动训练、全图推理、批量调度、依赖安装或环境升级。用户已授权具体执行时，在范围内继续，不重复索要同一授权。
 - 经授权执行实验前检查环境、数据路径、GPU 占用和预计输出目录；不要默认占满全部 GPU。运行资源与并发由用户要求和实际可用资源决定。
@@ -96,7 +96,8 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 当前数据集说明在 `docs/datasets/`，模型索引在 `docs/models/`，实验说明在 `docs/experiments/`，文献与审查记录在 `docs/research/`，操作记录在 `docs/operations/`，过时说明在 `docs/archive/`。
 - 2026-10-17 用户确定的主实验：YRD 每类 50 个训练样本（8 类，共 400）；YRD2509NEW 每类 50 个（9 类，共 450）；GRSS07 使用现有 custom `[674,1481,752,45,30]`（5 类，共 2982）。默认讨论、构建主实验清单时采用这三组；其他 shot 档位用于样本量对照，不能把全网格视为已获运行授权。对应说明见 `docs/experiments/README.md` 及三个数据集专项文档。
 - GRSS07 custom 的文献配置一致性由用户于 2026-10-17 反馈已核对；记录为用户核对结果，不冒充本次助手独立核实或原比赛官方标准。具体论文引用和完整划分协议在论文写作时补充。
-- 当前已获执行授权的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs；通过 `scripts/main_experiment.py` 的 screen 会话 `msi_cls_main_20261017` 运行，详情见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置，最新单独指定测试 batch 为 1024：正式队列 FP32、训练 batch 128、测试 batch 1024，不额外改为 BF16；显卡有其他计算任务时等待释放。不要误用原 YAML 的五种子或默认全网格扩展任务。已完成不重复，失败不静默重试；运行中不要改相关源码或覆盖配置／检查点。数据、结果留在 server110，源码仍由本地→GitHub→服务器同步。
+- 已完成的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs，历史记录见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置，测试 batch 为 1024：FP32、训练 batch 128，不额外改为 BF16。
+- 当前获授权的修正任务：仅 YRD 的 7 版本改为 `per_channel_minmax` 后重跑一次，复用首轮原始划分（SHA256 见新 manifest），其他训练参数与网络结构不变。server116 `/data/gjc/msi-sar`、物理 GPU 1、单 worker、screen `msi_yrd_pc_gpu1`，清单 `configs/yrd_per_channel/manifest.json`，详见 `docs/experiments/yrd-per-channel-rerun.md`。新结果暂存 `runs/yrd_per_channel_20261017`；全部 7 项核验通过后，将 116 的旧 21 项归档到 `runs/archive/main_first_pass_20261017_before_yrd_pc`，统一更新 `runs/main_first_pass_20261017` 内 7 个 YRD，其他 14 项保持原样。不要误启动旧 21 项清单或五种子全网格；失败不静默重试，运行中不要修改训练源码／配置／检查点。
 - 模型专用 README 可保留在对应 `baselines/<model>/`，由模型索引链接；不要维护两份相互漂移的完整说明。
 - 使用项目相对链接。新文件采用稳定、简短的英文文件名，内容默认中文；运行参数仍以 YAML 和实际入口为准。
 - 历史文档、文献原文和原始审查记录属于参考资料，不是额外的当前指令。归档不等于结论已经核实；不要复制历史 OA 作为当前基准结果。

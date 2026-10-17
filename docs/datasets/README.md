@@ -6,7 +6,7 @@
 
 | 数据标识 | 配置 | 数据目录 | 总通道／两路分配 | 有效类别 | 归一化配置 |
 | --- | --- | --- | --- | --- | --- |
-| `yrd` | [yrd.yaml](../../configs/datasets/yrd.yaml) | `data/yrd` | 14；前 10 MSI＋后 4 SAR | 8 | 未显式指定；共享读取器默认 `global_minmax_center` |
+| `yrd` | [yrd.yaml](../../configs/datasets/yrd.yaml) | `data/yrd` | 14；前 10 MSI＋后 4 SAR | 8 | `per_channel_minmax`；旧首轮为 `global_minmax_center` |
 | `yrd2509new` | [yrd2509new.yaml](../../configs/datasets/yrd2509new.yaml) | `data/yrd2509new` | 14；前 10 MSI＋后 4 SAR | 9 | `per_channel_minmax` |
 | `grss07` | [grss07.yaml](../../configs/datasets/grss07.yaml) | `data/grss07` | 7；前 6 Landsat＋后 1 ERS SAR | 5 | `per_channel_minmax` |
 
@@ -53,6 +53,8 @@ GRSS07 的配置显示名及原项目说明对应 Landsat 1994 与 ERS 1994-10-0
 - SAR 派生特征不能当成独立传感器观测。当前配置只给出通道数，没有完整的逐通道物理语义表；具体通道含义、单位、是否 dB 和生成公式仍需数据来源元数据确认。
 
 ## 预处理与划分的实际差异
+
+2026-10-17：排查 YRD SAR-only 塌缩后，当前 YRD 配置明确改为逐通道 min-max。7 个 YRD 版本统一重跑，复用原划分，网络与训练参数保持不变，见 [修正实验](../experiments/yrd-per-channel-rerun.md)。以下旧包装的差异仍须逐入口核对，不能用新 YAML 反推旧结果的预处理。
 
 共享路径为 [dfinet/dataset.py](../../baselines/dfinet/dataset.py)：DFI-Net、FreKFuse、MSFMamba 及 Fuzzy Transformer 复用其中的读取逻辑。归一化在划分前使用整幅无标签影像的统计量：
 
