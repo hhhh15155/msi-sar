@@ -1,5 +1,7 @@
 # DFI-Net Baseline
 
+Current project navigation: [models](../../docs/models/README.md), [datasets](../../docs/datasets/README.md), and [experiment protocol](../../docs/experiments/README.md). Use the selected YAML for channel counts and patch size. A historical `model_best.pth` filename does not imply validation-based epoch selection.
+
 This folder contains the DFI-Net comparison method used by the MSI-SAR project.
 The original paper code is preserved separately in `vendor/DFI-Net-original/`.
 

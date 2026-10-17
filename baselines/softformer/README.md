@@ -1,5 +1,7 @@
 # SoftFormer Baseline
 
+Current project navigation: [models](../../docs/models/README.md), [datasets](../../docs/datasets/README.md), and [experiment protocol](../../docs/experiments/README.md). The input patch and internal `model_img_size` are different settings; check both in the chosen YAML.
+
 This baseline adapts `rl1024/SoftFormer` for the MSI-SAR baseline workflow.
 The original files are preserved in `vendor/SoftFormer-original/`.
 

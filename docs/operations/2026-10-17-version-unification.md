@@ -18,7 +18,7 @@
 
 新增 `.gitattributes` 为 `*.sh` 指定 LF 换行，避免 Windows 检出后引入不兼容 Linux 的 CRLF；没有对全仓库进行换行重写。
 
-完整文献合并报告仍位于 `D:\edge download\MSI_SAR_2025_2026_论文与源码调研_合并交接版.md`，不属于此轮代码同步清单。
+版本统一当时，完整文献合并报告仍位于 Windows 下载目录，未纳入该轮代码同步。随后的文档整理任务已将它原文迁入 [docs/research/2025-2026-multisource-classification-review.md](../research/2025-2026-multisource-classification-review.md)；当前入口以 [研究索引](../research/README.md) 为准。
 
 ## 同步前备份
 

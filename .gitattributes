@@ -1,2 +1,7 @@
 # Keep Linux entry scripts usable after Windows checkouts and transfers.
 *.sh text eol=lf
+
+# Preserve imported research and historical originals byte for byte.
+docs/research/2025-2026-multisource-classification-review.md -text
+docs/research/archive/** -text
+docs/archive/2026-10-17/** -text

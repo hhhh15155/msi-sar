@@ -1,5 +1,7 @@
 # MGHOFNet Baseline
 
+Current project navigation: [models](../../docs/models/README.md), [datasets](../../docs/datasets/README.md), and [experiment protocol](../../docs/experiments/README.md). The `best run by OA` selection below refers to the existing map-export choice, not a valid replacement for reporting all seeds. This adapter has its own normalization and border-padding path; see the documented comparison limits.
+
 This baseline is adapted from the previous HSI-LiDAR classification code in
 `D:\gaojianchun\fenlei\ttt`. The original snapshot is kept under
 `vendor/MGHOFNet-original/`.

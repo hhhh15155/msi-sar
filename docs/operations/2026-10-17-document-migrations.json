@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-17",
+  "files": [
+    {
+      "source": "D:\\edge download\\MSI_SAR_2025_2026_论文与源码调研_合并交接版.md",
+      "destination": "docs/research/2025-2026-multisource-classification-review.md",
+      "operation": "move",
+      "bytes": 113746,
+      "sha256": "c7ac7f5c6d2a0a3adc0561b412f65fdde5aa81895786d06f7e9d087145cb1388",
+      "verified": true
+    },
+    {
+      "source": "D:\\edge download\\MSI_SAR_2025_2026_%E8%AE%BA%E6%96%87%E4%B8%8E%E6%BA%90%E7%A0%81%E8%B0%83%E7%A0%94%E4%BA%A4%E6%8E%A5_Codex.md",
+      "destination": "docs/research/archive/2026-10-17-web-handoff.md",
+      "operation": "move",
+      "bytes": 25897,
+      "sha256": "ae41e83fe1725fc78f691663bd6ca64ef6dafbcfd1e46766c01f85576ef5badd",
+      "verified": true
+    },
+    {
+      "source": "D:\\gaojianchun\\msi-sar\\README.md",
+      "destination": "docs/archive/2026-10-17/project-readme.original.md",
+      "operation": "copy-before-rewrite",
+      "bytes": 12333,
+      "sha256": "a9ca12e228de4bb3448f6445a2e1c7c26e91fa651b8316875d8a5d008b18f6a3",
+      "verified": true
+    },
+    {
+      "source": "D:\\gaojianchun\\msi-sar\\baselines\\frekfuse\\README.md",
+      "destination": "docs/archive/2026-10-17/frekfuse-readme.original.md",
+      "operation": "copy-before-rewrite",
+      "bytes": 1893,
+      "sha256": "b72609ba5cc415d096f128cdaae73046132ec87929dc369dafa75aeacc8f5d4d",
+      "verified": true
+    },
+    {
+      "source": "D:\\gaojianchun\\msi-sar\\configs\\YRD2509NEW_EXPERIMENTS.md",
+      "destination": "docs/archive/2026-10-17/yrd2509new-experiments.original.md",
+      "operation": "move",
+      "bytes": 1020,
+      "sha256": "b4d87fd7003593726c2d5ed97433abf362ab724d27e80e8da94c8261d72d1360",
+      "verified": true
+    },
+    {
+      "source": "D:\\gaojianchun\\msi-sar\\prompt_for_codex.md",
+      "destination": "docs/archive/2026-10-17/yrd-vs-yrd2509-analysis-prompt.md",
+      "operation": "move",
+      "bytes": 3336,
+      "sha256": "0d72d00de4d4944446fcdd70acf933b7bf2403521b0295049977b06f37c6ca01",
+      "verified": true
+    },
+    {
+      "source": "D:\\gaojianchun\\msi-sar\\scheduler_output.txt",
+      "destination": "docs/archive/2026-10-17/scheduler-output.txt",
+      "operation": "move",
+      "bytes": 3798,
+      "sha256": "f8d12d3f3e40d973789b71a0cf60782464a0f7ede9d0b4184bbbfa826ac6b566",
+      "verified": true
+    }
+  ],
+  "baseline_commit": "29bb4f3faf4983ddaf634bbb59a2c0be432dfebc"
+}

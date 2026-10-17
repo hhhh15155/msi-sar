@@ -1,5 +1,7 @@
 # MSFMamba Baseline
 
+Current project navigation: [models](../../docs/models/README.md) and [experiment protocol](../../docs/experiments/README.md). The GPU/PyTorch installation examples below describe an existing environment example, not a freshly verified server110 environment or a universal installation prescription. This documentation task did not install packages. The adapter also contains a pure-PyTorch selective-scan fallback; using it still implements a Mamba/SSM architecture and is not a non-Mamba baseline.
+
 This adapter integrates the official [MSFMamba](https://github.com/oucailab/MSFMamba)
 implementation (Gao *et al.*, IEEE TGRS 2025) into this project's deterministic
 MSI-SAR experiment interface. The untouched author snapshot is in
