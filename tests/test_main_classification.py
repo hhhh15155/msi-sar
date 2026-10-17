@@ -93,11 +93,43 @@ class MainClassificationTests(unittest.TestCase):
                     engine.train(manifest, 'already_running')
 
     def test_gpu_admission_distinguishes_external_and_own_workers(self):
+        import os
         from unittest.mock import patch
         from scripts import main_experiment as engine
-        with patch.object(engine.subprocess, 'check_output', return_value='123, 12000\n456, 3000\n'):
+        with patch.dict(os.environ, {'CUDA_VISIBLE_DEVICES': '0'}), \
+                patch.object(engine.subprocess, 'check_output', return_value='123, 12000\n456, 3000\n'):
             self.assertEqual(engine.external_gpu_processes({456}), [{'pid': 123, 'memory_mib': '12000'}])
             self.assertEqual(engine.external_gpu_processes({123, 456}), [])
+
+    def test_gpu_admission_queries_only_the_selected_physical_gpu(self):
+        import os
+        from unittest.mock import patch
+        from scripts import main_experiment as engine
+        with patch.dict(os.environ, {'CUDA_VISIBLE_DEVICES': '1'}):
+            with patch.object(engine.subprocess, 'check_output', return_value='171140, 2068\n') as query:
+                engine.external_gpu_processes(set())
+                self.assertIn('--id=1', query.call_args.args[0])
+
+    def test_worker_limit_can_be_lowered_without_changing_manifest(self):
+        import os
+        from unittest.mock import patch
+        from scripts import main_experiment as engine
+        with patch.dict(os.environ, {'MAIN_EXPERIMENT_WORKERS': '1'}):
+            self.assertEqual(engine.effective_workers({'workers': 2}), 1)
+        with patch.dict(os.environ, {'MAIN_EXPERIMENT_WORKERS': '0'}):
+            with self.assertRaises(ValueError):
+                engine.effective_workers({'workers': 2})
+
+    def test_entry_sets_physical_device_order_before_cuda_initialization(self):
+        import os
+        import subprocess
+        import sys
+        from scripts import main_experiment as engine
+        result = subprocess.run(
+            [sys.executable, '-c', "import os; import scripts.main_experiment; assert os.environ['CUDA_DEVICE_ORDER']=='PCI_BUS_ID'"],
+            cwd=engine.ROOT, env={**os.environ, 'CUDA_DEVICE_ORDER': 'FASTEST_FIRST', 'CUDA_VISIBLE_DEVICES': ''},
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_shared_dual_encoders_and_head_have_identical_initial_weights(self):
         reference = None
@@ -112,20 +144,21 @@ class MainClassificationTests(unittest.TestCase):
                     torch.testing.assert_close(tensor, reference[name], rtol=0, atol=0)
 
     @unittest.skipUnless(torch.cuda.is_available(), 'CUDA integration check')
-    def test_every_variant_runs_bf16_training_and_evaluation(self):
+    def test_every_variant_runs_gpu_training_and_evaluation(self):
         from models.main_classification import VARIANTS
+        native_bf16 = torch.cuda.get_device_capability()[0] >= 8
         for variant in VARIANTS:
             for ms_c, sar_c in ((6, 1), (10, 4)):
                 with self.subTest(variant=variant, channels=(ms_c, sar_c)):
                     model = build_main_model({'variant': variant, 'ms_channels': ms_c, 'sar_channels': sar_c,
                                               'embed_dim': 16, 'num_heads': 4, 'depth': 1}, 5).cuda()
                     ms, sar = torch.randn(2, ms_c, 11, 11, device='cuda'), torch.randn(2, sar_c, 11, 11, device='cuda')
-                    with torch.autocast('cuda', dtype=torch.bfloat16):
+                    with torch.autocast('cuda', dtype=torch.bfloat16, enabled=native_bf16):
                         loss = model(ms, sar, labels=torch.tensor([1, 2], device='cuda'))['losses']['total']
                     loss.backward()
                     self.assertTrue(all(p.grad is None or torch.isfinite(p.grad).all() for p in model.parameters()))
                     model.eval()
-                    with torch.inference_mode(), torch.autocast('cuda', dtype=torch.bfloat16):
+                    with torch.inference_mode(), torch.autocast('cuda', dtype=torch.bfloat16, enabled=native_bf16):
                         first, second = model(ms, sar)['logits'], model(ms, sar)['logits']
                     self.assertTrue(torch.isfinite(first).all())
                     torch.testing.assert_close(first, second, atol=0, rtol=0)
@@ -155,7 +188,7 @@ class MainClassificationTests(unittest.TestCase):
             config = {'variant': 'v2_concat', 'ms_channels': 6, 'sar_channels': 1, 'embed_dim': 16,
                       'num_heads': 4, 'depth': 1, 'seed': 202201, 'patch_size': 3, 'epochs': 2,
                       'batch_size': 3, 'test_batch_size': 8, 'learning_rate': 0.0005,
-                      'weight_decay': 0.0001, 'precision': 'bf16'}
+                      'weight_decay': 0.0001, 'precision': 'fp32'}
             config_path = root / 'test_config.yaml'
             config_path.write_text(yaml.safe_dump(config), encoding='utf-8')
             manifest = {'output_root': str(root), 'experiments': [
@@ -176,7 +209,28 @@ class MainClassificationTests(unittest.TestCase):
             expected = torch.load(root / 'uninterrupted' / 'model_last.pth', map_location='cpu')
             actual = torch.load(root / 'resume' / 'model_last.pth', map_location='cpu')
             for name in expected:
-                torch.testing.assert_close(actual[name], expected[name], rtol=1e-5, atol=1e-6)
+                if name.endswith('self_attn.in_proj_bias'):
+                    # A common K bias adds the same value to every key score
+                    # and cancels in softmax. Its near-zero FP32 gradient can
+                    # produce different tiny Adam updates across CUDA backends.
+                    # Keep Q/V and all other parameters strict, and additionally
+                    # verify functional logits and predictions below.
+                    dim = expected[name].numel() // 3
+                    torch.testing.assert_close(actual[name][:dim], expected[name][:dim], rtol=1e-5, atol=1e-6)
+                    torch.testing.assert_close(actual[name][2 * dim:], expected[name][2 * dim:], rtol=1e-5, atol=1e-6)
+                    self.assertLess(float((actual[name][dim:2 * dim] - expected[name][dim:2 * dim]).abs().max()), 1e-4)
+                else:
+                    torch.testing.assert_close(actual[name], expected[name], rtol=1e-5, atol=1e-6)
+            left, right = build_main_model(config, 3).eval(), build_main_model(config, 3).eval()
+            left.load_state_dict(expected)
+            right.load_state_dict(actual)
+            patches = PatchBank(image, 3, torch.device('cpu')).take(torch.tensor(test))
+            with torch.inference_mode():
+                first = left(patches[:, :6], patches[:, 6:])['logits']
+                second = right(patches[:, :6], patches[:, 6:])['logits']
+            torch.testing.assert_close(first, second, rtol=1e-5, atol=1e-6)
+            np.testing.assert_array_equal(np.load(root / 'resume' / 'test_predictions.npy'),
+                                          np.load(root / 'uninterrupted' / 'test_predictions.npy'))
             result = json.loads((root / 'resume' / 'metrics.json').read_text())
             self.assertEqual(sum(map(sum, result['confusion_matrix'])), 36)
             config_path.write_text(yaml.safe_dump({**config, 'seed': 99}))

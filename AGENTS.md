@@ -7,11 +7,12 @@
 | 项目 | 位置／说明 |
 | --- | --- |
 | 本地工作目录 | `D:\gaojianchun\msi-sar`（Windows，PowerShell） |
-| SSH 主机别名 | `server110`；用户口述的 `sever110` 指此主机 |
-| 已核实远端目录 | `/ssd/gaojianchun/msi-sar`（Linux） |
-| 远端登录用户 | `fangyan`，由本机 SSH 配置管理 |
+| server110 | `ssh server110`（口述 `sever110`）；用户 `fangyan`；目录 `/ssd/gaojianchun/msi-sar` |
+| server116 | `ssh server116`；用户 `wwl`；目录 `/data/gjc/msi-sar` |
+| server110 Python | `/home/fangyan/.conda/envs/gjc/bin/python`；RTX 3090，物理 GPU 0 |
+| server116 Python | `/home/wwl/.conda/envs/gjc/bin/python`；两张 V100，后续优先核实物理 GPU 1 的资源 |
 | Git origin | `https://github.com/hhhh15155/msi-sar.git` |
-| 连接方式 | `ssh server110`，随后 `cd /ssd/gaojianchun/msi-sar` |
+| 双服务器当前说明 | `docs/operations/2026-10-17-dual-server-setup.md` |
 
 SSH 地址、端口和密钥由本机 `~/.ssh/config` 管理。不要将私钥、口令或访问令牌写入项目文件、日志或提交；不要从仓库复制 SSH 凭据。
 
@@ -21,12 +22,12 @@ SSH 地址、端口和密钥由本机 `~/.ssh/config` 管理。不要将私钥�
 ssh server110 'cd /ssd/gaojianchun/msi-sar && pwd && git status --short && git rev-parse HEAD'
 ```
 
-不要把远端相对路径 `ssd/...` 当成上述绝对路径。SSH 连通验证不等于当前聊天已切换为远端工作区；每次操作都要明确执行所在机器和路径。
+server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --short && git rev-parse HEAD'`。不要把 `ssd/...` 或 `data/...` 当成上述绝对路径。SSH 连通验证不等于当前聊天已切换为远端工作区；每次操作都要明确执行所在机器和路径。
 
 ## 2. 两端版本与同步
 
 - 用户于 2026-10-17 明确指定：本次版本统一以 Windows 本地工作目录为准，包含其未提交的模型、配置和脚本改动。
-- 此后的默认流程为：本地开发并提交 → 推送 GitHub `origin/main` → 服务器快进更新到相同提交。服务器作为运行副本；除非用户改变约定，不在服务器独立维护另一套源码。
+- 此后的默认流程为：本地开发并提交 → 推送 GitHub `origin/main` → server110、server116 快进更新到相同提交。两台服务器都是运行副本；除非用户改变约定，不在服务器独立维护另一套源码。远端直连 GitHub 不稳定时可通过 SSH 传递已推送提交的 Git bundle，仍须核对三端 HEAD。
 - 本地和远端仍是独立工作副本，不能只凭约定假设已经同步。远端如产生有效源码修改，先备份、比较并回收到本地，再走统一提交流程；不要静默丢弃。
 - 开始任务先检查当前所在目录、分支、HEAD 和 `git status --short`。涉及同步时，分别检查两端；已有用户改动必须保留。
 - 2026-10-17 的建档快照：本地分支 `main`，HEAD `1402a141ae68d61685e6a9738d99cba3e5333cdc`，有多处已修改和未跟踪文件；远端分支 `main`，HEAD `37f9a70ccbee046e6bdbe48027ec79d6475a9765`，写入本文件前工作区干净。此信息只是历史记录，执行前必须重新核实。
@@ -35,6 +36,7 @@ ssh server110 'cd /ssd/gaojianchun/msi-sar && pwd && git status --short && git r
 - 不因用户说“连接服务器”就推断需要覆盖、拉取或同步代码。用户要求同步时，先确定方向、范围及差异，再执行；不要整目录盲目覆盖。
 - 优先用 Git 管理源码、配置及说明；传输未提交文件时，应列出明确文件清单并核对目标状态。不要用删除式同步，不要覆盖目标端已有修改。
 - 数据、权重、实验结果、缓存和环境目录不属于默认代码同步范围。不要擅自提交或迁移这些内容。
+- 用户于 2026-10-17 单独授权将当前三数据集的 6 个 `.mat` 文件传到 server116；已核对本地／110／116 SHA256。清单见 `docs/operations/2026-10-17-dual-server-data-manifest.json`。这不等于授权同步其他私人数据、旧实验结果或环境。
 - 不自动执行 `git reset --hard`、`git clean`、强制推送或丢弃改动。不要停止不属于本任务的进程。
 
 ## 3. 任务与模型约束
@@ -63,6 +65,10 @@ ssh server110 'cd /ssd/gaojianchun/msi-sar && pwd && git status --short && git r
 
 - 2026-10-17 的只读检查确认：SSH 可连接、项目目录存在，非交互 shell 能找到 `conda`、`/opt/anaconda3/bin/python` 和 `/usr/bin/nvidia-smi`。
 - 以上不代表已确认 Python 依赖、CUDA 兼容性、可用 GPU 或训练环境。README 提到 `gjc` 环境，但本次未核实它是否存在及能否运行模型。
+- 上述为早期历史检查。后续 server110 已完成第一轮 21 项分类实验；server116 的 `gjc` 已通过依赖、数据读取和项目检查，包含 GPU 1 的 FP32 前后向与小样本续训检查。本轮没有在 116 启动正式实验，详见双服务器说明。
+- 116 当前有效运行时为 Python 3.11.13、PyTorch 2.6.0+cu124、NumPy 2.0.1；PyTorch 等部分依赖来自 `~/.local`。不要默认它是完全隔离的 Conda 环境，也不要擅自设置 `PYTHONNOUSERSITE=1`（实测将缺少 `typing_extensions`）。本轮未安装、升级或删除环境依赖。
+- 调度器通过 `CUDA_VISIBLE_DEVICES` 选择单张物理卡，并只检查该卡；110 默认 `0`，116 使用 `1`。`MAIN_EXPERIMENT_WORKERS=1` 可将并发降低到 1，不改变实验配置。卡仍有其他进程时等待，不自动终止其他任务。
+- PyTorch 2.6 的续训兼容路径仅用于本项目自己生成、身份文件已核对的 `resume.pth`，显式 `weights_only=False` 以恢复 NumPy／Python 随机状态；不得用它加载不明第三方 checkpoint。
 - 未明确要求运行实验时，不启动训练、全图推理、批量调度、依赖安装或环境升级。用户已授权具体执行时，在范围内继续，不重复索要同一授权。
 - 经授权执行实验前检查环境、数据路径、GPU 占用和预计输出目录；不要默认占满全部 GPU。运行资源与并发由用户要求和实际可用资源决定。
 - 长任务应使用服务器已有的会话或调度方式，记录任务标识、PID／会话名、日志和输出目录；不要把 SSH 断开后任务存活视为理所当然。

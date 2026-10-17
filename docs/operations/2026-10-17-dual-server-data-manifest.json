@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-17",
+  "source": "Windows authoritative project data; previously matched server110",
+  "files": [
+    {
+      "path": "data/yrd/data.mat",
+      "bytes": 285191963,
+      "sha256": "83d46828f00e695cd5341d469b96847d53972ff1b79b388de0a74c9a92f564ac"
+    },
+    {
+      "path": "data/yrd/label.mat",
+      "bytes": 582157,
+      "sha256": "bb315109f92eeb81787323a6e11c1e3c0ed9ca7c9a73938b81a237e15fd0a259"
+    },
+    {
+      "path": "data/yrd2509new/data.mat",
+      "bytes": 26938549,
+      "sha256": "30dd77712051fd026170702ef00e9c99a0ba9e6c6e4d590fe27ffd388818fad1"
+    },
+    {
+      "path": "data/yrd2509new/label.mat",
+      "bytes": 13388,
+      "sha256": "2c90650a3eaa9d2fe503e7f458a784c9f02c576758dcd9f68c38fc4a1e957927"
+    },
+    {
+      "path": "data/grss07/data.mat",
+      "bytes": 1809213,
+      "sha256": "4610833c6d4b75202accfd637d39dfa398a59165e0b0a444bcfdb59df05f364d"
+    },
+    {
+      "path": "data/grss07/label.mat",
+      "bytes": 9035,
+      "sha256": "eff540d3016dc35e1fcced6a48bd27ae01a00cb034855980955ffff2d3219d36"
+    }
+  ],
+  "total_bytes": 314544305
+}

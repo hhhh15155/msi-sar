@@ -45,6 +45,8 @@ V2—V5 的编码器与分类头在构造融合模块前初始化，同种子初
 
 ## 代码、配置与操作
 
+server116 的 `/data/gjc/msi-sar` 已同步代码及三数据集并通过兼容检查；双服务器启动方式见 [运行说明](../operations/2026-10-17-dual-server-setup.md)。110 的原 21 项已完成，本轮没有在 116 重跑原清单。后续 YRD 预处理修正需独立任务清单、缓存和旧结果归档，不能直接在 116 启动原 21 项。
+
 - [模型定义](../../models/main_classification.py)：`MainClassifier`、`FCMFFMFusion`、`MAFIFusion`、`build_main_model`。
 - [训练／队列／后台入口](../../scripts/main_experiment.py)。
 - [21 项清单](../../configs/main_first_pass/manifest.json)，[配置生成器](../../scripts/generate_main_configs.py)只生成文件，不运行实验。
@@ -67,5 +69,7 @@ tail -n 40 experiment_logs/main_first_pass_20261017/queue.log
 screen -ls
 screen -r msi_cls_main_20261017
 ```
+
+调度器目前继承 `CUDA_VISIBLE_DEVICES`，以该物理 GPU（或 UUID）过滤显卡进程；不再检查所有卡后误等待。110 默认卡为 0；116 必须显式使用 `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=1`。通过 `MAIN_EXPERIMENT_WORKERS=1` 可降低并发，默认上限仍来自清单。不要在旧结果目录下使用已更新源码自动续跑；代码指纹不同会拒绝复用。
 
 输出在 `runs/main_first_pass_20261017/`：`prepared/<dataset>/` 保存共享缓存和划分；`<version>_<dataset>/` 保存配置、来源、环境、训练历史、进度、检查点、测试预测和指标；`summary.csv`／`summary.json` 随完成逐项更新。数据、权重与结果不进 Git。PID／SID 在 `queue_pid.json`，任务 PID 在 `queue_status.json`。

@@ -13,6 +13,7 @@
 | YRD2509NEW 专项运行 | [YRD2509NEW 实验](docs/experiments/yrd2509new.md) |
 | 2025—2026 论文与源码调研全文 | [完整调研报告](docs/research/2025-2026-multisource-classification-review.md) |
 | 本地、GitHub 与服务器的版本约定 | [AGENTS.md](AGENTS.md)、[统一记录](docs/operations/2026-10-17-version-unification.md) |
+| server110／server116 的目录、环境、数据和 GPU 选择 | [双服务器运行说明](docs/operations/2026-10-17-dual-server-setup.md) |
 
 ## 目录约定
 
@@ -30,7 +31,7 @@ runs_fewshot/    实验结果；不纳入 Git
 experiment_logs/ 运行日志；不纳入 Git
 ```
 
-默认流程：**Windows 本地开发并提交 → GitHub `main` → server110 快进更新**。远端项目目录为 `/ssd/gaojianchun/msi-sar`。两端代码一致不代表数据、环境或结果一致。
+默认流程：**Windows 本地开发并提交 → GitHub `main` → server110／server116 快进更新**。110 项目目录为 `/ssd/gaojianchun/msi-sar`，116 为 `/data/gjc/msi-sar`。三数据集已同步并校验；环境、权重和结果仍分别管理。116 的 GPU 选择与有效 Python 环境见双服务器说明。
 
 ## 常用命令
 

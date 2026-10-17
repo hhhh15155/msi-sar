@@ -15,6 +15,7 @@
 | YRD2509NEW 专项配置与命令 | [YRD2509NEW](experiments/yrd2509new.md) |
 | 哪些论文、仓库与机制值得继续研究 | [调研索引](research/README.md)、[完整合并报告](research/2025-2026-multisource-classification-review.md) |
 | 如何连接服务器、以哪端为准 | [根目录 AGENTS.md](../AGENTS.md) |
+| 110／116 双服务器的环境、数据同步和 GPU 选择 | [双服务器运行说明](operations/2026-10-17-dual-server-setup.md) |
 | 两端版本如何统一、旧版本备份在哪 | [版本统一记录](operations/2026-10-17-version-unification.md) |
 | 这次文档移到哪里、原文是否完整 | [文档整理记录](operations/2026-10-17-document-organization.md) |
 | 旧分析提示词、旧 README 和日志 | [历史归档](archive/README.md) |

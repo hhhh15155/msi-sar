@@ -13,9 +13,14 @@ import json
 import os
 from pathlib import Path
 import random
+import socket
 import subprocess
 import sys
 import time
+
+# GPU indices are physical PCI-order indices for every entry, including direct
+# queue/train calls. Set this before importing Torch or initializing CUDA.
+os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -266,7 +271,10 @@ def train_impl(manifest, experiment_id):
     start_epoch, history, previous_seconds = 0, [], 0.0
     checkpoint = output / 'resume.pth'
     if checkpoint.exists():
-        state = torch.load(checkpoint, map_location=device)
+        # This is our own resume.pth, paired with the checked identity.json.
+        # It contains Python/NumPy RNG states, not only tensors. Never use this
+        # loading path for downloaded or otherwise untrusted checkpoints.
+        state = torch.load(checkpoint, map_location=device, weights_only=False)
         if state['identity'] != identity:
             raise ValueError('Checkpoint identity mismatch')
         model.load_state_dict(state['model'])
@@ -283,6 +291,9 @@ def train_impl(manifest, experiment_id):
     atomic_json(output / 'environment.json', {'commit': git_commit, 'source_sha256': identity['source_sha256'],
                                             'python': sys.version, 'executable': sys.executable,
                                             'torch': torch.__version__, 'cuda': torch.version.cuda,
+                                            'hostname': socket.gethostname(), 'torch_module': torch.__file__,
+                                            'numpy_module': np.__file__,
+                                            'physical_gpu': os.environ.get('CUDA_VISIBLE_DEVICES', '0'),
                                             'gpu': torch.cuda.get_device_name(0), 'precision': config['precision'],
                                             'matmul_tf32': False, 'cudnn_tf32': True,
                                             'seed': seed, 'pid': os.getpid()})
@@ -381,8 +392,23 @@ def summarize(manifest):
     return results
 
 
+def selected_gpu():
+    selector = os.environ.get('CUDA_VISIBLE_DEVICES', '0').strip()
+    if not selector or ',' in selector or not (selector.isdigit() or selector.startswith('GPU-')):
+        raise ValueError('Select exactly one physical GPU index or GPU UUID in CUDA_VISIBLE_DEVICES')
+    return selector
+
+
+def effective_workers(manifest):
+    limit = int(manifest['workers'])
+    workers = int(os.environ.get('MAIN_EXPERIMENT_WORKERS', str(limit)))
+    if not 1 <= workers <= limit:
+        raise ValueError(f'MAIN_EXPERIMENT_WORKERS must be between 1 and {limit}')
+    return workers
+
+
 def external_gpu_processes(allowed_pids):
-    text = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid,used_gpu_memory',
+    text = subprocess.check_output(['nvidia-smi', '--id=' + selected_gpu(), '--query-compute-apps=pid,used_gpu_memory',
                                     '--format=csv,noheader,nounits'], text=True)
     external = []
     for line in text.strip().splitlines():
@@ -398,7 +424,9 @@ def queue(manifest, manifest_path):
     root.mkdir(parents=True, exist_ok=True)
     lock = (root / 'queue.lock').open('w')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    atomic_json(root / 'queue_pid.json', {'pid': os.getpid(), 'started': time.time(), 'sid': os.getsid(0)})
+    workers, gpu = effective_workers(manifest), selected_gpu()
+    atomic_json(root / 'queue_pid.json', {'pid': os.getpid(), 'started': time.time(), 'sid': os.getsid(0),
+                                        'hostname': socket.gethostname(), 'physical_gpu': gpu, 'workers': workers})
     state_path = root / 'queue_status.json'
     state = read_json(state_path) if state_path.exists() else {'experiments': {}, 'started': time.time()}
     for name, item in state.get('experiments', {}).items():
@@ -433,7 +461,7 @@ def queue(manifest, manifest_path):
                 if blockers:
                     print(f'WAIT GPU: other compute processes {blockers}', flush=True)
                 last_blockers = blocker_pids
-            while pending and len(active) < int(manifest['workers']):
+            while pending and len(active) < workers:
                 if blockers:
                     break
                 item = pending.pop(0)
@@ -459,6 +487,7 @@ def queue(manifest, manifest_path):
                     summarize(manifest)
             state.update({'pid': os.getpid(), 'updated': time.time(),
                           'phase': 'waiting_gpu' if blockers and not active else 'running',
+                          'physical_gpu': gpu, 'workers': workers,
                           'gpu_blockers': blockers, 'variant': variant})
             atomic_json(state_path, state)
             if active or pending:
@@ -491,7 +520,8 @@ def launch(manifest, manifest_path):
     subprocess.run(['screen', '-dmS', session, 'bash', '-c', 'exec "$@" >>"$MAIN_QUEUE_LOG" 2>&1',
                     'main-queue', sys.executable, '-u', str(Path(__file__).resolve()), '--manifest',
                     str(manifest_path), 'queue'], cwd=ROOT, check=True,
-                   env={**os.environ, 'CUDA_VISIBLE_DEVICES': '0', 'OMP_NUM_THREADS': '2',
+                   env={**os.environ, 'CUDA_VISIBLE_DEVICES': selected_gpu(), 'CUDA_DEVICE_ORDER': 'PCI_BUS_ID',
+                        'MAIN_EXPERIMENT_WORKERS': str(effective_workers(manifest)), 'OMP_NUM_THREADS': '2',
                         'MKL_NUM_THREADS': '2', 'PYTHONUNBUFFERED': '1', 'MAIN_QUEUE_LOG': str(log_dir / 'queue.log')})
     for _ in range(20):
         time.sleep(0.5)
