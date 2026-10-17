@@ -12,6 +12,7 @@
 | 如何运行、如何解释指标与结果目录 | [实验说明](experiments/README.md) |
 | 本轮 7 版本、单种子、21 项后台分类实验 | [第一轮分类实验与部署](experiments/main-first-pass.md) |
 | YRD SAR-only 排查后的 7 项修正实验、116 GPU 1 与结果归档 | [YRD 归一化修正实验](experiments/yrd-per-channel-rerun.md) |
+| FDMF／MSAF 适配方式、第二批六项与后台队列 | [文献候选分类实验](experiments/paper-candidates.md) |
 | 三个数据集的主实验样本配置 | [YRD：每类 50](experiments/yrd.md)、[YRD2509NEW：每类 50](experiments/yrd2509new.md)、[GRSS07：custom](experiments/grss07.md) |
 | YRD2509NEW 专项配置与命令 | [YRD2509NEW](experiments/yrd2509new.md) |
 | 哪些论文、仓库与机制值得继续研究 | [调研索引](research/README.md)、[完整合并报告](research/2025-2026-multisource-classification-review.md) |

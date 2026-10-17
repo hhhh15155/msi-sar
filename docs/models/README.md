@@ -12,6 +12,8 @@
 | `softformer` | [model.py](../../baselines/softformer/model.py)：`SoftFormerBaseline` → `SoftFormer` | [train.py](../../baselines/softformer/train.py) | `hsi_channels`、`aux_channels` | patch=11 与内部 `model_img_size=8` 不同；内部图像大小必须可被 4 整除，stem 会中心裁剪 | [README](../../baselines/softformer/README.md) |
 | `msfmamba` | [model.py](../../baselines/msfmamba/model.py)：`MSFMamba` → 作者 `Syn_layer` | [train.py](../../baselines/msfmamba/train.py) | `ms_channels`、`sar_channels` | Mamba／SSM；当前包装限定 patch=11、单层；不足 9 个 MSI 通道时谱轴补零 | [README](../../baselines/msfmamba/README.md) |
 | `fuzzy_transformer` | [fuzzy_transformer.py](../../models/fuzzy_transformer.py)：`FuzzyTransformer` | [train.py](../../baselines/fuzzy_transformer/train.py) | `ms_channels`、`sar_channels` | 两级模糊融合、动态坐标位置编码；正奇数 patch；不依赖 Mamba 或预训练 | [当前模型说明](fuzzy-transformer.md) |
+| `v7_fdmf_fixed` | [fdmf_patch.py](../../models/fdmf_patch.py)：`FrequencyFusion`，共同 `MainClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 单级固定边界高低频融合的分类适配；无预训练，非原分割整网 | [第二批适配说明](../experiments/paper-candidates.md) |
+| `v8_msaf_fixed` | [msaf_patch.py](../../models/msaf_patch.py)：`MSAFPatchClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 浅层 MobileNet、16／24 两级融合，odd patch ≥5；测试关闭随机掩码，两路无预训练 | [第二批适配说明](../experiments/paper-candidates.md) |
 
 训练与全图推理统一使用 `scripts/train_eval_<model>.py`、`scripts/eval_<model>.py`、`scripts/infer_<model>.py` 这一命名模式；实际命令和输出位置见 [实验说明](../experiments/README.md)。没有训练授权时，不因为阅读本页就启动这些入口。
 
@@ -28,6 +30,6 @@
 
 2026-10-17 新增的受控分类系列在 [models/main_classification.py](../../models/main_classification.py)，由独立的 [第一轮实验入口](../../scripts/main_experiment.py) 调用，7 个版本的范围与源码适配边界见 [实验方案](../experiments/main-first-pass.md)。其中 FCM–FFM／MAFI 是共同编码器下的局部分类适配，不表示已接入 CFFormer／EG-CMFNet 原论文整网；旧默认五模型网格保持不变。
 
-MSAF、CFFormer、FDMF 等候选的审查与推荐见 [完整调研报告](../research/2025-2026-multisource-classification-review.md)。没有对应的项目包装、配置与入口前，不能写成“已接入本项目”。报告中的性能、许可证及实现风险也不能直接替换本项目的实验结论。
+MSAF、CFFormer、FDMF 等候选的审查与推荐见 [完整调研报告](../research/2025-2026-multisource-classification-review.md)。2026-10-18 新增 FDMF／MSAF 的实际适配入口与修正见上表；未接入的其他候选仍不能称为已运行。报告中的性能、许可证及实现风险不能直接替换本项目的实验结论。
 
 新增模型时，应补充本索引、专用说明、实际入口和配置，同时记录输入假设、预训练、特殊算子、patch 限制及与现有协议的差异。

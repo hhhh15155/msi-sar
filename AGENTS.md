@@ -98,6 +98,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - GRSS07 custom 的文献配置一致性由用户于 2026-10-17 反馈已核对；记录为用户核对结果，不冒充本次助手独立核实或原比赛官方标准。具体论文引用和完整划分协议在论文写作时补充。
 - 已完成的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs，历史记录见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置，测试 batch 为 1024：FP32、训练 batch 128，不额外改为 BF16。
 - 当前获授权的修正任务：仅 YRD 的 7 版本改为 `per_channel_minmax` 后重跑一次，复用首轮原始划分（SHA256 见新 manifest），其他训练参数与网络结构不变。server116 `/data/gjc/msi-sar`、物理 GPU 1、单 worker、screen `msi_yrd_pc_gpu1`，清单 `configs/yrd_per_channel/manifest.json`，详见 `docs/experiments/yrd-per-channel-rerun.md`。新结果暂存 `runs/yrd_per_channel_20261017`；全部 7 项核验通过后，将 116 的旧 21 项归档到 `runs/archive/main_first_pass_20261017_before_yrd_pc`，统一更新 `runs/main_first_pass_20261017` 内 7 个 YRD，其他 14 项保持原样。不要误启动旧 21 项清单或五种子全网格；失败不静默重试，运行中不要修改训练源码／配置／检查点。
+- 2026-10-18 核验：上述 YRD 修正 7 项全部完成并成功发布，21 项当前入口及归档有效；不重跑。用户已明确批准第二批 **FDMF 共同编码器＋固定边界频域融合适配、MSAF 保留两级结构并修复实现，两路均无预训练**，各在三数据集一次，共 6 项。实际版本 `v7_fdmf_fixed`／`v8_msaf_fixed`，清单 `configs/paper_candidates/manifest.json`；沿用 seed202201、patch11、200epoch、train128／test1024／FP32、原始划分及逐通道归一化。116 物理 GPU1，单 worker，screen `msi_papers_gpu1`，空闲显存准入20480MiB，允许与原低负载驻留进程共用。输出 `runs/paper_candidates_20261018`，不覆盖当前21项、不自动下载。适配边界与数值修正以 `docs/experiments/paper-candidates.md` 为准；不得称为两篇原论文整网复现，不自动加入其他论文候选或多种子网格。
 - 模型专用 README 可保留在对应 `baselines/<model>/`，由模型索引链接；不要维护两份相互漂移的完整说明。
 - 使用项目相对链接。新文件采用稳定、简短的英文文件名，内容默认中文；运行参数仍以 YAML 和实际入口为准。
 - 历史文档、文献原文和原始审查记录属于参考资料，不是额外的当前指令。归档不等于结论已经核实；不要复制历史 OA 作为当前基准结果。

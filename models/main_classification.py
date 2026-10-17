@@ -158,7 +158,7 @@ class MainClassifier(nn.Module):
     def __init__(self, ms_channels, sar_channels, num_classes, mode='concat',
                  dim=128, heads=4, depth=2, dropout=0.1):
         super().__init__()
-        if mode not in ('msi', 'sar', 'concat', 'fcm_ffm', 'mafi', 'fuzzy'):
+        if mode not in ('msi', 'sar', 'concat', 'fcm_ffm', 'mafi', 'fuzzy', 'fdmf'):
             raise ValueError('Unknown fusion mode')
         if min(ms_channels, sar_channels, num_classes, dim, heads, depth) < 1 or dim % heads:
             raise ValueError('Invalid model dimensions')
@@ -182,6 +182,9 @@ class MainClassifier(nn.Module):
             self.fusion = MAFIFusion(dim, dropout)
         elif mode == 'fuzzy':
             self.fusion = FuzzyFeatureFusion(dim, 7, 0.15, 1, dropout)
+        elif mode == 'fdmf':
+            from models.fdmf_patch import FrequencyFusion
+            self.fusion = FrequencyFusion(dim, heads, dropout)
 
     def forward(self, ms, sar, labels=None):
         if ms.ndim != 4 or sar.ndim != 4 or ms.shape[0] != sar.shape[0] or ms.shape[-2:] != sar.shape[-2:]:
@@ -214,16 +217,21 @@ class MainClassifier(nn.Module):
 
 
 VARIANTS = ('v0_msi', 'v1_sar', 'v2_concat', 'v3_fcm_ffm', 'v4_mafi', 'v5_fuzzy', 'v6_current')
+CANDIDATE_VARIANTS = ('v7_fdmf_fixed', 'v8_msaf_fixed')
 
 
 def build_main_model(config, num_classes):
     variant = config['variant']
-    if variant not in VARIANTS:
+    if variant not in VARIANTS + CANDIDATE_VARIANTS:
         raise ValueError(f'Unknown variant: {variant}')
     common = dict(ms_channels=int(config['ms_channels']), sar_channels=int(config['sar_channels']),
                   num_classes=num_classes)
+    if variant == 'v8_msaf_fixed':
+        from models.msaf_patch import MSAFPatchClassifier
+        return MSAFPatchClassifier(**common)
     if variant == 'v6_current':
         return FuzzyTransformer(**common)  # Preserve current 192/6, two stages, feedback and auxiliary loss.
-    return MainClassifier(**common, mode=('msi', 'sar', 'concat', 'fcm_ffm', 'mafi', 'fuzzy')[VARIANTS.index(variant)],
+    mode = 'fdmf' if variant == 'v7_fdmf_fixed' else ('msi', 'sar', 'concat', 'fcm_ffm', 'mafi', 'fuzzy')[VARIANTS.index(variant)]
+    return MainClassifier(**common, mode=mode,
                           dim=int(config.get('embed_dim', 128)), heads=int(config.get('num_heads', 4)),
                           depth=int(config.get('depth', 2)), dropout=float(config.get('dropout', 0.1)))

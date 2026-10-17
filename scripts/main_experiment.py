@@ -1,6 +1,6 @@
 """Single-seed main experiments: prepare, train, queue, detach, and inspect.
 
-No third-party training entry points are executed. All seven versions use the
+No third-party training entry points are executed. All selected versions use the
 same prepared images and saved split. A final held-out test pass is mandatory;
 test scores never select epochs. Failed experiments are not retried silently.
 """
@@ -33,7 +33,7 @@ import yaml
 
 from baselines.dfinet.dataset import load_dataset
 from baselines.split import split_from_config
-from models.main_classification import VARIANTS, build_main_model
+from models.main_classification import VARIANTS, CANDIDATE_VARIANTS, build_main_model
 
 DEFAULT_MANIFEST = ROOT / 'configs/main_first_pass/manifest.json'
 
@@ -60,12 +60,21 @@ def read_json(path):
 
 def read_manifest(path):
     manifest = read_json(path)
-    expected = {(variant, dataset) for variant in VARIANTS for dataset in manifest['datasets']}
+    variants = selected_variants(manifest)
+    expected = {(variant, dataset) for variant in variants for dataset in manifest['datasets']}
     jobs = manifest['experiments']
     actual = {(job['variant'], job['dataset']) for job in jobs}
     if not expected or len(jobs) != len(expected) or actual != expected or len({job['id'] for job in jobs}) != len(jobs):
         raise ValueError('Expected one distinct experiment per variant and selected dataset')
     return manifest
+
+
+def selected_variants(manifest):
+    variants = manifest.get('variants', VARIANTS)
+    if (not variants or len(set(variants)) != len(variants) or
+            any(v not in VARIANTS + CANDIDATE_VARIANTS for v in variants)):
+        raise ValueError('Manifest contains unknown or duplicate variants')
+    return variants
 
 
 def run_root(manifest):
@@ -190,7 +199,8 @@ def metrics_from_confusion(cm):
 
 def source_fingerprint():
     names = ['models/main_classification.py', 'models/fuzzy_transformer.py', 'scripts/main_experiment.py',
-             'baselines/dfinet/dataset.py', 'baselines/split.py']
+             'baselines/dfinet/dataset.py', 'baselines/split.py',
+             'models/fdmf_patch.py', 'models/msaf_patch.py']
     return {name: digest(ROOT / name) for name in names}
 
 
@@ -464,7 +474,7 @@ def queue(manifest, manifest_path):
                 fcntl.flock(worker_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 fcntl.flock(worker_lock, fcntl.LOCK_UN)
     prepare(manifest)
-    for variant in VARIANTS:
+    for variant in selected_variants(manifest):
         pending = []
         for item in manifest['experiments']:
             if item['variant'] != variant:
