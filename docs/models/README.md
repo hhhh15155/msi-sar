@@ -26,6 +26,8 @@
 
 ## 文献候选与当前代码分开
 
+2026-10-17 新增的受控分类系列在 [models/main_classification.py](../../models/main_classification.py)，由独立的 [第一轮实验入口](../../scripts/main_experiment.py) 调用，7 个版本的范围与源码适配边界见 [实验方案](../experiments/main-first-pass.md)。其中 FCM–FFM／MAFI 是共同编码器下的局部分类适配，不表示已接入 CFFormer／EG-CMFNet 原论文整网；旧默认五模型网格保持不变。
+
 MSAF、CFFormer、FDMF 等候选的审查与推荐见 [完整调研报告](../research/2025-2026-multisource-classification-review.md)。没有对应的项目包装、配置与入口前，不能写成“已接入本项目”。报告中的性能、许可证及实现风险也不能直接替换本项目的实验结论。
 
 新增模型时，应补充本索引、专用说明、实际入口和配置，同时记录输入假设、预训练、特殊算子、patch 限制及与现有协议的差异。

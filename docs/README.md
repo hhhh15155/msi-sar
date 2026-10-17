@@ -10,6 +10,7 @@
 | 模型实现在哪、输入有何限制 | [模型索引](models/README.md) |
 | 当前双路 CNN–Transformer 如何融合 | [Fuzzy Transformer](models/fuzzy-transformer.md) |
 | 如何运行、如何解释指标与结果目录 | [实验说明](experiments/README.md) |
+| 本轮 7 版本、单种子、21 项后台分类实验 | [第一轮分类实验与部署](experiments/main-first-pass.md) |
 | 三个数据集的主实验样本配置 | [YRD：每类 50](experiments/yrd.md)、[YRD2509NEW：每类 50](experiments/yrd2509new.md)、[GRSS07：custom](experiments/grss07.md) |
 | YRD2509NEW 专项配置与命令 | [YRD2509NEW](experiments/yrd2509new.md) |
 | 哪些论文、仓库与机制值得继续研究 | [调研索引](research/README.md)、[完整合并报告](research/2025-2026-multisource-classification-review.md) |

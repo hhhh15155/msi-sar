@@ -1,0 +1,32 @@
+variant: v3_fcm_ffm
+dataset: yrd2509new
+dataset_config: configs/datasets/yrd2509new.yaml
+ms_channels: 10
+sar_channels: 4
+seed: 202201
+num_runs: 1
+patch_size: 11
+epochs: 200
+batch_size: 128
+test_batch_size: 512
+precision: bf16
+learning_rate: 0.0005
+weight_decay: 0.0001
+embed_dim: 128
+num_heads: 4
+dropout: 0.1
+pretrained: false
+split:
+  method: fixed_train_counts
+  train_counts:
+  - 50
+  - 50
+  - 50
+  - 50
+  - 50
+  - 50
+  - 50
+  - 50
+  - 50
+depth: 2
+auxiliary_weight: 0.0
