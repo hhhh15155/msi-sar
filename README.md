@@ -9,6 +9,7 @@ classification experiments. Each baseline lives in its own folder.
 baselines/
   dfinet/              DFI-Net comparison method
   frekfuse/            FreKFuse comparison method
+  fuzzy_transformer/   MSI/SAR Transformer with adapted fuzzy fusion
   mghofnet/            MG-HOFNet comparison method
   msfmamba/            MSFMamba comparison method
   softformer/          SoftFormer comparison method
@@ -66,6 +67,64 @@ python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs5.yaml
 python scripts/eval_softformer.py --run runs_fewshot/fs5/softformer/yrd/run_001
 python scripts/infer_softformer.py --run runs_fewshot/fs5/softformer/yrd/run_001
 ```
+
+## Fuzzy Transformer
+
+The new model uses separate MSI/SAR CNN stems and full-grid Transformer
+branches, two stages of Gaussian membership fusion, and a fusion Transformer.
+The final classifier reads the center token and pooled context. Patch size is
+configurable and must be a positive odd integer; there are no fixed 11x11
+position tables.
+
+The fusion independently adapts the Gaussian memberships and fuzzy AND/OR
+aggregation from [ACFFN](https://github.com/Zzp-12/ACFFN)
+([paper DOI](https://doi.org/10.1109/TGRS.2026.3684169)). It adds positive
+membership widths, stable log aggregation, normalization across the two
+modalities, and a residual projection that retains both original features.
+This is not an ACFFN reproduction. It has no Mamba, center-query cross-modal
+attention, pretrained weights, or LiDAR height processing. SAR inputs use the
+existing dataset preprocessing without an additional logarithm transform.
+
+```bash
+python scripts/train_eval_fuzzy_transformer.py --config configs/fuzzy_transformer_grss07_custom.yaml
+python scripts/train_eval_fuzzy_transformer.py --config configs/fuzzy_transformer_yrd2509new_fs50.yaml
+python scripts/eval_fuzzy_transformer.py --run runs_fewshot/grss07_custom/fuzzy_transformer/grss07/run_001
+python scripts/infer_fuzzy_transformer.py --run runs_fewshot/grss07_custom/fuzzy_transformer/grss07/run_001
+```
+
+Both configs preserve the existing splits and five seeds. The final epoch is
+saved as `model_last.pth` and evaluated on the held-out test samples; test
+accuracy is not used to select epochs or seeds. Exported labeled maps include
+all annotations for inspection, while `eval_metrics_run_*.json` scores only
+the saved test split. Full-map inference is a separate explicit command.
+
+The complete configuration grid covers `yrd`, `yrd2509new`, and `grss07`
+with 5/10/20/50/100/150/200 samples per class, plus the GRSS07 custom counts.
+Configuration generation preserves existing files by default. The new model
+can also be selected through the project experiment runners:
+
+```bash
+python scripts/generate_fuzzy_transformer_configs.py
+python scripts/experiment_grid.py --models fuzzy_transformer
+python scripts/train_eval_yrd2509new_fewshot.py --models fuzzy_transformer --shots 50
+MODELS_FILTER=fuzzy_transformer bash scripts/run_all_experiments.sh
+MODELS_FILTER=fuzzy_transformer bash scripts/run_grss07_custom_experiments.sh
+```
+
+`scripts/analyze_fewshot_results.py` includes this model and selects its latest
+completed attempt. Partially completed seed groups are retained in
+`metrics.json` with `completed: false`; the experiment runner does not treat
+them as complete. Dataset configuration paths inside the repository remain
+relative when saved, so run directories can move between local and server
+checkouts. These commands start training only when explicitly executed.
+
+For ablations, copy a config and set `fusion: concat` or
+`auxiliary_weight: 0.0`. Keep the same patch size, seeds, splits, optimizer,
+and epochs for paired comparisons. Membership weights can be inspected with
+`model(ms=ms, sar=sar, return_fusion_weights=True)`; each stage returns
+`[batch, patch_pixels, 2, embed_dim]` weights normalized over the modality
+axis. Weights indicate learned feature preference, not calibrated sensor
+uncertainty. No accuracy improvement has been established for this model.
 
 ## GRSS-DFC-2007 Experiments
 

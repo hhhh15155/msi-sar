@@ -1,0 +1,808 @@
+[
+  {
+    "repo": "yelinlin321/GICLNet",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/yelinlin321/GICLNet/8087f11f6af3e6ceb40f5867f17bcdb31cc0fb80/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\yelinlin321\\GICLNet\\README.md",
+    "lines": 2,
+    "definitions": [],
+    "candidate_markers": []
+  },
+  {
+    "repo": "yelinlin321/GICLNet",
+    "file": "gcn.py",
+    "url": "https://raw.githubusercontent.com/yelinlin321/GICLNet/8087f11f6af3e6ceb40f5867f17bcdb31cc0fb80/gcn.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\yelinlin321\\GICLNet\\gcn.py",
+    "lines": 644,
+    "definitions": [
+      "122:class Graph2dConvolution(Module):",
+      "275:class SegNet(nn.Module):",
+      "348:class graphfusion(Module):",
+      "483:def train_and_test():"
+    ],
+    "candidate_markers": [
+      "118:adj_mask = torch.ones(Block_num, Block_num).int().cuda()",
+      "198:index_ex = torch.zeros(batch_size, self.block_num, lidar.shape[2], lidar.shape[3]).cuda()",
+      "300:self.Softmax = nn.Softmax(dim=1)",
+      "307:index = seg_index.long().cuda()",
+      "364:self.ww = Parameter(torch.randn(17, 16)).cuda()",
+      "365:self.weight = Parameter(torch.randn(17, 17)).cuda()",
+      "374:self.bn2 = nn.BatchNorm2d(1).cuda()",
+      "375:self.bn = nn.BatchNorm2d(16).cuda()",
+      "376:self.bn1 = nn.BatchNorm2d(out_channels).cuda()",
+      "381:self.linear = nn.Linear(2, 1).cuda()",
+      "447:weights = torch.sigmoid(self.linear(torch.stack([ad, la], dim=-1))).cuda()  # 学习权重",
+      "454:ad_means = torch.matmul(ad_means.permute(0, 2, 1), self.w5.cuda())",
+      "456:ad_means = torch.matmul(ad_means.permute(0, 2, 1), self.w6.cuda())",
+      "462:la_means = torch.matmul(la_means.permute(0, 2, 1), self.w7.cuda())",
+      "464:la_means = torch.matmul(la_means.permute(0, 2, 1), self.w8.cuda())",
+      "492:scale_layer=scale).cuda()",
+      "513:hsimg = hsi_data.permute(2, 0, 1).unsqueeze(0).cuda()",
+      "514:lida = lidar_data.permute(2, 0, 1).unsqueeze(0).cuda()",
+      "522:pre_gt = torch.cat((train_gt.unsqueeze(0).cuda(), classes[0]), dim=0).view(class_num + 2, -1).permute(1, 0)",
+      "540:pre_gt = torch.cat((test_gt.unsqueeze(0).cuda(), classes[0]), dim=0).view(class_num + 2, -1).permute(1,"
+    ]
+  },
+  {
+    "repo": "yelinlin321/GICLNet",
+    "file": "NOD.py",
+    "url": "https://raw.githubusercontent.com/yelinlin321/GICLNet/8087f11f6af3e6ceb40f5867f17bcdb31cc0fb80/NOD.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\yelinlin321\\GICLNet\\NOD.py",
+    "lines": 12,
+    "definitions": [
+      "4:def nod(A):"
+    ],
+    "candidate_markers": []
+  },
+  {
+    "repo": "yelinlin321/GICLNet",
+    "file": "fun.py",
+    "url": "https://raw.githubusercontent.com/yelinlin321/GICLNet/8087f11f6af3e6ceb40f5867f17bcdb31cc0fb80/fun.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\yelinlin321\\GICLNet\\fun.py",
+    "lines": 31,
+    "definitions": [
+      "5:def data_no(data):",
+      "12:def c(tensor):",
+      "18:def cosine_similarities(tensor):",
+      "23:def connections(input_tensor):"
+    ],
+    "candidate_markers": []
+  },
+  {
+    "repo": "Zzp-12/ACFFN",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/Zzp-12/ACFFN/765443918a21baa550f6c93cd9befc614e3fb8c6/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Zzp-12\\ACFFN\\README.md",
+    "lines": 2,
+    "definitions": [],
+    "candidate_markers": [
+      "2:If our work is helpful to you, please cite it：Z. Zhong, C. Shi, W. Sun, K. Wang and Y. Zhang, \"Adaptive Contourlet-Guided Fuzzy Fusion Network for Joint Classification of Hyperspectral and L"
+    ]
+  },
+  {
+    "repo": "Zzp-12/ACFFN",
+    "file": "ACFFN.py",
+    "url": "https://raw.githubusercontent.com/Zzp-12/ACFFN/765443918a21baa550f6c93cd9befc614e3fb8c6/ACFFN.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Zzp-12\\ACFFN\\ACFFN.py",
+    "lines": 330,
+    "definitions": [
+      "3:class FLB(nn.Module):",
+      "30:class NSPLevel(nn.Module):",
+      "66:class GDDM(nn.Module):",
+      "91:class Spatialbranch(nn.Module):",
+      "100:class GAPDynamicNSDFB(nn.Module):",
+      "145:class AdaptiveNSCT(nn.Module):",
+      "178:class SpectralAttention(nn.Module):",
+      "200:class SpectralSpatialNSCT(nn.Module):",
+      "224:class DepthwiseSeparableConv(nn.Module):",
+      "239:class MorphoQKVAttention(nn.Module):",
+      "288:class SimpleCNN(nn.Module):"
+    ],
+    "candidate_markers": [
+      "24:z_and=torch.softmax(-z_and / 0.05, dim=1)",
+      "26:z_or = torch.softmax(-z_or / 0.05, dim=1)",
+      "78:nn.Sigmoid()",
+      "130:x_hsi = x_hsi * torch.sigmoid(lidar_proj)",
+      "188:nn.Sigmoid()",
+      "209:self.fusion_gate = nn.Sequential(",
+      "213:nn.Softmax(dim=1)",
+      "219:gate = self.fusion_gate(combined)  # [B,2,H,W]",
+      "220:return gate[:, 0:1] * spectral_feat + gate[:, 1:2] * spatial_feat+x",
+      "270:torch.sigmoid(self.dilation_kernel),",
+      "275:erosion = F.conv2d(padded_x, 1 - torch.sigmoid(self.erosion_kernel))",
+      "283:attn = F.softmax(attn, dim=-1)",
+      "303:self.cf1=nn.Sequential(nn.Sigmoid())",
+      "304:self.cf2 = nn.Sequential( nn.Sigmoid())"
+    ]
+  },
+  {
+    "repo": "Zzp-12/ACFFN",
+    "file": "demo.py",
+    "url": "https://raw.githubusercontent.com/Zzp-12/ACFFN/765443918a21baa550f6c93cd9befc614e3fb8c6/demo.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Zzp-12\\ACFFN\\demo.py",
+    "lines": 194,
+    "definitions": [
+      "36:def train_1times():"
+    ],
+    "candidate_markers": [
+      "29:parser.add_argument('--flag_test', choices=['test', 'train', 'pretrain'], default='train', help='testing mark')",
+      "125:model=ACFFN.SimpleCNN(args.num_classes, 128, band1, band2, ).cuda()",
+      "127:criterion = nn.CrossEntropyLoss().cuda()",
+      "128:loss_fun2 = nn.MSELoss().cuda()"
+    ]
+  },
+  {
+    "repo": "Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/Dilingliao/IEEE-TGRS_2026_LWM-Mamba/fd350109185712de4557f98b6b90136ce86d0833/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Dilingliao\\IEEE-TGRS_2026_LWM-Mamba\\README.md",
+    "lines": 111,
+    "definitions": [],
+    "candidate_markers": []
+  },
+  {
+    "repo": "Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "file": "LWMMamba.py",
+    "url": "https://raw.githubusercontent.com/Dilingliao/IEEE-TGRS_2026_LWM-Mamba/fd350109185712de4557f98b6b90136ce86d0833/LWMMamba.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Dilingliao\\IEEE-TGRS_2026_LWM-Mamba\\LWMMamba.py",
+    "lines": 283,
+    "definitions": [
+      "17:class LWMMamba(nn.Module):"
+    ],
+    "candidate_markers": [
+      "183:elif isinstance(module, (nn.ReLU, nn.GELU, nn.SiLU, nn.Sigmoid, nn.Tanh)):"
+    ]
+  },
+  {
+    "repo": "Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "file": "MAMamba.py",
+    "url": "https://raw.githubusercontent.com/Dilingliao/IEEE-TGRS_2026_LWM-Mamba/fd350109185712de4557f98b6b90136ce86d0833/MAMamba.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Dilingliao\\IEEE-TGRS_2026_LWM-Mamba\\MAMamba.py",
+    "lines": 599,
+    "definitions": [
+      "19:def flops_selective_scan_ref(B=1, L=256, D=768, N=16, with_D=True, with_Z=False, with_Group=True, with_complex=False):",
+      "137:class adaMamba(nn.Module):",
+      "505:class FrequencySpatialCoEnhance(nn.Module):",
+      "561:class MAMamba(nn.Module):"
+    ],
+    "candidate_markers": [
+      "9:import torch.utils.checkpoint as checkpoint",
+      "515:nn.Sigmoid()"
+    ]
+  },
+  {
+    "repo": "Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "file": "demo_LWM-Mamba.py",
+    "url": "https://raw.githubusercontent.com/Dilingliao/IEEE-TGRS_2026_LWM-Mamba/fd350109185712de4557f98b6b90136ce86d0833/demo_LWM-Mamba.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Dilingliao\\IEEE-TGRS_2026_LWM-Mamba\\demo_LWM-Mamba.py",
+    "lines": 295,
+    "definitions": [
+      "58:def applyPCA(X, numComponents):",
+      "66:def train_1times(run_id):",
+      "206:def train_10times(run_id):"
+    ],
+    "candidate_markers": [
+      "35:parser.add_argument('--flag_test', choices=['test', 'train', 'pretrain'], default='train', help='testing mark')",
+      "151:model = LightMambaV2(band1, band2, CLASSES_NUM).cuda()",
+      "154:criterion = nn.CrossEntropyLoss().cuda()",
+      "224:for patch_size in patches_list:",
+      "232:OA, AA, Kappa, CA, run_time = train_1times(dataset, patch_size, lr, bs, run_id)",
+      "292:for patch_size in patches_list:",
+      "295:train_1times(dataset, patch_size, lr, bs)"
+    ]
+  },
+  {
+    "repo": "zhangyiyan001/AMSFN",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/zhangyiyan001/AMSFN/fa221d071e73119e89ada3a0b88371b8bf4d3071/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\zhangyiyan001\\AMSFN\\README.md",
+    "lines": 89,
+    "definitions": [],
+    "candidate_markers": [
+      "84:## License",
+      "86:This project is released under the Apache 2.0 License."
+    ]
+  },
+  {
+    "repo": "zhangyiyan001/AMSFN",
+    "file": "module.py",
+    "url": "https://raw.githubusercontent.com/zhangyiyan001/AMSFN/fa221d071e73119e89ada3a0b88371b8bf4d3071/module.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\zhangyiyan001\\AMSFN\\module.py",
+    "lines": 442,
+    "definitions": [
+      "19:def result(test_iter, dataset, device, net):",
+      "62:def pad_with_zeros(X, margin=2):",
+      "71:def pixel_select(Y, train_ratio):",
+      "91:def generate_image_cubes_all(input_data, pixels_select, windowSize=11): #",
+      "118:def generate_image_cubes(input_data, pixels_select, windowSize):",
+      "145:def get_image_cubes(input_data, pixels_select, windowSize=11):",
+      "157:def get_image_cubes_all(input_data, pixels_select, windowSize=11):",
+      "170:def GetImageCubes_all(input_data, pixels_select, windowSize=11):",
+      "200:def GetImageCubes(input_data, pixels_select, windowSize=11):",
+      "223:def train_2_patch_label2(Data1, Data2, patchsize, pad_width, Label):",
+      "274:def split_train_test_set(X, y, train_ratio):",
+      "280:def weight_init(layer):",
+      "293:def AA_andEachClassAccuracy(confusion_matrix):",
+      "300:def colormap(num_class, p):",
+      "314:def dis_groundtruth(dataset, num_class, gt, p):",
+      "331:class Fusionloss(nn.Module):",
+      "348:class Sobelxy(nn.Module):",
+      "366:def applyPCA(X, numComponents=75):",
+      "373:def cc(img1, img2):",
+      "386:def class_acc(y_true, y_pre):",
+      "402:def purity_score(y_true, y_pred):",
+      "408:def cluster_accuracy(y_true, y_pre, return_aligned=False):"
+    ],
+    "candidate_markers": [
+      "359:self.weightx = nn.Parameter(data=kernelx, requires_grad=False).cuda()",
+      "360:self.weighty = nn.Parameter(data=kernely, requires_grad=False).cuda()"
+    ]
+  },
+  {
+    "repo": "zhangyiyan001/AMSFN",
+    "file": "vmamba.py",
+    "url": "https://raw.githubusercontent.com/zhangyiyan001/AMSFN/fa221d071e73119e89ada3a0b88371b8bf4d3071/vmamba.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\zhangyiyan001\\AMSFN\\vmamba.py",
+    "lines": 293,
+    "definitions": [
+      "10:def conv_bn_relu(in_channels: int, out_channels: int, kernel_size: int = 3,",
+      "19:class CrossAttentionFusion(nn.Module):",
+      "67:class MultiScaleFusion(nn.Module):",
+      "99:class FeatureAggregation(nn.Module):",
+      "148:class MultimodalClassifier(nn.Module):"
+    ],
+    "candidate_markers": [
+      "37:self.gate = nn.Sequential(",
+      "39:nn.Sigmoid()",
+      "52:attn = F.softmax(attn, dim=-1)",
+      "60:gate = self.gate(torch.cat([x1, x2], dim=1))",
+      "63:return x1 + gate * fusion  # 最终输出 = 原始输入 + 门控权重 * 融合特征",
+      "104:nn.Softmax(dim=-1)",
+      "108:nn.Sigmoid()",
+      "117:nn.Softmax(dim=1)",
+      "270:weights = F.softmax(self.fusion_weights, dim=0)"
+    ]
+  },
+  {
+    "repo": "zhangyiyan001/AMSFN",
+    "file": "main.py",
+    "url": "https://raw.githubusercontent.com/zhangyiyan001/AMSFN/fa221d071e73119e89ada3a0b88371b8bf4d3071/main.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\zhangyiyan001\\AMSFN\\main.py",
+    "lines": 435,
+    "definitions": [
+      "21:def get_dataset_info(dataset_name):",
+      "64:def prepare_data(args):",
+      "74:def initialize_model(args, dataset_info):",
+      "107:def train_epoch(model, train_iter, optimizer, criterion, device):",
+      "121:def evaluate_model(model, test_iter, device):",
+      "132:def compute_metrics(y_test, y_pred):",
+      "139:def save_results(args, dataset_info, y_test, y_pred, best_accuracy, aa, kappa, training_time, model_stats, epoch_times):",
+      "180:def get_model_attr(model, attr_name):",
+      "186:def plot_fusion_weights(args):",
+      "257:def main(args):"
+    ],
+    "candidate_markers": [
+      "322:weights = F.softmax(get_model_attr(model, 'fusion_weights'), dim=0)",
+      "324:weights = F.softmax(model.fusion_weights, dim=0)"
+    ]
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\README.md",
+    "lines": 19,
+    "definitions": [],
+    "candidate_markers": []
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/README.md",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\README.md",
+    "lines": 1,
+    "definitions": [],
+    "candidate_markers": []
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/WTDis.py",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/WTDis.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\WTDis.py",
+    "lines": 215,
+    "definitions": [
+      "16:class _ScaleModule(nn.Module):",
+      "27:class WTDs(nn.Module):"
+    ],
+    "candidate_markers": [
+      "49:self.sigmoid = nn.Sigmoid()",
+      "158:spatial_attn_hist = self.sigmoid(self.base_scale(self.base_conv(torch.cat([max_guass_hist.cuda(), avg_guass_hist.cuda()], dim=1))))",
+      "168:spatial_attn = self.sigmoid(self.base_scale(self.base_conv(torch.cat([max_guass, avg_guass], dim=1))))"
+    ]
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/WTConv.py",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/WTConv.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\WTConv.py",
+    "lines": 133,
+    "definitions": [
+      "9:def create_wavelet_filter(wave, in_size, out_size, type=torch.float):",
+      "31:def wavelet_transform(x, filters):",
+      "39:def inverse_wavelet_transform(x, filters):",
+      "47:class WTConv2d(nn.Module):",
+      "124:class _ScaleModule(nn.Module):"
+    ],
+    "candidate_markers": []
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/img_encoder.py",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/img_encoder.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\img_encoder.py",
+    "lines": 146,
+    "definitions": [
+      "10:class FRGCM(torch.nn.Module):",
+      "65:class Pooling(nn.Module):",
+      "82:class Classifier(nn.Module):",
+      "93:class LinPros(nn.Module):",
+      "105:class IMG_Encoder(nn.Module):"
+    ],
+    "candidate_markers": [
+      "106:def __init__(self, channels, num_classes, image_size, hidden_dim, emb_dim, patch_size = 1, pool: str = \"mean\"):",
+      "112:self.patch_size = patch_size",
+      "113:self.num_patches = (image_size // patch_size) ** 2",
+      "115:self.patch_dim = channels * patch_size ** 2",
+      "118:self.patch_embeddings = PatchEmbeddings(patch_size=self.patch_size, patch_dim=self.patch_dim, emb_dim=self.emb_dim)",
+      "122:hidden_dim=self.hidden_dim, num_patch=self.num_patch, patch_size=patch_size)"
+    ]
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/models.py",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/models.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\models.py",
+    "lines": 324,
+    "definitions": [
+      "12:class ContrastiveLoss(nn.Module):",
+      "39:class LayerNorm(nn.LayerNorm):",
+      "46:class QuickGELU(nn.Module):",
+      "51:class ResidualAttentionBlock(nn.Module):",
+      "75:class Transformer(nn.Module):",
+      "86:class LinPro(nn.Module):",
+      "98:class FVMGN(nn.Module):"
+    ],
+    "candidate_markers": [
+      "48:return x * torch.sigmoid(1.702 * x)",
+      "99:def __init__(self, embed_dim: int, inchannel, vision_patch_size: int, num_classes, # vision",
+      "121:self.wtdis = WTDs(in_channels=self.inchannel // 2, kernel_size=3, wt_levels=1, wt_type='db1', imgsize=vision_patch_size)",
+      "124:image_size = vision_patch_size, hidden_dim = embed_dim // 8, emb_dim = embed_dim // 2)",
+      "126:image_size = vision_patch_size, hidden_dim = embed_dim // 8, emb_dim = embed_dim // 2)",
+      "212:return torch.tensor(np.array(LL_list)).cuda(), torch.tensor(np.array(LH_list)).cuda()"
+    ]
+  },
+  {
+    "repo": "ZJier/FVMGN",
+    "file": "GitHub-FVMGN/main.py",
+    "url": "https://raw.githubusercontent.com/ZJier/FVMGN/b12adb0bf769e82926135cba1d30639aed026c4f/GitHub-FVMGN/main.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\ZJier\\FVMGN\\GitHub-FVMGN\\main.py",
+    "lines": 517,
+    "definitions": [
+      "96:def applyPCA(X, numComponents = 30):",
+      "106:def train(epoch, model, num_epoch, label_name, label_queue):",
+      "187:def test(model, label_name):"
+    ],
+    "candidate_markers": [
+      "57:group_train.add_argument('--patch_size', type=int, default=11, help=\"Spatial neighbourhood\")",
+      "75:group_da.add_argument('--flip_augmentation', action='store_true', default=False, help=\"Random flips (if patch_size > 1)\")",
+      "93:PATCHSIZE = args.patch_size",
+      "156:loss_cls_hsi = F.nll_loss(F.log_softmax(label_src_pred_hsi, dim=1), label_src.long())",
+      "157:loss_cls_other = F.nll_loss(F.log_softmax(label_src_pred_other, dim=1), label_src.long())",
+      "210:loss += F.nll_loss(F.log_softmax(label_src_pred, dim = 1), label.long()).item()",
+      "375:r = int(hyperparams['patch_size'] / 2) + 1",
+      "382:# img_src = pad_img(img_src, hyperparams['patch_size']//2).astype(np.float32)",
+      "383:# img_tar = pad_img(img_tar, hyperparams['patch_size']//2).astype(np.float32)",
+      "384:# gt_src = pad_gt(gt_src, hyperparams['patch_size']//2).astype(np.float32)",
+      "385:# gt_tar = pad_gt(gt_tar, hyperparams['patch_size']//2).astype(np.float32)",
+      "421:# pretrained_dict  = torch.jit.load('./ViT-B-32.pt', map_location=\"cpu\").state_dict()",
+      "422:# embed_dim = pretrained_dict[\"text_projection\"].shape[1]   # 512",
+      "424:# context_length = pretrained_dict[\"positional_embedding\"].shape[0]   # 77",
+      "425:# vocab_size = pretrained_dict[\"token_embedding.weight\"].shape[0]   # 49408",
+      "426:# transformer_width = pretrained_dict[\"ln_final.weight\"].shape[0]   # 512",
+      "433:model = FVMGN(embed_dim, img_src.shape[-1], hyperparams['patch_size'], gt_src.max(), context_length,",
+      "437:#     if key in pretrained_dict:",
+      "438:#         del pretrained_dict[key]",
+      "441:# pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict and 'visual' not in k.split('.')}",
+      "442:# model_dict.update(pretrained_dict)",
+      "495:classification_map(cls_maps, test_gt_tar, results['Overall_Accuracy'], DATASET, MODEL, hyperparams['patch_size'], TTimes=1)",
+      "508:# cls_map(cls_maps, test_gt_tar, results['Overall_Accuracy'], DATASET, MODEL, hyperparams['patch_size'], TTimes=1)",
+      "510:show_results(results, label_values=LABEL_VALUES_src, agregated=False, runs=N_RUNS)",
+      "511:# write_results(hyperparams, results_all, params_model, label_values=LABEL_VALUES_src, agregated=True, runs=N_RUNS)",
+      "514:show_results(results_all, label_values=LABEL_VALUES_src, agregated=True, runs=N_RUNS)",
+      "517:label_values=LABEL_VALUES_src, agregated=True, runs=N_RUNS, top_k=TOP_K)"
+    ]
+  },
+  {
+    "repo": "mbzuai-oryx/TerraFM",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/mbzuai-oryx/TerraFM/e186ad85be486862cda99e992342e9afb175be02/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\mbzuai-oryx\\TerraFM\\README.md",
+    "lines": 186,
+    "definitions": [],
+    "candidate_markers": [
+      "12:[![Model Zoo](https://img.shields.io/badge/Model%20Zoo-HuggingFace-blue)](#-model-zoo)",
+      "17:- **Jun-09-25**: 🚀 Initial release of **TerraFM codebase** and **pretrained models**",
+      "41:- **Multimodal Pretraining**: Uses Sentinel-1 (SAR) and Sentinel-2 (L1C, L2A) as natural augmentations.",
+      "42:- **Large-Scale Dataset**: Trained on 18.7M global tiles from the [Major-TOM](https://huggingface.co/Major-TOM) dataset.",
+      "43:- **Cross-Attention Fusion**: Dynamically aggregates information across sensors at patch level.",
+      "44:- **Dual-Centering**: Mitigates long-tailed land cover bias using ESA WorldCover statistics.",
+      "61:| TerraFM-B | Sentinel-1 RTC + Sentinel-2 Level 2A + Sentinel-2 Level 1C | 224×224 | ViT-Base | [Download](https://huggingface.co/MBZUAI/TerraFM) |",
+      "62:| TerraFM-L | Sentinel-1 RTC + Sentinel-2 Level 2A + Sentinel-2 Level 1C | 224×224 | ViT-Large | [Download](https://huggingface.co/MBZUAI/TerraFM) |",
+      "80:# Load pretrained weights (e.g., TerraFM-B.pth)"
+    ]
+  },
+  {
+    "repo": "mbzuai-oryx/TerraFM",
+    "file": "terrafm.py",
+    "url": "https://raw.githubusercontent.com/mbzuai-oryx/TerraFM/e186ad85be486862cda99e992342e9afb175be02/terrafm.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\mbzuai-oryx\\TerraFM\\terrafm.py",
+    "lines": 374,
+    "definitions": [
+      "14:def make_2tuple(x):",
+      "23:def _no_grad_trunc_normal_(tensor, mean, std, a, b):",
+      "59:def trunc_normal_(tensor, mean=0., std=1., a=-2., b=2.):",
+      "64:def drop_path(x, drop_prob: float = 0., training: bool = False):",
+      "74:class DropPath(nn.Module):",
+      "85:class Mlp(nn.Module):",
+      "104:class Attention(nn.Module):",
+      "131:class Block(nn.Module):",
+      "153:class PatchEmbed(nn.Module):",
+      "199:class TokenProjection(nn.Module):",
+      "229:class TerraFM(nn.Module):",
+      "364:def terrafm_base(patch_size=16, **kwargs):",
+      "370:def terrafm_large(patch_size=16, **kwargs):"
+    ],
+    "candidate_markers": [
+      "122:attn = attn.softmax(dim=-1)",
+      "158:patch_size: int,",
+      "159:in_chans_s1: int,",
+      "160:in_chans_s2: int,",
+      "165:self.patch_size = patch_size",
+      "166:num_patches = (img_size // patch_size) * (img_size // patch_size)",
+      "169:self.conv2d_s2_l2a = nn.Conv2d(in_chans_s2, attn_dim, kernel_size=patch_size, stride=patch_size)",
+      "170:self.conv2d_s2_l1c = nn.Conv2d(in_chans_s2, attn_dim, kernel_size=patch_size, stride=patch_size)",
+      "171:self.conv2d_s1 = nn.Conv2d(in_chans_s1, attn_dim, kernel_size=patch_size, stride=patch_size)",
+      "230:def __init__(self, img_size=[224], patch_size=16, in_chans=3, num_classes=0, embed_dim=768, depth=12,",
+      "237:img_size=img_size[0], patch_size=patch_size, in_chans_s1=2, in_chans_s2=12, embed_dim=embed_dim)",
+      "276:w0 = w // self.patch_embed.patch_size",
+      "277:h0 = h // self.patch_embed.patch_size",
+      "345:h, w = int(images.shape[2] / self.patch_embed.patch_size), int(images.shape[3] / self.patch_embed.patch_size)",
+      "364:def terrafm_base(patch_size=16, **kwargs):",
+      "366:patch_size=patch_size, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4,",
+      "370:def terrafm_large(patch_size=16, **kwargs):",
+      "372:patch_size=16, embed_dim=1024, depth=24, num_heads=16, mlp_ratio=4, qkv_bias=True,"
+    ]
+  },
+  {
+    "repo": "danfenghong/Information_Fusion_SeaMo",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/danfenghong/Information_Fusion_SeaMo/8ec13655698a775c700fd1256bac52f88a4fb490/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\danfenghong\\Information_Fusion_SeaMo\\README.md",
+    "lines": 263,
+    "definitions": [],
+    "candidate_markers": [
+      "18:Remote Sensing (RS) data encapsulates rich multi-dimensional information essential for Earth observation. Its vast volume, diverse sources, and temporal continuity make it particularly well-",
+      "33:- [Pretraining SeaMo](#pretraining-seamo)",
+      "53:## 🚀 Pretraining SeaMo",
+      "55:The pretraining experiments were conducted on four NVIDIA GeForce RTX 4090 GPUs.",
+      "56:Our pretraining implementation is primarily based on [SSL4EO-S12](https://github.com/zhu-xlab/SSL4EO-S12/tree/main/src/benchmark/pretrain_ssl).",
+      "58:The pre-trained model can be downloaded 🤗[here](https://huggingface.co/Moonboy12138/SeaMo/blob/main/checkpoint-199.pth). This checkpoint includes the full pre-training setup, comprising both",
+      "60:We also provide the backbone model 🤗[here](https://huggingface.co/Moonboy12138/SeaMo/blob/main/SeaMo.pth), which contains only the Encoder. This makes it convenient to use SeaMo for feature ",
+      "63:### Pretrained Model Download",
+      "67:| checkpoint-199.pth  | [Download](https://huggingface.co/Moonboy12138/SeaMo/blob/main/checkpoint-199.pth)                                   | The Complete Pretrained Model        |",
+      "68:| SeaMo.pth           | [Download](https://huggingface.co/Moonboy12138/SeaMo/blob/main/SeaMo.pth)                                            | The Backbone Model (Only Encoder)    |",
+      "70:### Pretrained Dataset SSL4EO-S12",
+      "74:| SSL4EO-S12    | [Download](https://mediatum.ub.tum.de/1702379)                                                                       | Sentinel 1 & 2 Pretraining Dataset   |",
+      "91:#### 1. Checkpoint-Level Interpolation (Fixed Image Sizes)",
+      "93:If the target image size is known and fixed, you can interpolate the positional encodings once and save a new checkpoint using [`convert_model.py`](convert_model.py):",
+      "100:--patch_size 8",
+      "103:The result 🤗[`SeaMo_img256.pth`](https://huggingface.co/Moonboy12138/SeaMo/blob/main/SeaMo_img256.pth) can be loaded directly, e.g. in [`models_feature_convert_seamo.py`](models_feature_conv",
+      "109:img   = torch.randn(1, 12, 256, 256).cuda()",
+      "110:model = vit_base_patch8_256().cuda()",
+      "112:checkpoint = torch.load(\"SeaMo_img256.pth\", map_location=\"cuda\")",
+      "113:msg = model.load_state_dict(checkpoint, strict=False)",
+      "121:The converted checkpoint must be loaded into a network definition with the matching",
+      "132:img = torch.randn(1, 12, 196, 196).cuda()",
+      "133:model = vit_base_patch8().cuda()",
+      "135:pretrained_dict = torch.load('SeaMo.pth', map_location='cuda')",
+      "136:checkpoint_model = pretrained_dict",
+      "139:msg = model.load_state_dict(checkpoint_model, strict=False)",
+      "154:'channel_12': nn.Conv2d(12, embed_dim, kernel_size=patch_size, stride=patch_size),",
+      "155:'channel_2': nn.Conv2d(2, embed_dim, kernel_size=patch_size, stride=patch_size)",
+      "166:kernel_size=self.patch_size, stride=self.patch_size",
+      "167:).cuda()",
+      "177:SeaMo uses channel-wise normalization with fixed mean and standard deviation values from [SSL4EO-S12](https://github.com/zhu-xlab/SSL4EO-S12/blob/main/src/benchmark/pretrain_ssl/datasets/SSL",
+      "210:| SegMunich     | [Download](https://huggingface.co/datasets/Moonboy12138/SegMunich/blob/main/TUM_128.zip)                             | MSI Semantic Land Cover Segmentation Tasks           "
+    ]
+  },
+  {
+    "repo": "danfenghong/Information_Fusion_SeaMo",
+    "file": "models_pretrain_seamo.py",
+    "url": "https://raw.githubusercontent.com/danfenghong/Information_Fusion_SeaMo/8ec13655698a775c700fd1256bac52f88a4fb490/models_pretrain_seamo.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\danfenghong\\Information_Fusion_SeaMo\\models_pretrain_seamo.py",
+    "lines": 542,
+    "definitions": [
+      "11:class PatchEmbed(nn.Module):",
+      "48:class Attention(nn.Module):",
+      "88:class CrossAttention(nn.Module):",
+      "117:class Block(nn.Module):",
+      "133:class DecoderBlock(nn.Module):",
+      "154:class DecoderMAE_sar(nn.Module):",
+      "250:class DecoderMAE_optical(nn.Module):",
+      "340:class VisionTransformer(nn.Module):",
+      "396:class SeaMo(nn.Module):",
+      "484:def get_2d_sincos_pos_embed(embed_dim, grid_size, cls_token=False):",
+      "495:def get_2d_sincos_pos_embed_from_grid(embed_dim, grid):",
+      "502:def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):",
+      "511:def get_mask(bsz, seq_len, device, mask_ratio):",
+      "528:def apply_mask_to_sequence(x, ids_keep):"
+    ],
+    "candidate_markers": [
+      "14:def __init__(self, img_size=224, patch_size=16, embed_dim=768, norm_layer=None):",
+      "17:self.patch_size = (patch_size, patch_size)",
+      "18:self.grid_size = (img_size // patch_size, img_size // patch_size)",
+      "23:'channel_12': nn.Conv2d(12, embed_dim, kernel_size=patch_size, stride=patch_size),",
+      "24:'channel2': nn.Conv2d(2, embed_dim, kernel_size=patch_size, stride=patch_size)",
+      "40:self.proj_dict[channel_type] = nn.Conv2d(C, self.embed_dim, kernel_size=self.patch_size,",
+      "41:stride=self.patch_size).to(x.device)",
+      "79:attn = attn.softmax(dim=-1)",
+      "108:attn = attn.softmax(dim=-1)",
+      "162:patch_size=8,",
+      "171:self.patch_size = patch_size",
+      "187:pixels_per_patch = int(patch_size * patch_size * total_channels)",
+      "258:patch_size=8,",
+      "267:self.patch_size = patch_size",
+      "279:pixels_per_patch = int(patch_size * patch_size * total_channels)",
+      "341:def __init__(self, img_size=224, patch_size=16, embed_dim=768, depth=12, num_heads=12,",
+      "354:self.patch_embed = PatchEmbed(img_size=img_size, patch_size=patch_size, embed_dim=embed_dim)",
+      "397:def __init__(self, patch_size=8, embed_dim=768, depth=12, num_heads=16, decoder_dim=512,",
+      "406:self.patch_size = patch_size",
+      "411:img_size=image_size, patch_size=patch_size, embed_dim=embed_dim, depth=depth,",
+      "421:patch_size=self.patch_size,",
+      "429:patch_size=self.patch_size,",
+      "432:def forward(self, optical_imgs, radar_imgs, optical_mask_ratio, sar_mask_ratio):",
+      "443:mask_ratio=sar_mask_ratio)",
+      "445:mask_ratio=optical_mask_ratio)",
+      "463:i=self.patch_size, j=self.patch_size)",
+      "468:i=self.patch_size, j=self.patch_size)",
+      "478:def load_pretrained(self, checkpoint_path, device='cpu'):",
+      "479:checkpoint = torch.load(checkpoint_path, map_location=device)",
+      "480:msg = self.load_state_dict(checkpoint['model'], strict=False)",
+      "481:print(f\"Loaded checkpoint with message: {msg}\")",
+      "511:def get_mask(bsz, seq_len, device, mask_ratio):"
+    ]
+  },
+  {
+    "repo": "danfenghong/Information_Fusion_SeaMo",
+    "file": "models_cls_convert_seamo.py",
+    "url": "https://raw.githubusercontent.com/danfenghong/Information_Fusion_SeaMo/8ec13655698a775c700fd1256bac52f88a4fb490/models_cls_convert_seamo.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\danfenghong\\Information_Fusion_SeaMo\\models_cls_convert_seamo.py",
+    "lines": 422,
+    "definitions": [
+      "14:class PatchEmbed(nn.Module):",
+      "66:class VisionTransformer(nn.Module):",
+      "198:class FFN(nn.Module):",
+      "217:class Attention(nn.Module):",
+      "257:class Block(nn.Module):",
+      "303:def get_2d_sincos_pos_embed(embed_dim, grid_size, cls_token=False):",
+      "321:def get_2d_sincos_pos_embed_from_grid(embed_dim, grid):",
+      "332:def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):",
+      "353:def get_1d_sincos_pos_embed_from_grid_torch(embed_dim, pos):",
+      "374:def apply_mask_to_sequence(x, ids_keep):",
+      "378:def vit_base_patch8_128(**kwargs):",
+      "394:def vit_base_patch8_256(**kwargs):"
+    ],
+    "candidate_markers": [
+      "19:def __init__(self, img_size=224, patch_size=16, embed_dim=768, norm_layer=None):",
+      "22:patch_size = (patch_size, patch_size)",
+      "25:self.patch_size = patch_size",
+      "26:self.grid_size = (img_size[0] // patch_size[0], img_size[1] // patch_size[1])",
+      "31:'channel_12': nn.Conv2d(12, embed_dim, kernel_size=patch_size, stride=patch_size),",
+      "32:'channel2': nn.Conv2d(2, embed_dim, kernel_size=patch_size, stride=patch_size)",
+      "54:self.proj_dict[channel_type] = nn.Conv2d(C, out_channels=self.embed_dim, kernel_size=self.patch_size,",
+      "55:stride=self.patch_size).cuda()",
+      "58:x = self.proj_dict[channel_type](x).flatten(2).transpose(1, 2).cuda()",
+      "72:patch_size=16,",
+      "89:num_patches = (img_size // patch_size) ** 2",
+      "100:self.patch_embed = PatchEmbed(img_size=img_size, patch_size=patch_size, embed_dim=embed_dim)",
+      "150:pos_embed = self.pos_embed[:, :, :].cuda()",
+      "248:attn = attn.softmax(dim=-1)",
+      "381:patch_size=8,",
+      "397:patch_size=8,",
+      "410:optical = torch.randn(5, 12, 256, 256).cuda()",
+      "411:sar = torch.randn(5, 2, 128, 128).cuda()",
+      "413:model = vit_base_patch8_256().cuda()",
+      "415:pretrained_dict = torch.load('SeaMo_img256.pth', map_location='cuda')",
+      "416:checkpoint_model = pretrained_dict",
+      "419:msg = model.load_state_dict(checkpoint_model, strict=False)"
+    ]
+  },
+  {
+    "repo": "danfenghong/Information_Fusion_SeaMo",
+    "file": "models_feature_convert_seamo.py",
+    "url": "https://raw.githubusercontent.com/danfenghong/Information_Fusion_SeaMo/8ec13655698a775c700fd1256bac52f88a4fb490/models_feature_convert_seamo.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\danfenghong\\Information_Fusion_SeaMo\\models_feature_convert_seamo.py",
+    "lines": 412,
+    "definitions": [
+      "14:class PatchEmbed(nn.Module):",
+      "66:class VisionTransformer(nn.Module):",
+      "188:class FFN(nn.Module):",
+      "207:class Attention(nn.Module):",
+      "247:class Block(nn.Module):",
+      "293:def get_2d_sincos_pos_embed(embed_dim, grid_size, cls_token=False):",
+      "311:def get_2d_sincos_pos_embed_from_grid(embed_dim, grid):",
+      "322:def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):",
+      "343:def get_1d_sincos_pos_embed_from_grid_torch(embed_dim, pos):",
+      "364:def apply_mask_to_sequence(x, ids_keep):",
+      "368:def vit_base_patch8_128(**kwargs):",
+      "384:def vit_base_patch8_256(**kwargs):"
+    ],
+    "candidate_markers": [
+      "19:def __init__(self, img_size=224, patch_size=16, embed_dim=768, norm_layer=None):",
+      "22:patch_size = (patch_size, patch_size)",
+      "25:self.patch_size = patch_size",
+      "26:self.grid_size = (img_size[0] // patch_size[0], img_size[1] // patch_size[1])",
+      "31:'channel_12': nn.Conv2d(12, embed_dim, kernel_size=patch_size, stride=patch_size),",
+      "32:'channel2': nn.Conv2d(2, embed_dim, kernel_size=patch_size, stride=patch_size)",
+      "54:self.proj_dict[channel_type] = nn.Conv2d(C, out_channels=self.embed_dim, kernel_size=self.patch_size,",
+      "55:stride=self.patch_size).cuda()",
+      "58:x = self.proj_dict[channel_type](x).flatten(2).transpose(1, 2).cuda()",
+      "72:patch_size=16,",
+      "88:num_patches = (img_size // patch_size) ** 2",
+      "99:self.patch_embed = PatchEmbed(img_size=img_size, patch_size=patch_size, embed_dim=embed_dim)",
+      "146:pos_embed = self.pos_embed[:, :, :].cuda()",
+      "238:attn = attn.softmax(dim=-1)",
+      "371:patch_size=8,",
+      "387:patch_size=8,",
+      "400:optical = torch.randn(5, 12, 256, 256).cuda()",
+      "401:sar = torch.randn(5, 2, 128, 128).cuda()",
+      "403:model = vit_base_patch8_256().cuda()",
+      "405:pretrained_dict = torch.load('SeaMo_img256.pth', map_location='cuda')",
+      "406:checkpoint_model = pretrained_dict",
+      "409:msg = model.load_state_dict(checkpoint_model, strict=False)"
+    ]
+  },
+  {
+    "repo": "Hooorace-S/UniME",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/Hooorace-S/UniME/88ef06d68bbf4d74be99db5f3a10fd07d90e690a/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Hooorace-S\\UniME\\README.md",
+    "lines": 152,
+    "definitions": [],
+    "candidate_markers": [
+      "10:***UniME Overview.** Stage 1 pretrains a single ViT Uni-Encoder with masked self-supervision and a lightweight auxiliary decoder (discarded after pretraining). Stage 2 introduces parallel mo",
+      "19:| Segmentation model | Pretrain encoder | Description |",
+      "88:| `scripts/pipeline/` | End-to-end launchers that run pretraining first and then fine-tuning for a matched model scale | Use when you want a one-command workflow |",
+      "89:| `scripts/pipeline/train_base.sh` | Pretrains `UniEncoderBase`, then fine-tunes `UniMEBase` | Released `Base` variant |",
+      "90:| `scripts/pipeline/train_small.sh` | Pretrains `UniEncoderSmall`, then fine-tunes `UniMESmall` | Released `Small` variant |",
+      "91:| `scripts/pipeline/train_tiny.sh` | Pretrains `UniEncoderTiny`, then fine-tunes `UniMETiny` | Released `Tiny` variant |",
+      "92:| `scripts/pipeline/train_nano.sh` | Pretrains `UniEncoderNano`, then fine-tunes `UniMENano` | Released `Nano` variant |",
+      "93:| `scripts/pipeline/train_original.sh` | Pretrains `UniEncoder`, then fine-tunes `UniME` | Reproduces the original model setting |",
+      "94:| `scripts/pretrain.sh` | Runs only stage-1 pretraining for `UniEncoder` | Standalone pretraining |",
+      "95:| `scripts/finetune.sh` | Runs only stage-2 fine-tuning for `UniME` | Standalone fine-tuning from an existing pretrained checkpoint |",
+      "101:Run the pretraining stage with:",
+      "104:chmod +x ./scripts/pretrain.sh",
+      "105:bash ./scripts/pretrain.sh",
+      "108:`scripts/pretrain.sh` executes the pretraining stage independently. By default it launches `pretrain.py` for `UniEncoder`. If you want to switch to multi-GPU training, replace the direct `py",
+      "112:Before fine-tuning, point `--uni_encoder_checkpoint` in `scripts/finetune.sh` at the saved pretraining checkpoint. We recommend using the `ema_best_checkpoint.pth` produced by pretraining. `",
+      "120:If you want a matched pretraining + fine-tuning workflow in one command, use the scripts in `scripts/pipeline/`. These scripts first run pretraining for the corresponding `UniEncoder*`, then",
+      "138:#### 4. Gradient Checkpointing",
+      "140:To better balance training speed and GPU memory usage across different hardware setups, the codebase supports gradient checkpointing in the encoder, regularizer, and decoder modules. These s"
+    ]
+  },
+  {
+    "repo": "Hooorace-S/UniME",
+    "file": "models/UniME/blocks.py",
+    "url": "https://raw.githubusercontent.com/Hooorace-S/UniME/88ef06d68bbf4d74be99db5f3a10fd07d90e690a/models/UniME/blocks.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Hooorace-S\\UniME\\models\\UniME\\blocks.py",
+    "lines": 123,
+    "definitions": [
+      "5:class ConvBlock(nn.Module):",
+      "40:class ECABlock(nn.Module):",
+      "80:class FusionBlock(nn.Module):",
+      "103:class FusionBlockVariants(nn.Module):"
+    ],
+    "candidate_markers": [
+      "48:self.sigmoid = nn.Sigmoid()",
+      "73:# Sigmoid activation",
+      "74:y = self.sigmoid(y).unsqueeze(-1).unsqueeze(-1)  # [B, C, D, 1, 1]"
+    ]
+  },
+  {
+    "repo": "Hooorace-S/UniME",
+    "file": "models/UniME/encoder.py",
+    "url": "https://raw.githubusercontent.com/Hooorace-S/UniME/88ef06d68bbf4d74be99db5f3a10fd07d90e690a/models/UniME/encoder.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\Hooorace-S\\UniME\\models\\UniME\\encoder.py",
+    "lines": 79,
+    "definitions": [
+      "12:class CNNEncoder(nn.Module):"
+    ],
+    "candidate_markers": [
+      "5:from torch.utils.checkpoint import checkpoint",
+      "20:use_checkpoint: bool = False,",
+      "23:self.use_checkpoint = use_checkpoint",
+      "44:def _checkpoint_stage_forward(",
+      "49:# Static typing only: checkpoint() preserves the wrapped function's runtime return type,",
+      "53:checkpoint(",
+      "73:if self.use_checkpoint and self.training:",
+      "74:x = self._checkpoint_stage_forward(stage, x)"
+    ]
+  },
+  {
+    "repo": "google-deepmind/representations4d",
+    "file": "README.md",
+    "url": "https://raw.githubusercontent.com/google-deepmind/representations4d/dd932580e30bde0362692532c470483892f29bb8/README.md",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\google-deepmind\\representations4d\\README.md",
+    "lines": 152,
+    "definitions": [],
+    "candidate_markers": [
+      "58:## Checkpoints",
+      "60:We release the following checkpoints",
+      "62:| Name | Model | # Params | File Size | Checkpoint |",
+      "64:| 4DS-B-dist-e | Backbone (ViT-B) | 88M | 334MB | [link](https://storage.googleapis.com/representations4d/checkpoints/scaling4d_dist_b.npz) |",
+      "65:| 4DS-e | Backbone (ViT-e) | 3.8B | 14GB | [link](https://storage.googleapis.com/representations4d/checkpoints/scaling4d_e.npz) |",
+      "66:| 4DS-B-dist-e ScanNet depth | Backbone (ViT-B) + Readout | 105M | 420MB | [link](https://storage.googleapis.com/representations4d/checkpoints/scaling4d_dist_b_depth.npz) |",
+      "67:| MooG | Backbone (ConvNet + Transformer) | 35M | 140MB | [link](https://storage.googleapis.com/representations4d/checkpoints/moog_ego4d_backbone_ckpt_164335139.npz) |",
+      "68:| MooG | Box Track Readout (Cross Attention) | 35M | 140MB | [link](https://storage.googleapis.com/representations4d/checkpoints/moog_ego4d_box_track_head_ckpt_164335139.npz) |",
+      "69:| MooG | Point Track Readout (Cross Attention) | 35M | 140MB | [link](https://storage.googleapis.com/representations4d/checkpoints/moog_ego4d_point_track_head_ckpt_164335139.npz) |",
+      "70:| RVM | Encoder + Decoder (ViT-S) | 34M | 270MB | [link](https://storage.googleapis.com/representations4d/checkpoints/pretrain_rvm_small16_256_204031069.npz) |",
+      "71:| RVM | Encoder + Decoder (ViT-B) | 117M | 641MB | [link](https://storage.googleapis.com/representations4d/checkpoints/pretrain_rvm_base16_256_203916225.npz) |",
+      "72:| RVM | Encoder + Decoder (ViT-L) | 375M | 1.6GB | [link](https://storage.googleapis.com/representations4d/checkpoints/pretrain_rvm_large16_256_202497301.npz) |",
+      "73:| RVM | Encoder + Decoder (ViT-H) | 743M | 3.1GB | [link](https://storage.googleapis.com/representations4d/checkpoints/pretrain_rvm_huge16_256_203854202.npz) |",
+      "74:| DINOv2 | Frozen Teacher (ViT-B) | 86.5M | 1.6GB | [link](https://storage.googleapis.com/representations4d/checkpoints/frozen_dinov2-vit_b.safetensors) |",
+      "75:| Omnivorous DINOv2 |  Adapted Student (ViT-B) | 86.5M | 1.6GB | [link](https://storage.googleapis.com/representations4d/checkpoints/omnivorous_dinov2-vit_b.safetensors) |",
+      "76:| GenCeption | Transformer (WAN 14B) | 14B | 26.7GB | [link](https://storage.googleapis.com/representations4d/checkpoints/genception/genception_14b_transformer.npz) |",
+      "77:| GenCeption | Transformer (WAN 1.3B) | 1.3B | 2.7GB | [link](https://storage.googleapis.com/representations4d/checkpoints/genception/genception_1.3b_transformer.npz) |",
+      "78:| GenCeption | VAE | 100M | 484MB | [link](https://storage.googleapis.com/representations4d/checkpoints/genception/vae/diffusion_pytorch_model.safetensors) |",
+      "133:## License and disclaimer",
+      "137:All software is licensed under the Apache License, Version 2.0 (Apache 2.0);",
+      "138:you may not use this file except in compliance with the Apache 2.0 license.",
+      "139:You may obtain a copy of the Apache 2.0 license at:",
+      "140:https://www.apache.org/licenses/LICENSE-2.0",
+      "142:All other materials are licensed under the Creative Commons Attribution 4.0",
+      "143:International License (CC-BY). You may obtain a copy of the CC-BY license at:",
+      "144:https://creativecommons.org/licenses/by/4.0/legalcode",
+      "147:materials distributed here under the Apache 2.0 or CC-BY licenses are",
+      "149:either express or implied. See the licenses for the specific language governing",
+      "150:permissions and limitations under those licenses."
+    ]
+  },
+  {
+    "repo": "google-deepmind/representations4d",
+    "file": "omnivorous/vit.py",
+    "url": "https://raw.githubusercontent.com/google-deepmind/representations4d/dd932580e30bde0362692532c470483892f29bb8/omnivorous/vit.py",
+    "local_cache": "C:\\Users\\goh\\AppData\\Local\\Temp\\msi-sar-literature-audit-20261003\\google-deepmind\\representations4d\\omnivorous\\vit.py",
+    "lines": 401,
+    "definitions": [
+      "32:class IdentityLayer(nn.Module):",
+      "40:class StochasticDepth(nn.Module):",
+      "57:class MlpBlock(nn.Module):",
+      "99:def get_fixed_sincos_position_embedding(",
+      "142:class AddFixedSinCosPositionEmbedding(nn.Module):",
+      "158:def quick_gelu(x: jnp.ndarray) -> jnp.ndarray:",
+      "163:class ToTokenSequence(nn.Module):",
+      "264:class Encoder1DBlock(nn.Module):",
+      "300:class ViTBackbone(nn.Module):"
+    ],
+    "candidate_markers": [
+      "3:# Licensed under the Apache License, Version 2.0 (the \"License\");",
+      "4:# you may not use this file except in compliance with the License.",
+      "5:# You may obtain a copy of the License at",
+      "7:#    http://www.apache.org/licenses/LICENSE-2.0",
+      "10:# distributed under the License is distributed on an \"AS IS\" BASIS,",
+      "12:# See the License for the specific language governing permissions and",
+      "13:# limitations under the License.",
+      "160:return x * jax.nn.sigmoid(1.702 * x)"
+    ]
+  }
+]

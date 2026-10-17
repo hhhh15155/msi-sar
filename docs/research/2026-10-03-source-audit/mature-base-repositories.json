@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-03",
+  "repositories": [
+    {
+      "repo": "AnkurDeria/MFT",
+      "branch": "main",
+      "tree_sha": "de214e512ff1a8f6aefdf27fc2cb60c75e0f559a",
+      "license": null,
+      "files": [
+        "GRSS.jpg",
+        "Model/MFT.ipynb",
+        "Multimodal Fusion Transformer for Remote Sensing Image Classification_compressed.pdf",
+        "README.md",
+        "model.png",
+        "record.py"
+      ],
+      "downloaded": [
+        "README.md"
+      ],
+      "additional_source_read": "Model/MFT.ipynb code cells extracted and key model/training source read; notebook not executed"
+    },
+    {
+      "repo": "jingyao16/ExViT",
+      "branch": "main",
+      "tree_sha": "4c119148adbd3e95a0574c20d8d39c2bb6b8874f",
+      "license": null,
+      "files": [
+        "MViT_demo_h2013.py",
+        "MViT_pytorch_upload.py",
+        "README.md",
+        "Workflow_ExViT.png",
+        "log/HS-LiDAR Houston2013/13/Houston490.pt",
+        "log/HS-LiDAR Houston2013/13/precision.txt"
+      ],
+      "downloaded": [
+        "MViT_pytorch_upload.py",
+        "README.md"
+      ]
+    },
+    {
+      "repo": "SYFYN0317/MCFT",
+      "branch": "main",
+      "tree_sha": "e400aa2d57137b1e73263d6ef6c0f4c6b7c2dba4",
+      "license": null,
+      "files": [
+        "MViT_demo_h2013.py",
+        "MViT_pytorch_upload.py",
+        "README.md"
+      ],
+      "downloaded": [
+        "MViT_pytorch_upload.py",
+        "README.md"
+      ]
+    }
+  ],
+  "scope": "Static source audit; no model or notebook executed"
+}

@@ -1,0 +1,2 @@
+# Keep Linux entry scripts usable after Windows checkouts and transfers.
+*.sh text eol=lf

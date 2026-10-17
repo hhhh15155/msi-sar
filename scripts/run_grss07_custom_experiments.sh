@@ -10,8 +10,13 @@ GPU_ID="${GPU_ID:-0}"
 LOG_DIR="$ROOT/experiment_logs"
 mkdir -p "$LOG_DIR"
 
-for model in dfinet frekfuse mghofnet msfmamba softformer; do
+read -r -a MODELS <<<"${MODELS_FILTER:-dfinet frekfuse mghofnet msfmamba softformer}"
+for model in "${MODELS[@]}"; do
     config="configs/${model}_grss07_custom.yaml"
+    if [[ ! -f "$config" || ! -f "scripts/train_eval_${model}.py" ]]; then
+        echo "Missing script/config for model: $model" >&2
+        exit 2
+    fi
     logfile="$LOG_DIR/${model}_grss07_custom_gpu${GPU_ID}.log"
     echo "[$(date '+%H:%M:%S')] START ${model}_grss07_custom on GPU${GPU_ID}"
     CUDA_VISIBLE_DEVICES="$GPU_ID" PYTHONUNBUFFERED=1 \

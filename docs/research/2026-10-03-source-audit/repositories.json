@@ -1,0 +1,1052 @@
+[
+  {
+    "repository": "yelinlin321/GICLNet",
+    "url": "https://github.com/yelinlin321/GICLNet",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-08-31T09:10:26Z",
+    "description": null,
+    "tree_sha": "8087f11f6af3e6ceb40f5867f17bcdb31cc0fb80",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "Getf.py",
+        "size": 637
+      },
+      {
+        "path": "NOD.py",
+        "size": 347
+      },
+      {
+        "path": "Performance.py",
+        "size": 939
+      },
+      {
+        "path": "README.md",
+        "size": 57
+      },
+      {
+        "path": "Visualize.py",
+        "size": 1679
+      },
+      {
+        "path": "fun.py",
+        "size": 752
+      },
+      {
+        "path": "gcn.py",
+        "size": 24811
+      }
+    ]
+  },
+  {
+    "repository": "Zzp-12/ACFFN",
+    "url": "https://github.com/Zzp-12/ACFFN",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-05-06T03:36:30Z",
+    "description": null,
+    "tree_sha": "765443918a21baa550f6c93cd9befc614e3fb8c6",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "ACFFN.py",
+        "size": 13189
+      },
+      {
+        "path": "README.md",
+        "size": 309
+      },
+      {
+        "path": "demo.py",
+        "size": 8905
+      },
+      {
+        "path": "utils.py",
+        "size": 8229
+      }
+    ]
+  },
+  {
+    "repository": "Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "url": "https://github.com/Dilingliao/IEEE-TGRS_2026_LWM-Mamba",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-08-27T08:57:33Z",
+    "description": "A Lightweight Mamba Network for Joint Classification of Hyperspectral and LiDAR Data",
+    "tree_sha": "fd350109185712de4557f98b6b90136ce86d0833",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "LWMMamba.py",
+        "size": 10409
+      },
+      {
+        "path": "MAMamba.py",
+        "size": 23406
+      },
+      {
+        "path": "README.md",
+        "size": 4485
+      },
+      {
+        "path": "demo_LWM-Mamba.py",
+        "size": 13501
+      },
+      {
+        "path": "utils.py",
+        "size": 11030
+      }
+    ]
+  },
+  {
+    "repository": "zhangyiyan001/AMSFN",
+    "url": "https://github.com/zhangyiyan001/AMSFN",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2025-08-31T12:30:53Z",
+    "description": "The implementation of \"Adaptive Multi-Stage Fusion of Hyperspectral and LiDAR Data via Selective State Space Models\", Information Fusion, 2025.",
+    "tree_sha": "fa221d071e73119e89ada3a0b88371b8bf4d3071",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": ".idea/.gitignore",
+        "size": 190
+      },
+      {
+        "path": ".idea/CNN+Mamba.iml",
+        "size": 689
+      },
+      {
+        "path": ".idea/deployment.xml",
+        "size": 1116
+      },
+      {
+        "path": ".idea/inspectionProfiles/Project_Default.xml",
+        "size": 1238
+      },
+      {
+        "path": ".idea/inspectionProfiles/profiles_settings.xml",
+        "size": 174
+      },
+      {
+        "path": ".idea/misc.xml",
+        "size": 460
+      },
+      {
+        "path": ".idea/modules.xml",
+        "size": 277
+      },
+      {
+        "path": "README.md",
+        "size": 2578
+      },
+      {
+        "path": "__pycache__/dataset.cpython-310.pyc",
+        "size": 10200
+      },
+      {
+        "path": "__pycache__/dataset.cpython-39.pyc",
+        "size": 10398
+      },
+      {
+        "path": "__pycache__/local_vmamba.cpython-310.pyc",
+        "size": 23877
+      },
+      {
+        "path": "__pycache__/local_vmamba.cpython-39.pyc",
+        "size": 23648
+      },
+      {
+        "path": "__pycache__/model_stats.cpython-310.pyc",
+        "size": 2383
+      },
+      {
+        "path": "__pycache__/model_stats.cpython-39.pyc",
+        "size": 1713
+      },
+      {
+        "path": "__pycache__/module.cpython-310.pyc",
+        "size": 13715
+      },
+      {
+        "path": "__pycache__/module.cpython-39.pyc",
+        "size": 13750
+      },
+      {
+        "path": "__pycache__/visualization.cpython-310.pyc",
+        "size": 5088
+      },
+      {
+        "path": "__pycache__/visualization.cpython-39.pyc",
+        "size": 5059
+      },
+      {
+        "path": "__pycache__/vmamba.cpython-310.pyc",
+        "size": 8898
+      },
+      {
+        "path": "__pycache__/vmamba.cpython-39.pyc",
+        "size": 8045
+      },
+      {
+        "path": "dataset.py",
+        "size": 13573
+      },
+      {
+        "path": "framework.png",
+        "size": 966464
+      },
+      {
+        "path": "local_vmamba.py",
+        "size": 31656
+      },
+      {
+        "path": "main.py",
+        "size": 16284
+      },
+      {
+        "path": "mamba/__init__.py",
+        "size": 24
+      },
+      {
+        "path": "mamba/__pycache__/__init__.cpython-310.pyc",
+        "size": 193
+      },
+      {
+        "path": "mamba/__pycache__/__init__.cpython-39.pyc",
+        "size": 187
+      },
+      {
+        "path": "mamba/__pycache__/local_scan.cpython-310.pyc",
+        "size": 8364
+      },
+      {
+        "path": "mamba/__pycache__/local_scan.cpython-39.pyc",
+        "size": 8365
+      },
+      {
+        "path": "mamba/__pycache__/mambablock.cpython-310.pyc",
+        "size": 55247
+      },
+      {
+        "path": "mamba/__pycache__/mambablock.cpython-39.pyc",
+        "size": 57073
+      },
+      {
+        "path": "mamba/__pycache__/multi_mamba.cpython-310.pyc",
+        "size": 13147
+      },
+      {
+        "path": "mamba/__pycache__/multi_mamba.cpython-39.pyc",
+        "size": 13046
+      },
+      {
+        "path": "mamba/local_scan.py",
+        "size": 11028
+      },
+      {
+        "path": "mamba/mambablock.py",
+        "size": 90152
+      },
+      {
+        "path": "mamba/multi_mamba.py",
+        "size": 19201
+      },
+      {
+        "path": "mamba/rope.py",
+        "size": 5491
+      },
+      {
+        "path": "mamba/selective_scan/build/lib.linux-x86_64-cpython-39/selective_scan/__init__.py",
+        "size": 362
+      },
+      {
+        "path": "mamba/selective_scan/build/lib.linux-x86_64-cpython-39/selective_scan/selective_scan_interface.py",
+        "size": 4864
+      },
+      {
+        "path": "mamba/selective_scan/build/lib.linux-x86_64-cpython-39/selective_scan_cuda_core.cpython-39-x86_64-linux-gnu.so",
+        "size": 45859680
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/.ninja_deps",
+        "size": 1077580
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/.ninja_log",
+        "size": 1698
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/build.ninja",
+        "size": 3735
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan.o",
+        "size": 364456
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core.o",
+        "size": 6612040
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd2.o",
+        "size": 9291792
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd3.o",
+        "size": 491520
+      },
+      {
+        "path": "mamba/selective_scan/build/temp.linux-x86_64-cpython-39/csrc/selective_scan/selective_scan_core_fwd4.o",
+        "size": 6127616
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/reverse_scan.cuh",
+        "size": 17978
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan.cpp",
+        "size": 15236
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan.h",
+        "size": 2462
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_bwd_kernel.cuh",
+        "size": 18757
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_common.h",
+        "size": 6666
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_core.cu",
+        "size": 897
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_core_fwd2.cu",
+        "size": 546
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_core_fwd3.cu",
+        "size": 546
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_core_fwd4.cu",
+        "size": 546
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/selective_scan_fwd_kernel.cuh",
+        "size": 12784
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/static_switch.h",
+        "size": 1278
+      },
+      {
+        "path": "mamba/selective_scan/csrc/selective_scan/uninitialized_copy.cuh",
+        "size": 2646
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan.egg-info/PKG-INFO",
+        "size": 701
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan.egg-info/SOURCES.txt",
+        "size": 493
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan.egg-info/dependency_links.txt",
+        "size": 1
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan.egg-info/requires.txt",
+        "size": 29
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan.egg-info/top_level.txt",
+        "size": 40
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan/__init__.py",
+        "size": 362
+      },
+      {
+        "path": "mamba/selective_scan/selective_scan/selective_scan_interface.py",
+        "size": 4864
+      },
+      {
+        "path": "mamba/selective_scan/setup.py",
+        "size": 4754
+      },
+      {
+        "path": "mamba/selective_scan/test_selective_scan.py",
+        "size": 9170
+      },
+      {
+        "path": "module.py",
+        "size": 18279
+      },
+      {
+        "path": "selective_scan/__init__.py",
+        "size": 362
+      },
+      {
+        "path": "selective_scan/__pycache__/__init__.cpython-39.pyc",
+        "size": 279
+      },
+      {
+        "path": "selective_scan/__pycache__/selective_scan_interface.cpython-39.pyc",
+        "size": 3783
+      },
+      {
+        "path": "selective_scan/selective_scan_interface.py",
+        "size": 4864
+      },
+      {
+        "path": "vmamba.py",
+        "size": 9823
+      }
+    ]
+  },
+  {
+    "repository": "ZJier/FVMGN",
+    "url": "https://github.com/ZJier/FVMGN",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-03-09T10:21:04Z",
+    "description": "This work has been accepted by AAAI-26.",
+    "tree_sha": "b12adb0bf769e82926135cba1d30639aed026c4f",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "Appendix.pdf",
+        "size": 4875638
+      },
+      {
+        "path": "GitHub-FVMGN/Embeddings.py",
+        "size": 997
+      },
+      {
+        "path": "GitHub-FVMGN/Figure/README.md",
+        "size": 26
+      },
+      {
+        "path": "GitHub-FVMGN/MS_Dataset/README.md",
+        "size": 253
+      },
+      {
+        "path": "GitHub-FVMGN/Mixers.py",
+        "size": 12779
+      },
+      {
+        "path": "GitHub-FVMGN/Original/README.md",
+        "size": 26
+      },
+      {
+        "path": "GitHub-FVMGN/README.md",
+        "size": 178
+      },
+      {
+        "path": "GitHub-FVMGN/Res.txt",
+        "size": 0
+      },
+      {
+        "path": "GitHub-FVMGN/WTConv.py",
+        "size": 5276
+      },
+      {
+        "path": "GitHub-FVMGN/WTDis.py",
+        "size": 11110
+      },
+      {
+        "path": "GitHub-FVMGN/bpe_simple_vocab_16e6.txt.gz",
+        "size": 1356917
+      },
+      {
+        "path": "GitHub-FVMGN/clip.py",
+        "size": 8141
+      },
+      {
+        "path": "GitHub-FVMGN/datasets.py",
+        "size": 18035
+      },
+      {
+        "path": "GitHub-FVMGN/img_encoder.py",
+        "size": 6351
+      },
+      {
+        "path": "GitHub-FVMGN/main.py",
+        "size": 33226
+      },
+      {
+        "path": "GitHub-FVMGN/models.py",
+        "size": 17501
+      },
+      {
+        "path": "GitHub-FVMGN/results/README.md",
+        "size": 26
+      },
+      {
+        "path": "GitHub-FVMGN/simple_tokenizer.py",
+        "size": 4762
+      },
+      {
+        "path": "GitHub-FVMGN/utils_RS.py",
+        "size": 34083
+      },
+      {
+        "path": "README.md",
+        "size": 819
+      }
+    ]
+  },
+  {
+    "repository": "mbzuai-oryx/TerraFM",
+    "url": "https://github.com/mbzuai-oryx/TerraFM",
+    "default_branch": "master",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2025-06-09T05:14:54Z",
+    "description": "TerraFM is a scalable foundation model for unified multisensor Earth observation, trained on 18.7M Sentinel-1/2 tiles and achieving state-of-the-art results on GEO-Bench and Copernicus-Bench.",
+    "tree_sha": "e186ad85be486862cda99e992342e9afb175be02",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "README.md",
+        "size": 12627
+      },
+      {
+        "path": "images/arch.jpg",
+        "size": 605874
+      },
+      {
+        "path": "images/ls4s_qual.jpg",
+        "size": 535299
+      },
+      {
+        "path": "images/spider_gb.jpg",
+        "size": 500612
+      },
+      {
+        "path": "terrafm.py",
+        "size": 14175
+      }
+    ]
+  },
+  {
+    "repository": "danfenghong/Information_Fusion_SeaMo",
+    "url": "https://github.com/danfenghong/Information_Fusion_SeaMo",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-01-23T01:37:11Z",
+    "description": "Li, X., Li, C., Vivone, G., Hong, D. (2026). SeaMo: A Season-Aware Multimodal Foundation Model for Remote Sensing, 125: 103334.",
+    "tree_sha": "8ec13655698a775c700fd1256bac52f88a4fb490",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": "README.md",
+        "size": 14669
+      },
+      {
+        "path": "convert_model.py",
+        "size": 4008
+      },
+      {
+        "path": "figure/workflow.jpg",
+        "size": 454044
+      },
+      {
+        "path": "models_cls_convert_seamo.py",
+        "size": 13033
+      },
+      {
+        "path": "models_cls_seamo.py",
+        "size": 12508
+      },
+      {
+        "path": "models_feature_convert_seamo.py",
+        "size": 12726
+      },
+      {
+        "path": "models_feature_seamo.py",
+        "size": 12038
+      },
+      {
+        "path": "models_pretrain_seamo.py",
+        "size": 24567
+      },
+      {
+        "path": "requirements.txt",
+        "size": 124
+      }
+    ]
+  },
+  {
+    "repository": "CVEO/STARS",
+    "url": "https://github.com/CVEO/STARS",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-02-09T05:15:53Z",
+    "description": null,
+    "empty": true,
+    "files": []
+  },
+  {
+    "repository": "Hooorace-S/UniME",
+    "url": "https://github.com/Hooorace-S/UniME",
+    "default_branch": "main",
+    "license": null,
+    "archived": false,
+    "pushed_at": "2026-06-12T07:46:10Z",
+    "description": "The official codes for UniME (CVPR 26).",
+    "tree_sha": "88ef06d68bbf4d74be99db5f3a10fd07d90e690a",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": ".gitignore",
+        "size": 219
+      },
+      {
+        "path": "README.md",
+        "size": 7163
+      },
+      {
+        "path": "figure/CVPR-UniME-Poster.jpg",
+        "size": 13087775
+      },
+      {
+        "path": "main.py",
+        "size": 9275
+      },
+      {
+        "path": "models/Backbone/backbone.py",
+        "size": 13706
+      },
+      {
+        "path": "models/Backbone/blocks.py",
+        "size": 8034
+      },
+      {
+        "path": "models/Backbone/config.py",
+        "size": 1972
+      },
+      {
+        "path": "models/Backbone/decoder.py",
+        "size": 3520
+      },
+      {
+        "path": "models/Backbone/networks.py",
+        "size": 1218
+      },
+      {
+        "path": "models/Backbone/rope_3d.py",
+        "size": 6080
+      },
+      {
+        "path": "models/Backbone/tokenizer.py",
+        "size": 1219
+      },
+      {
+        "path": "models/Backbone/utils.py",
+        "size": 5094
+      },
+      {
+        "path": "models/UniME/blocks.py",
+        "size": 3738
+      },
+      {
+        "path": "models/UniME/configs.py",
+        "size": 1871
+      },
+      {
+        "path": "models/UniME/decoder.py",
+        "size": 5545
+      },
+      {
+        "path": "models/UniME/encoder.py",
+        "size": 2582
+      },
+      {
+        "path": "models/UniME/initialization.py",
+        "size": 2692
+      },
+      {
+        "path": "models/UniME/mask.py",
+        "size": 1314
+      },
+      {
+        "path": "models/UniME/networks.py",
+        "size": 10989
+      },
+      {
+        "path": "models/UniME/regularizer.py",
+        "size": 3082
+      },
+      {
+        "path": "models/UniME/wrapper.py",
+        "size": 10061
+      },
+      {
+        "path": "models/__init__.py",
+        "size": 2452
+      },
+      {
+        "path": "pretrain.py",
+        "size": 4912
+      },
+      {
+        "path": "pretrain_models/UniEncoder/mask_tools.py",
+        "size": 6763
+      },
+      {
+        "path": "pretrain_models/UniEncoder/networks.py",
+        "size": 11762
+      },
+      {
+        "path": "pretrain_models/__init__.py",
+        "size": 1947
+      },
+      {
+        "path": "requirements.txt",
+        "size": 1826
+      },
+      {
+        "path": "scripts/brats23_process.py",
+        "size": 9016
+      },
+      {
+        "path": "scripts/delete_pycache.sh",
+        "size": 118
+      },
+      {
+        "path": "scripts/finetune.sh",
+        "size": 828
+      },
+      {
+        "path": "scripts/pipeline/train_base.sh",
+        "size": 1399
+      },
+      {
+        "path": "scripts/pipeline/train_nano.sh",
+        "size": 1399
+      },
+      {
+        "path": "scripts/pipeline/train_original.sh",
+        "size": 1447
+      },
+      {
+        "path": "scripts/pipeline/train_small.sh",
+        "size": 1404
+      },
+      {
+        "path": "scripts/pipeline/train_tiny.sh",
+        "size": 1400
+      },
+      {
+        "path": "scripts/pretrain.sh",
+        "size": 878
+      },
+      {
+        "path": "source/__init__.py",
+        "size": 93
+      },
+      {
+        "path": "source/config/__init__.py",
+        "size": 344
+      },
+      {
+        "path": "source/config/masks.py",
+        "size": 874
+      },
+      {
+        "path": "source/config/parse.py",
+        "size": 8802
+      },
+      {
+        "path": "source/config/setup_seed.py",
+        "size": 1711
+      },
+      {
+        "path": "source/core/__init__.py",
+        "size": 515
+      },
+      {
+        "path": "source/core/evaluation.py",
+        "size": 3681
+      },
+      {
+        "path": "source/core/inference.py",
+        "size": 3559
+      },
+      {
+        "path": "source/core/loss_function.py",
+        "size": 6083
+      },
+      {
+        "path": "source/core/lr_scheduler.py",
+        "size": 1881
+      },
+      {
+        "path": "source/core/optimizer.py",
+        "size": 6588
+      },
+      {
+        "path": "source/dataset/__init__.py",
+        "size": 93
+      },
+      {
+        "path": "source/dataset/augmentation.py",
+        "size": 19269
+      },
+      {
+        "path": "source/dataset/dataloader.py",
+        "size": 3811
+      },
+      {
+        "path": "source/dataset/dataset.py",
+        "size": 7565
+      },
+      {
+        "path": "source/logger.py",
+        "size": 5891
+      },
+      {
+        "path": "source/pretrain/__init__.py",
+        "size": 412
+      },
+      {
+        "path": "source/pretrain/dataset.py",
+        "size": 10263
+      },
+      {
+        "path": "source/pretrain/loss_function.py",
+        "size": 1797
+      },
+      {
+        "path": "source/pretrain/parse.py",
+        "size": 8681
+      },
+      {
+        "path": "source/pretrain/pretrain.py",
+        "size": 24103
+      },
+      {
+        "path": "source/test.py",
+        "size": 15267
+      },
+      {
+        "path": "source/train.py",
+        "size": 23181
+      },
+      {
+        "path": "source/utils/__init__.py",
+        "size": 449
+      },
+      {
+        "path": "source/utils/runtime.py",
+        "size": 3053
+      },
+      {
+        "path": "source/utils/wandb_utils.py",
+        "size": 7301
+      },
+      {
+        "path": "source/validate.py",
+        "size": 8776
+      }
+    ]
+  },
+  {
+    "repository": "google-deepmind/representations4d",
+    "url": "https://github.com/google-deepmind/representations4d",
+    "default_branch": "main",
+    "license": {
+      "key": "apache-2.0",
+      "name": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "url": "https://api.github.com/licenses/apache-2.0",
+      "node_id": "MDc6TGljZW5zZTI="
+    },
+    "archived": false,
+    "pushed_at": "2026-10-01T08:22:56Z",
+    "description": "Foundation models for 4D spatial and temporal vision tasks.",
+    "tree_sha": "dd932580e30bde0362692532c470483892f29bb8",
+    "tree_truncated": false,
+    "files": [
+      {
+        "path": ".gitignore",
+        "size": 263
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "size": 970
+      },
+      {
+        "path": "LICENSE",
+        "size": 11358
+      },
+      {
+        "path": "README.md",
+        "size": 11267
+      },
+      {
+        "path": "assets/RVM.png",
+        "size": 180412
+      },
+      {
+        "path": "assets/genception.png",
+        "size": 1366285
+      },
+      {
+        "path": "assets/moog.png",
+        "size": 311978
+      },
+      {
+        "path": "assets/omnivorous-art_rgb.jpg",
+        "size": 164692
+      },
+      {
+        "path": "assets/omnivorous-art_xray.jpg",
+        "size": 128210
+      },
+      {
+        "path": "assets/omnivorous-hypersim_depth.png",
+        "size": 38502
+      },
+      {
+        "path": "assets/omnivorous-hypersim_rgb.png",
+        "size": 183928
+      },
+      {
+        "path": "assets/omnivorous-method.png",
+        "size": 576808
+      },
+      {
+        "path": "assets/scaling_20M_20B.png",
+        "size": 319945
+      },
+      {
+        "path": "colabs/genception_inference_demo.ipynb",
+        "size": 14295
+      },
+      {
+        "path": "colabs/moog_inference_demo.ipynb",
+        "size": 32419
+      },
+      {
+        "path": "colabs/omnivorous_dino_inference_demo.ipynb",
+        "size": 14616
+      },
+      {
+        "path": "colabs/rvm_evaluation_demo.ipynb",
+        "size": 181904
+      },
+      {
+        "path": "colabs/rvm_inference_demo.ipynb",
+        "size": 123602
+      },
+      {
+        "path": "colabs/rvm_runtime_and_memory.ipynb",
+        "size": 75453
+      },
+      {
+        "path": "colabs/scaling4d_depth_demo.ipynb",
+        "size": 9269
+      },
+      {
+        "path": "moog/README.md",
+        "size": 1659
+      },
+      {
+        "path": "moog/attention.py",
+        "size": 12442
+      },
+      {
+        "path": "moog/configs/movi.py",
+        "size": 14552
+      },
+      {
+        "path": "moog/conv.py",
+        "size": 1600
+      },
+      {
+        "path": "moog/initializers.py",
+        "size": 1936
+      },
+      {
+        "path": "moog/modules.py",
+        "size": 24614
+      },
+      {
+        "path": "moog/pos_embeddings.py",
+        "size": 6797
+      },
+      {
+        "path": "omnivorous/vit.py",
+        "size": 12465
+      },
+      {
+        "path": "pyproject.toml",
+        "size": 555
+      },
+      {
+        "path": "representations4d/genception/__init__.py",
+        "size": 1466
+      },
+      {
+        "path": "representations4d/genception/attention.py",
+        "size": 15400
+      },
+      {
+        "path": "representations4d/genception/embeddings.py",
+        "size": 13599
+      },
+      {
+        "path": "representations4d/genception/model.py",
+        "size": 42950
+      },
+      {
+        "path": "representations4d/genception/normalization.py",
+        "size": 2228
+      },
+      {
+        "path": "representations4d/genception/pipeline.py",
+        "size": 28159
+      },
+      {
+        "path": "representations4d/genception/run_inference.py",
+        "size": 8805
+      },
+      {
+        "path": "representations4d/genception/utils.py",
+        "size": 21964
+      },
+      {
+        "path": "representations4d/genception/vae.py",
+        "size": 52646
+      },
+      {
+        "path": "representations4d/models/model.py",
+        "size": 6626
+      },
+      {
+        "path": "representations4d/models/readout.py",
+        "size": 6180
+      },
+      {
+        "path": "representations4d/utils/checkpoint_utils.py",
+        "size": 2007
+      }
+    ]
+  }
+]

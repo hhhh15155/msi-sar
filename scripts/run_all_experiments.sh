@@ -14,6 +14,10 @@ LOG_DIR="$ROOT/experiment_logs"
 mkdir -p "$LOG_DIR"
 
 GRID_ARGS=(--root "$ROOT")
+if [[ -n "${MODELS_FILTER:-}" ]]; then
+    read -r -a FILTERED_MODELS <<<"$MODELS_FILTER"
+    GRID_ARGS+=(--models "${FILTERED_MODELS[@]}")
+fi
 if [[ -n "${DATASETS_FILTER:-}" ]]; then
     read -r -a FILTERED_DATASETS <<<"$DATASETS_FILTER"
     GRID_ARGS+=(--datasets "${FILTERED_DATASETS[@]}")

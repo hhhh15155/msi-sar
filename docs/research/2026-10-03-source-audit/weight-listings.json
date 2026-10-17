@@ -1,0 +1,30 @@
+[
+  {
+    "url": "https://huggingface.co/api/models/MBZUAI/TerraFM",
+    "id": "MBZUAI/TerraFM",
+    "gated": false,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "TerraFM-B.pth",
+      "images/arch.jpg",
+      "images/ls4s_qual.jpg",
+      "images/spider_gb.jpg",
+      "terrafm.py"
+    ],
+    "lastModified": "2025-06-09T05:42:08.000Z"
+  },
+  {
+    "url": "https://huggingface.co/api/models/Moonboy12138/SeaMo",
+    "id": "Moonboy12138/SeaMo",
+    "gated": false,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "SeaMo.pth",
+      "SeaMo_img256.pth",
+      "checkpoint-199.pth"
+    ],
+    "lastModified": "2025-05-21T07:52:56.000Z"
+  }
+]

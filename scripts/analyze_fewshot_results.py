@@ -4,15 +4,33 @@ from __future__ import annotations
 
 import csv
 import json
+from statistics import mean, pstdev
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs_fewshot"
 OUT = ROOT / "experiment_logs"
-MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
+MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "fuzzy_transformer")
 DATASETS = ("yrd", "yrd2509new", "grss07")
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
+FIELDS = ["shot", "model", "dataset", "runs", "oa_mean", "oa_std", "aa_mean", "aa_std",
+          "kappa_mean", "kappa_std", "path"]
+
+
+def completed_transformer_metrics(directory: Path) -> tuple[Path, dict] | None:
+    """Select the latest completed attempt, including after an interrupted run."""
+    paths = sorted(directory.glob("run_*/metrics.json"),
+                   key=lambda path: int(path.parent.name[4:]) if path.parent.name[4:].isdigit() else -1,
+                   reverse=True)
+    for path in paths:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if payload.get("completed") is True:
+            return path, payload
+    return None
 
 
 def main() -> None:
@@ -20,21 +38,33 @@ def main() -> None:
     for shot in SHOTS:
         for model in MODELS:
             for dataset in DATASETS:
-                path = RUNS / f"fs{shot}" / model / dataset / "run_001" / "metrics.json"
-                if not path.exists():
+                directory = RUNS / f"fs{shot}" / model / dataset
+                if model == "fuzzy_transformer":
+                    selected = completed_transformer_metrics(directory)
+                    if selected is None:
+                        continue
+                    path, payload = selected
+                else:
+                    path = directory / "run_001" / "metrics.json"
+                    if not path.exists():
+                        continue
+                    payload = json.loads(path.read_text(encoding="utf-8"))
+                if not payload.get("runs"):
                     continue
-                payload = json.loads(path.read_text(encoding="utf-8"))
-                aggregate = payload["aggregate"]
+                aggregate = payload.get("aggregate") or {
+                    f"{metric}_{statistic}": function([result[metric] for result in payload["runs"]])
+                    for metric in ("oa", "aa", "kappa")
+                    for statistic, function in (("mean", mean), ("std", pstdev))
+                }
                 rows.append({"shot": shot, "model": model, "dataset": dataset, "runs": len(payload["runs"]),
                              "oa_mean": aggregate["oa_mean"], "oa_std": aggregate["oa_std"],
                              "aa_mean": aggregate["aa_mean"], "aa_std": aggregate["aa_std"],
                              "kappa_mean": aggregate["kappa_mean"], "kappa_std": aggregate["kappa_std"],
                              "path": str(path.relative_to(ROOT))})
     OUT.mkdir(exist_ok=True)
-    fields = list(rows[0])
     with (OUT / "fewshot_results_summary.csv").open("w", newline="", encoding="utf-8") as file:
-        writer = csv.DictWriter(file, fieldnames=fields); writer.writeheader(); writer.writerows(rows)
-    lines = ["Few-shot results summary (mean +/- std, %, five runs per cell)\n"]
+        writer = csv.DictWriter(file, fieldnames=FIELDS); writer.writeheader(); writer.writerows(rows)
+    lines = ["Few-shot results summary (mean +/- std, %, run counts in CSV)\n"]
     for dataset in DATASETS:
         lines.append(f"{dataset.upper()}\n")
         lines.append("shot | " + " | ".join(MODELS) + "\n")
