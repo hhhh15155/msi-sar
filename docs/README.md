@@ -6,6 +6,7 @@
 
 | 问题 | 当前入口 |
 | --- | --- |
+| 已完成的九版本／27项精度、参数量与结果来源 | [主实验结果汇总（2026-10-18）](experiments/main-results-20261018.md) |
 | 数据放哪里、多少通道、多少类别、如何预处理 | [数据集说明](datasets/README.md) |
 | 模型实现在哪、输入有何限制 | [模型索引](models/README.md) |
 | 当前双路 CNN–Transformer 如何融合 | [Fuzzy Transformer](models/fuzzy-transformer.md) |
