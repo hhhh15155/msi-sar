@@ -5,7 +5,7 @@
 - Origin Skill: academic-research-suite / experiment-agent
 - Origin Mode: implementation / deployment
 - Origin Date: 2026-10-18
-- Verification Status: 110_TESTS_55_PASSED; DEPLOYMENT_PENDING
+- Verification Status: 110_TESTS_55_PASSED; DEPLOYED_RUNNING
 - Version Label: v6_ablation_110_v1
 - 更新日期：2026-10-21。用户要求改用110，并明确已完成实验不重跑。本批缩为两个消融各三数据集共6项，取消全部完整V6环境补跑。此前临时副本57项检查完成；按最新清单在110重新检查并部署，状态见下文。合成检查精度不是正式消融结果。
 
@@ -17,7 +17,7 @@
 | --- | --- | --- | --- |
 | 第一批 | V0—V6 × 三数据集，21项 | 已完成；YRD已统一替换为逐通道归一化修正版 | 116与110镜像 `runs/main_first_pass_20261017/` |
 | 第二批 | V7 FDMF分类适配、V8修正MSAF × 三数据集，6项 | 已完成，独立保存 | 116 `runs/paper_candidates_20261018/` |
-| 下一批 | V6结构消融，6项 | **110全套55项检查通过，正在部署** | 110 `runs/v6_ablation_20261021_110/` |
+| 第三批 | V6结构消融，6项 | **已在110 screen部署；首项训练中，其余顺序等待** | 110 `runs/v6_ablation_20261021_110/` |
 | 后续补充 | 辅助损失、PAD／CAFM、可靠性、稳定性与泛化验证 | 条件性建议，尚未部署 | 无 |
 
 旧YRD全局归一化结果仅保留在116 `runs/archive/main_first_pass_20261017_before_yrd_pc/`；不加入当前排名。按用户要求，110当前7项YRD已替换为116修正版，其他14项不变；110当前21项是镜像，各项执行环境仍按原记录，统一汇总以116为准。
@@ -108,7 +108,10 @@
 | screen | `msi_v6_ablate_gpu0`，物理GPU0，单worker，FP32 |
 | 六项消融输出／状态 | `runs/v6_ablation_20261021_110/`，`queue_status.json`／`queue_pid.json` |
 | 总日志 | `experiment_logs/v6_ablation_20261021_110/queue.log`；各项 `console.log`／`progress.json` |
-| 部署状态 | 本次110检查与源码同步完成后启动；启动后更新此行 |
+| 部署状态 | 2026-10-21已启动；重新SSH确认screen为Detached，首项 `a01_late_equal_yrd` 已训练38/200轮（核对时快照），无GPU阻塞，后5项顺序执行 |
+| 任务标识 | screen PID54144、queue PID54145、首worker PID54160；PID仅为启动快照，后续以状态文件为准 |
+| 训练源码提交 | `417a73faac3efa2ae2b33712c5992e3efaf51417`，已推送GitHub并同步110／116；后续仅文档状态更新不改变训练源码 |
+| 数据／基准核验 | 三数据集image.npy、gt.npy、split.npz与旧基准逐文件SHA一致；旧21项完成标记与最终权重SHA有效；摘要记录在本批 `baseline_reference.json`，现有完整V6不重跑 |
 
 ```bash
 # 仅供本批已授权任务部署或人工排障；不要重复启动已有队列
