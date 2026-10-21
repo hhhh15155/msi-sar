@@ -83,6 +83,7 @@ YRD采用归一化修正后的七项，旧 global_minmax_center 结果已归档�
 
 - 当前七版本×三数据集：116 `runs/main_first_pass_20261017/`（YRD已替换为逐通道修正版）。
 - 新两版本×三数据集：116 `runs/paper_candidates_20261018/`；清单 `configs/paper_candidates/manifest.json`，代码提交 `155ecee33c4b766a0c176bf95b9b0be89e3d7db8`。
-- 旧21项归档：116 `runs/archive/main_first_pass_20261017_before_yrd_pc/`；110保留历史副本。新六项没有覆盖旧基准，27项按上述两个namespace联合读取。
+- 旧21项归档：116 `runs/archive/main_first_pass_20261017_before_yrd_pc/`。用户随后要求删除／覆盖110异常YRD，已将其当前目录7项替换为116修正版，其他14项不变；110不再保留旧YRD当前副本，来源见其 `mirror_record.json`。新六项没有覆盖旧基准，27项按上述两个namespace联合读取。
+- 2026-10-21再次连接116：27项均 `completed=true`、200轮、最终权重SHA匹配；两批队列均已结束。新的V6消融／同环境对照不属于本表27项，其部署及状态单列在[后续实验](next-experiments.md)。
 - 各项原始 `metrics.json` 还含逐类召回／精确率／F1、混淆矩阵、样本数、身份与权重校验值；不以本表的两位小数替代原始精度。
 

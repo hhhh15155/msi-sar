@@ -1,0 +1,110 @@
+{
+  "name": "v6_ablation_20261021_110",
+  "variants": [
+    "a01_late_equal",
+    "a02_no_early_path"
+  ],
+  "seed": 202201,
+  "workers": 1,
+  "screen_session": "msi_v6_ablate_gpu0",
+  "wait_for_gpu_idle": true,
+  "min_free_memory_mib": 20480,
+  "cpu_threads_per_worker": 2,
+  "output_root": "runs/v6_ablation_20261021_110",
+  "log_root": "experiment_logs/v6_ablation_20261021_110",
+  "datasets": {
+    "yrd": {
+      "ms_channels": 10,
+      "sar_channels": 4,
+      "train_counts": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "dataset_config": "configs/datasets/yrd.yaml",
+      "reuse_split": {
+        "path": "runs/main_first_pass_20261017/prepared/yrd/split.npz",
+        "sha256": "842aac597d09cb62e169c217bdafd51534fae36ff729e8a117085852a9c3a994"
+      }
+    },
+    "yrd2509new": {
+      "ms_channels": 10,
+      "sar_channels": 4,
+      "train_counts": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "dataset_config": "configs/datasets/yrd2509new.yaml",
+      "reuse_split": {
+        "path": "runs/main_first_pass_20261017/prepared/yrd2509new/split.npz",
+        "sha256": "d7844c61dc5875b7c32b058a1b2f909bce3ca64e5a4f7d3e7460f41e1e409e2d"
+      }
+    },
+    "grss07": {
+      "ms_channels": 6,
+      "sar_channels": 1,
+      "train_counts": [
+        674,
+        1481,
+        752,
+        45,
+        30
+      ],
+      "dataset_config": "configs/datasets/grss07.yaml",
+      "reuse_split": {
+        "path": "runs/main_first_pass_20261017/prepared/grss07/split.npz",
+        "sha256": "e73f306b348f02d7e656745a9238be3b23faabedd5acd95636eeb7d9206e24ac"
+      }
+    }
+  },
+  "experiments": [
+    {
+      "id": "a01_late_equal_yrd",
+      "variant": "a01_late_equal",
+      "dataset": "yrd",
+      "config": "configs/v6_ablation/ablations/a01_late_equal_yrd.yaml"
+    },
+    {
+      "id": "a01_late_equal_yrd2509new",
+      "variant": "a01_late_equal",
+      "dataset": "yrd2509new",
+      "config": "configs/v6_ablation/ablations/a01_late_equal_yrd2509new.yaml"
+    },
+    {
+      "id": "a01_late_equal_grss07",
+      "variant": "a01_late_equal",
+      "dataset": "grss07",
+      "config": "configs/v6_ablation/ablations/a01_late_equal_grss07.yaml"
+    },
+    {
+      "id": "a02_no_early_path_yrd",
+      "variant": "a02_no_early_path",
+      "dataset": "yrd",
+      "config": "configs/v6_ablation/ablations/a02_no_early_path_yrd.yaml"
+    },
+    {
+      "id": "a02_no_early_path_yrd2509new",
+      "variant": "a02_no_early_path",
+      "dataset": "yrd2509new",
+      "config": "configs/v6_ablation/ablations/a02_no_early_path_yrd2509new.yaml"
+    },
+    {
+      "id": "a02_no_early_path_grss07",
+      "variant": "a02_no_early_path",
+      "dataset": "grss07",
+      "config": "configs/v6_ablation/ablations/a02_no_early_path_grss07.yaml"
+    }
+  ]
+}

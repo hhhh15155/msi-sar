@@ -33,7 +33,7 @@ import yaml
 
 from baselines.dfinet.dataset import load_dataset
 from baselines.split import split_from_config
-from models.main_classification import VARIANTS, CANDIDATE_VARIANTS, build_main_model
+from models.main_classification import VARIANTS, CANDIDATE_VARIANTS, ABLATION_VARIANTS, build_main_model
 
 DEFAULT_MANIFEST = ROOT / 'configs/main_first_pass/manifest.json'
 
@@ -72,7 +72,7 @@ def read_manifest(path):
 def selected_variants(manifest):
     variants = manifest.get('variants', VARIANTS)
     if (not variants or len(set(variants)) != len(variants) or
-            any(v not in VARIANTS + CANDIDATE_VARIANTS for v in variants)):
+            any(v not in VARIANTS + CANDIDATE_VARIANTS + ABLATION_VARIANTS for v in variants)):
         raise ValueError('Manifest contains unknown or duplicate variants')
     return variants
 
@@ -200,7 +200,7 @@ def metrics_from_confusion(cm):
 def source_fingerprint():
     names = ['models/main_classification.py', 'models/fuzzy_transformer.py', 'scripts/main_experiment.py',
              'baselines/dfinet/dataset.py', 'baselines/split.py',
-             'models/fdmf_patch.py', 'models/msaf_patch.py']
+             'models/fdmf_patch.py', 'models/msaf_patch.py', 'models/v6_ablation.py']
     return {name: digest(ROOT / name) for name in names}
 
 

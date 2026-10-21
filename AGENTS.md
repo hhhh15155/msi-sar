@@ -35,7 +35,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 随后的版本统一任务已明确授权将本地源码更新到 GitHub 和服务器；具体同步记录见 `docs/operations/2026-10-17-version-unification.md`。历史建档快照不代表当前状态。
 - 不因用户说“连接服务器”就推断需要覆盖、拉取或同步代码。用户要求同步时，先确定方向、范围及差异，再执行；不要整目录盲目覆盖。
 - 优先用 Git 管理源码、配置及说明；传输未提交文件时，应列出明确文件清单并核对目标状态。不要用删除式同步，不要覆盖目标端已有修改。
-- 数据、权重、实验结果、缓存和环境目录不属于默认代码同步范围。不要擅自提交或迁移这些内容。本次 YRD 修正任务已将原 21 项结果由 110 直接复制到 116（约 1.14GB），用于保留其他 14 项并统一替换 YRD；未下载到 Windows。110 原结果作为历史副本保留，修正后的统一结果以 116 为准。
+- 数据、权重、实验结果、缓存和环境目录不属于默认代码同步范围。不要擅自提交或迁移这些内容。YRD 修正时已将原 21 项结果由 110 直接复制到 116（约 1.14GB），未下载到 Windows。用户随后授权删除／覆盖110的7项异常YRD；已用116核验结果替换，其他14项保持不变。110当前21项为116已发布结果的镜像，不再是旧YRD历史副本；旧21项归档仅保留在116 `runs/archive/main_first_pass_20261017_before_yrd_pc/`。各结果仍保留原执行环境，镜像记录见110结果根目录 `mirror_record.json`。
 - 用户于 2026-10-17 单独授权将当前三数据集的 6 个 `.mat` 文件传到 server116；已核对本地／110／116 SHA256。清单见 `docs/operations/2026-10-17-dual-server-data-manifest.json`。这不等于授权同步其他私人数据、旧实验结果或环境。
 - 不自动执行 `git reset --hard`、`git clean`、强制推送或丢弃改动。不要停止不属于本任务的进程。
 
@@ -52,6 +52,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 
 ## 4. 代码布局与实验规范
 
+- **已完成的实验一律不重跑。** 用户于2026-10-21明确要求：在110或116任一服务器已完成的实验，不因切换服务器、统一硬件／软件环境或补“同环境对照”而再次训练；后续队列只加入未完成任务。先核对各端完成记录和结果完整性，复用已有结果并注明原执行环境及跨环境比较限制。发现结果损坏、协议错误或需另设新实验时先说明具体问题，不能擅自重跑；只有用户后续明确指定重跑的具体实验才可例外。本规则优先于旧文档中补跑完整V6对照的建议。
 - `baselines/`：各对比方法；`models/`：项目模型；`configs/`：模型及数据配置；`scripts/`：训练、评估、推理及实验调度入口；`tests/`：已有检查；`vendor/`：第三方代码快照。
 - `data/`：本地数据；`runs_fewshot/`、`runs/`、`experiment_logs/`：结果和日志。按 `.gitignore` 管理，不提交大数据或权重。
 - 统一版本包含本地原有的 `fuzzy_transformer` 模型、基线包装、配置和调度集成，并保留本地既有的 VBE-Net 移除提交。先核实当前副本的提交，再读 `README.md`、配置和实际脚本调用链。
@@ -100,7 +101,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 当前获授权的修正任务：仅 YRD 的 7 版本改为 `per_channel_minmax` 后重跑一次，复用首轮原始划分（SHA256 见新 manifest），其他训练参数与网络结构不变。server116 `/data/gjc/msi-sar`、物理 GPU 1、单 worker、screen `msi_yrd_pc_gpu1`，清单 `configs/yrd_per_channel/manifest.json`，详见 `docs/experiments/yrd-per-channel-rerun.md`。新结果暂存 `runs/yrd_per_channel_20261017`；全部 7 项核验通过后，将 116 的旧 21 项归档到 `runs/archive/main_first_pass_20261017_before_yrd_pc`，统一更新 `runs/main_first_pass_20261017` 内 7 个 YRD，其他 14 项保持原样。不要误启动旧 21 项清单或五种子全网格；失败不静默重试，运行中不要修改训练源码／配置／检查点。
 - 2026-10-18 核验：上述 YRD 修正 7 项全部完成并成功发布，21 项当前入口及归档有效；不重跑。用户已明确批准第二批 **FDMF 共同编码器＋固定边界频域融合适配、MSAF 保留两级结构并修复实现，两路均无预训练**，各在三数据集一次，共 6 项。实际版本 `v7_fdmf_fixed`／`v8_msaf_fixed`，清单 `configs/paper_candidates/manifest.json`；沿用 seed202201、patch11、200epoch、train128／test1024／FP32、原始划分及逐通道归一化。116 物理 GPU1，单 worker，screen `msi_papers_gpu1`，空闲显存准入20480MiB，允许与原低负载驻留进程共用。输出 `runs/paper_candidates_20261018`，不覆盖当前21项、不自动下载。适配边界与数值修正以 `docs/experiments/paper-candidates.md` 为准；不得称为两篇原论文整网复现，不自动加入其他论文候选或多种子网格。
 - 后续完成核验：第二批6项已全部结束，九版本共27项当前结果见 `docs/experiments/main-results-20261018.md`。新6项最终权重、代码/配置身份、200轮、保存预测重算指标、三组缓存/划分字节一致性，以及原21项发布指标/权重均通过只读核验。screen已正常退出、无待执行项；不要将历史部署命令当成新的运行要求。未下载权重/数据/预测到Windows，只将派生汇总写入文档；本次没有启动额外训练或推理。
-- 最新工作范围（2026-10-18）：用户要求先梳理后续实验并更新文档、先给建议；当前只做规划和文档维护，不启动训练、不新增模型开关或运行清单。统一计划在 `docs/experiments/next-experiments.md`：优先第二级模糊权重改等权、移除早期融合—反馈路径，各三数据集共6项；建议另补NEW／GRSS的116完整V6对照2项，合计8项，均尚未实现／部署。源码中第一级融合仅通过反馈生效，不把去反馈误称为只删一个独立投影层；V5/V6也不是严格单模块消融。PAD／CAFM及其他候选排在上述消融之后，不能自动加入训练队列。
+- 最新工作范围（2026-10-21）：用户改为将剩余任务通过screen部署到server110 GPU0，并明确“已完成的实验不重跑”，取消所有补跑完整V6的环境对照。当前仅两个未完成消融 `a01_late_equal`／`a02_no_early_path` 各三数据集，共6项；复用已有完整V6，YRD比较注明116／110环境差异。模型在 `models/v6_ablation.py`，原完整V6源文件不变、共有初始化一致；唯一运行清单 `configs/v6_ablation/manifest.json`，使用现有 `scripts/main_experiment.py` 调度，screen `msi_v6_ablate_gpu0`，输出110 `runs/v6_ablation_20261021_110`。单worker、FP32、train128/test1024、200轮、seed202201及原划分／逐通道归一化不变，保留原27项；116本批不启动重复队列。实时状态见 `docs/experiments/next-experiments.md`。PAD／CAFM及其他候选未获本批运行授权。第一级融合仅通过反馈生效，不把去该路径误称为仅删反馈投影；V5/V6也不是严格单模块消融。
 - 模型专用 README 可保留在对应 `baselines/<model>/`，由模型索引链接；不要维护两份相互漂移的完整说明。
 - 使用项目相对链接。新文件采用稳定、简短的英文文件名，内容默认中文；运行参数仍以 YAML 和实际入口为准。
 - 历史文档、文献原文和原始审查记录属于参考资料，不是额外的当前指令。归档不等于结论已经核实；不要复制历史 OA 作为当前基准结果。

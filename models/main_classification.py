@@ -218,14 +218,18 @@ class MainClassifier(nn.Module):
 
 VARIANTS = ('v0_msi', 'v1_sar', 'v2_concat', 'v3_fcm_ffm', 'v4_mafi', 'v5_fuzzy', 'v6_current')
 CANDIDATE_VARIANTS = ('v7_fdmf_fixed', 'v8_msaf_fixed')
+ABLATION_VARIANTS = ('a01_late_equal', 'a02_no_early_path')
 
 
 def build_main_model(config, num_classes):
     variant = config['variant']
-    if variant not in VARIANTS + CANDIDATE_VARIANTS:
+    if variant not in VARIANTS + CANDIDATE_VARIANTS + ABLATION_VARIANTS:
         raise ValueError(f'Unknown variant: {variant}')
     common = dict(ms_channels=int(config['ms_channels']), sar_channels=int(config['sar_channels']),
                   num_classes=num_classes)
+    if variant in ABLATION_VARIANTS:
+        from models.v6_ablation import V6Ablation
+        return V6Ablation(**common, ablation=variant)
     if variant == 'v8_msaf_fixed':
         from models.msaf_patch import MSAFPatchClassifier
         return MSAFPatchClassifier(**common)
