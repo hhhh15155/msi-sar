@@ -1,10 +1,10 @@
-# MFT（TGRS 2023，多模态融合 Transformer / mCrossPA）
+﻿# MFT（TGRS 2023，多模态融合 Transformer / mCrossPA）
 
 本目录是 **第三方方法在本项目 MSI–SAR 数据上的基线适配**，不是原论文整网复现。
 
 - 来源：[AnkurDeria/MFT](https://github.com/AnkurDeria/MFT)，commit `de214e512ff1a8f6aefdf27fc2cb60c75e0f559a`；只读快照见 [`vendor/MFT-original/`](../../vendor/MFT-original)。
 - 论文：*Multimodal Fusion Transformer for Remote Sensing Image Classification*, IEEE TGRS 2023。
-- 原仓库只发布 **Jupyter notebook**（`Model/MFT.ipynb`），没有独立 Python 模型文件；本适配把其中的 `HetConv / MCrossAttention / Mlp / Block / TransformerEncoder / MFT` 重新实现为 [`baselines/hsi_lidar/mft_patch.py`](../hsi_lidar/mft_patch.py)。
+- 原仓库只发布 **Jupyter notebook**（`Model/MFT.ipynb`），没有独立 Python 模型文件；本适配把其中的 `HetConv / MCrossAttention / Mlp / Block / TransformerEncoder / MFT` 重新实现为 [`baselines/_hsi_adapters/mft_patch.py`](../_hsi_adapters/mft_patch.py)。
 
 ## 接口
 

@@ -1,10 +1,10 @@
-# DFFNet（GRSL 2025，HSI–LiDAR/HSI–SAR 频域融合）
+﻿# DFFNet（GRSL 2025，HSI–LiDAR/HSI–SAR 频域融合）
 
 本目录是 **第三方方法在本项目 MSI–SAR 数据上的基线适配**，不是原论文整网复现，也不属于项目自研方法。
 
 - 来源：[oucailab/DFFNet](https://github.com/oucailab/DFFNet)，commit `a9beb2b2b43b452cfca364160822f0dee9b34462`；只读快照见 [`vendor/DFFNet-original/`](../../vendor/DFFNet-original)。
 - 论文：*Dynamic Frequency Feature Fusion Network for Multi-Source Remote Sensing Data Classification*, IEEE GRSL 2025。
-- 代码位置：`model.py` 提供项目统一接口；真正的适配实现在 [`baselines/hsi_lidar/dffnet_patch.py`](../hsi_lidar/dffnet_patch.py)，它直接导入 vendor 中未改动的 `DynamicFilterBlock` 与 `SpectralSpatialAdaptiveFusionBlock`。
+- 代码位置：`model.py` 提供项目统一接口；真正的适配实现在 [`baselines/_hsi_adapters/dffnet_patch.py`](../_hsi_adapters/dffnet_patch.py)，它直接导入 vendor 中未改动的 `DynamicFilterBlock` 与 `SpectralSpatialAdaptiveFusionBlock`。
 
 ## 接口
 

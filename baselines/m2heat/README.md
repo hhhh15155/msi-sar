@@ -1,10 +1,10 @@
-# M2Heat（TCSVT 2026，热传导 + 跨频域融合）
+﻿# M2Heat（TCSVT 2026，热传导 + 跨频域融合）
 
 本目录是 **第三方方法在本项目 MSI–SAR 数据上的基线适配**，不是原论文整网复现。
 
 - 来源：[Weikan0425/M2Heat_HSI_LiDAR](https://github.com/Weikan0425/M2Heat_HSI_LiDAR)，commit `8fcdce85e92a5d8b92c0a86ca78f835113dd3e3f`；只读快照见 [`vendor/M2Heat-original/`](../../vendor/M2Heat-original)（未复制 LFS 数据集）。
 - 论文：*Toward Interpretable Multimodal Fusion: Heat Conduction Modeling for Hyperspectral and LiDAR Joint Classification*, IEEE TCSVT 2026。
-- 适配实现：[`baselines/hsi_lidar/m2heat_patch.py`](../hsi_lidar/m2heat_patch.py)，直接实例化 vendor 中未改动的 `M2Heat`。
+- 适配实现：[`baselines/_hsi_adapters/m2heat_patch.py`](../_hsi_adapters/m2heat_patch.py)，直接实例化 vendor 中未改动的 `M2Heat`。
 
 ## 接口
 

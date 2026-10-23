@@ -10,6 +10,10 @@
 | 下一步先做什么、消融如何定义、哪些尚未运行 | [后续实验路线与状态](experiments/next-experiments.md) |
 | 数据放哪里、多少通道、多少类别、如何预处理 | [数据集说明](datasets/README.md) |
 | 模型实现在哪、输入有何限制 | [模型索引](models/README.md) |
+| 对比方法有哪些、哪些已验证、如何训练 | [对比方法索引](../baselines/README.md) |
+| 配置哪些是当前有效清单、哪些是历史网格 | [配置索引](../configs/README.md) |
+| 脚本入口怎么选、哪些是一次性脚本 | [脚本索引](../scripts/README.md) |
+| 第三方源码快照在哪、来源与许可证状态 | [vendor 说明](../vendor/README.md)、[HSI–LiDAR 源码快照](research/2026-10-23-hsi-lidar-source-snapshot.md) |
 | 当前双路 CNN–Transformer 如何融合 | [Fuzzy Transformer](models/fuzzy-transformer.md) |
 | 如何运行、如何解释指标与结果目录 | [实验说明](experiments/README.md) |
 | 本轮 7 版本、单种子、21 项后台分类实验 | [第一轮分类实验与部署](experiments/main-first-pass.md) |

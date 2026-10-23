@@ -1,9 +1,9 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import torch
 from torch import nn
 
-from baselines.hsi_lidar.m2heat_patch import M2HeatPatch
+from baselines._hsi_adapters.m2heat_patch import M2HeatPatch
 
 
 class M2Heat(nn.Module):

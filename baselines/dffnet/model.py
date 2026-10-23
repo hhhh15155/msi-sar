@@ -1,9 +1,9 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import torch
 from torch import nn
 
-from baselines.hsi_lidar.dffnet_patch import DFFNetPatch
+from baselines._hsi_adapters.dffnet_patch import DFFNetPatch
 
 
 class DFFNet(nn.Module):
@@ -11,7 +11,7 @@ class DFFNet(nn.Module):
 
     Input matches the shared baseline protocol: ``x`` is ``[B, 1, C, H, W]``
     where the last channel block is MSI then SAR (``PatchDataset`` stacking).
-    The internal adapter lives in ``baselines/hsi_lidar/dffnet_patch.py`` and
+    The internal adapter lives in ``baselines/_hsi_adapters/dffnet_patch.py`` and
     keeps the vendored DynamicFilterBlock / SSAFB unchanged.
     """
 

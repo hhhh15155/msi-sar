@@ -3,14 +3,14 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from baselines.hsi_lidar.mft_patch import MFTPatch
+from baselines._hsi_adapters.mft_patch import MFTPatch
 
 
 class MFT(nn.Module):
     """Project-interface wrapper around the adapted MFT model.
 
     The released MFT code exists only as a Jupyter notebook; the model classes
-    are re-implemented in ``baselines/hsi_lidar/mft_patch.py`` with a
+    are re-implemented in ``baselines/_hsi_adapters/mft_patch.py`` with a
     band-adaptive spectral stem so 6/10-band MSI inputs are valid.
     Input layout: ``[B, 1, C, H, W]`` with MSI then SAR channels.
     """
