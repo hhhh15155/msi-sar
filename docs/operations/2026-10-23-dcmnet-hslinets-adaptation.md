@@ -28,7 +28,10 @@
    按 `patch_size` 设置 `hsi_windowSize = patch_size - 6`、`size_SA = (patch_size-6)²`。
 5. **patch 限制**：路由 Cell 要求方形特征图，入口校验 patch 为奇数且 ≥9；11/13 已覆盖。
    主实验 patch 11 与协议一致。
-6. 无预训练；分类头保持原 `1×1 conv → 512 → num_classes`。
+6. **死模块清理**：vendor 路由层同时构造两个 stage 的 Cell、`Cross_Self_attention.dense`、
+   `RoutingModule.bn`／`path_mapping` 在 forward 中从未使用，会形成永远无梯度的已注册参数。
+   适配层在构建后删除这些模块（vendor 源文件不改），使"优化器覆盖参数"检查有明确含义。
+7. 无预训练；分类头保持原 `1×1 conv → 512 → num_classes`。
 
 ## HSLiNets 的适配决策与阻塞
 

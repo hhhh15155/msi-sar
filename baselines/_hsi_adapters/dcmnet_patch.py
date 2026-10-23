@@ -50,6 +50,34 @@ RoutingModule = importlib.import_module('net.routing_modules').RoutingModule
 _classify = importlib.import_module('net.classify').classify
 
 
+def _prune_released_dead_modules(routing_module) -> None:
+    """Remove released modules that the released forward pass never uses.
+
+    The vendor ``Cells``/``Feature_Interaction`` code instantiates both stage
+    variants of every interaction layer (``c11..c13`` and ``c21..c23``) while a
+    given layer only runs one stage, defines ``Cross_Self_attention.dense`` but
+    never applies it, and keeps ``RoutingModule.bn``/``path_mapping`` unused.
+    Those parameters would be registered in the optimizer yet never receive a
+    gradient.  Pruning keeps the active parameter set explicit; the vendor
+    source files themselves stay untouched.
+    """
+    for module in list(routing_module.modules()):
+        if hasattr(module, 'sa') and hasattr(module.sa, 'dense'):
+            del module.sa.dense
+    for layer in (routing_module.dynamic_itr_l0, routing_module.dynamic_itr_l1,
+                  routing_module.dynamic_itr_l2):
+        if hasattr(layer, 'conv2'):
+            del layer.conv2
+    for layer in (routing_module.dynamic_itr_l1, routing_module.dynamic_itr_l2):
+        stage = int(getattr(layer, 'stage', 1))
+        for name in (('c21', 'c22', 'c23') if stage == 1 else ('c11', 'c12', 'c13')):
+            if hasattr(layer, name):
+                delattr(layer, name)
+    for name in ('bn', 'path_mapping'):
+        if hasattr(routing_module, name):
+            delattr(routing_module, name)
+
+
 def _require_patch(patch_size: int) -> int:
     if patch_size % 2 != 1 or patch_size < 9:
         raise ValueError('DCMNet adaptation requires an odd patch_size >= 9 (routing cells need patch-6)')
@@ -141,6 +169,7 @@ class DCMNetPatch(nn.Module):
         self.hsi_encoder = _MSIEncoder(int(ms_channels), int(uni_dimension))
         self.lidar_encoder = _SAREncoder(int(sar_channels), int(uni_dimension))
         self.routing_module = RoutingModule(_ARGS)
+        _prune_released_dead_modules(self.routing_module)
         self.classifier = _classify()
 
     def forward(self, ms, sar, labels=None):

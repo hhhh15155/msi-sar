@@ -24,7 +24,8 @@ DCMNet(num_classes=8, patch_size=11, spectral_channels=10, sar_channels=4)
 2. **SAR 编码器**：沿用原 2D LiDAR stem 的层数与核，仅把首层输入通道改为实际 SAR 通道数（1／4），不把 LiDAR 高度语义套到 SAR，也不插值复制波段。
 3. **参数注入**：原 `parameter.py` 在 import 时加载 `.mat` 数据并写死 `hsi_windowSize`、`size_SA` 等常量；适配层用一个参数 stub 模块替代，按 `patch_size` 动态设置 `hsi_windowSize = patch_size - 6`、`size_SA = (patch_size-6)²`。
 4. **patch 限制**：路由 Cell 要求方形特征图边长 `patch_size - 6`，因此入口校验 **patch 必须为奇数且 ≥9**；主实验 patch 11（5×5）、13（7×7）均在合成测试范围内。
-5. 无预训练；分类头输出保持原 `1×1 conv → 512 → num_classes`。
+5. **清理原实现中的死模块**：vendor 的路由层同时构造了两个 stage 的 Cell（`c11..c13` 与 `c21..c23`），每次只跑其中一个；`Cross_Self_attention.dense`、`RoutingModule.bn`、`path_mapping` 在 forward 中从未使用。适配层在构建后删除这些模块，避免优化器里出现永远无梯度的参数；vendor 源文件不改，差异记录在此。
+6. 无预训练；分类头输出保持原 `1×1 conv → 512 → num_classes`。
 
 ## 已知限制
 
