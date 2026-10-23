@@ -14,6 +14,9 @@
 | `fuzzy_transformer` | [fuzzy_transformer.py](../../models/fuzzy_transformer.py)：`FuzzyTransformer` | [train.py](../../baselines/fuzzy_transformer/train.py) | `ms_channels`、`sar_channels` | 两级模糊融合、动态坐标位置编码；正奇数 patch；不依赖 Mamba 或预训练 | [当前模型说明](fuzzy-transformer.md) |
 | `v7_fdmf_fixed` | [fdmf_patch.py](../../models/fdmf_patch.py)：`FrequencyFusion`，共同 `MainClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 单级固定边界高低频融合的分类适配；无预训练，非原分割整网 | [第二批适配说明](../experiments/paper-candidates.md) |
 | `v8_msaf_fixed` | [msaf_patch.py](../../models/msaf_patch.py)：`MSAFPatchClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 浅层 MobileNet、16／24 两级融合，odd patch ≥5；测试关闭随机掩码，两路无预训练 | [第二批适配说明](../experiments/paper-candidates.md) |
+| `dffnet`（第三方适配） | [model.py](../../baselines/dffnet/model.py)：`DFFNet` | [train.py](../../baselines/dffnet/train.py) | `spectral_channels`、`sar_channels` | 项目统一接口 `[B,1,C,H,W]`；DFFNet 频域动态滤波 + SSAFB 适配；2 个 DFFM stage；修正惰性滤波器参数注册；无预训练 | [README](../../baselines/dffnet/README.md) |
+| `m2heat`（第三方适配） | [model.py](../../baselines/m2heat/model.py)：`M2Heat` | [train.py](../../baselines/m2heat/train.py) | `spectral_channels`、`sar_channels` | 热传导 vHeat + 跨频域 CFF；输出 softmax 取 log 作 logits；patch 11；无预训练 | [README](../../baselines/m2heat/README.md) |
+| `mft`（第三方适配） | [model.py](../../baselines/mft/model.py)：`MFT` | [train.py](../../baselines/mft/train.py) | `spectral_channels`、`sar_channels` | 原仓库仅有 notebook；重实现 mCrossPA 模型，谱核随通道数自适应；无预训练 | [README](../../baselines/mft/README.md) |
 
 训练与全图推理统一使用 `scripts/train_eval_<model>.py`、`scripts/eval_<model>.py`、`scripts/infer_<model>.py` 这一命名模式；实际命令和输出位置见 [实验说明](../experiments/README.md)。没有训练授权时，不因为阅读本页就启动这些入口。
 
