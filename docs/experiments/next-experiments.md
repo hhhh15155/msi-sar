@@ -1,5 +1,11 @@
 # 后续实验路线与状态
 
+## 2026-10-23 资源策略更新
+
+SSH核验：原27项及110新增 `a01_late_equal_yrd` 均完成200轮，最终权重SHA匹配、预测文件存在。新增YRD消融OA86.46945%、AA85.17549%、Macro-F1 74.49356%；完整V6来自116，比较需注明跨环境差异。本次未重新推理或重算预测指标。
+
+110原调度PID54145、screen `msi_v6_ablate_gpu0` 在等待GPU，剩余5项尚未启动。用户明确取消本批GPU独占和20 GiB空闲显存门槛；manifest改为 `wait_for_gpu_idle=false`、`min_free_memory_mib=0`。按原screen、GPU0和输出目录重启调度，单worker顺序执行剩余项，已完成项校验后跳过。此项新授权覆盖下文2026-10-21部署快照中的资源准入规则；训练源码、各项YAML、划分、FP32、batch和200轮预算均不变。116不启动副本，不停止其他用户任务，失败不静默重试。
+
 ## Material Passport
 
 - Origin Skill: academic-research-suite / experiment-agent
