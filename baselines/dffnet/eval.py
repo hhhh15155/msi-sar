@@ -13,6 +13,7 @@ from .io import load_yaml, save_json
 from .metrics import classification_metrics
 from .model import DFFNet
 from .train import resolve_device
+from baselines.map_selection import select_map_run
 
 
 def load_model(config: dict, labels: list[str], checkpoint: Path, device: torch.device) -> DFFNet:
@@ -36,19 +37,13 @@ def evaluate_run(run_dir: str | Path) -> dict:
     for split_file in sorted((run_dir / "splits").glob("run_*.npz")):
         run_index = int(split_file.stem.split("_")[-1])
         model = load_model(config, labels, run_dir / "checkpoints" / f"run_{run_index}" / "model_best.pth", device)
-        prediction = np.argmax(
-            infer_full_image(
-                model,
-                image,
-                int(config["patch_size"]),
-                len(labels),
-                device,
-                batch_size=int(config.get("infer", {}).get("batch_size", 64)),
-            ),
-            axis=-1,
+        with np.load(split_file) as split:
+            test_gt = split["test_gt"].copy()
+        prediction = predict_labeled_samples(
+            model, image, test_gt, int(config["patch_size"]),
+            int(config.get("test_batch_size", 1024)), device,
         )
-        split = np.load(split_file)
-        metrics = classification_metrics(prediction, split["test_gt"], len(labels))
+        metrics = classification_metrics(prediction, test_gt, len(labels))
         metrics["run"] = run_index
         metrics["class_names"] = labels
         results.append(metrics)
@@ -81,8 +76,10 @@ def predict_labeled_samples(
     return prediction
 
 
-def save_labeled_maps(run_dir: str | Path, run_index: int = 0) -> dict:
+def save_labeled_maps(run_dir: str | Path, run_index: int | str = "best") -> dict:
     run_dir = Path(run_dir)
+    selection = select_map_run(run_dir, run_index)
+    run_index = selection["run"]
     config = load_yaml(run_dir / "config.yaml")
     dataset_config = load_yaml(config["dataset_config"])
     image, gt, labels = load_dataset(dataset_config)
@@ -99,11 +96,7 @@ def save_labeled_maps(run_dir: str | Path, run_index: int = 0) -> dict:
     labeled_gt[mask] = gt[mask].astype(np.uint8) + 1
     labeled_prediction[mask] = prediction[mask].astype(np.uint8) + 1
 
-    metrics = classification_metrics(prediction, gt, len(labels))
-    metrics["run"] = run_index
-    metrics["class_names"] = labels
-    output = {"runs": [metrics]}
-    save_json(output, run_dir / "eval_metrics.json")
+    output = {"mode": "labeled", **selection, "labeled_count": int(mask.sum())}
 
     paths = {}
     if eval_config.get("save_labeled_maps", True):
@@ -114,12 +107,14 @@ def save_labeled_maps(run_dir: str | Path, run_index: int = 0) -> dict:
             "labeled_prediction": [str(path) for path in prediction_paths],
         }
     output["outputs"] = paths
-    save_json(output, run_dir / "eval_metrics.json")
+    save_json(output, run_dir / "labeled_map_info.json")
     return output
 
 
-def save_full_map(run_dir: str | Path, run_index: int = 0, output_prefix: str | Path | None = None) -> list[Path]:
+def save_full_map(run_dir: str | Path, run_index: int | str = "best", output_prefix: str | Path | None = None) -> list[Path]:
     run_dir = Path(run_dir)
+    selection = select_map_run(run_dir, run_index)
+    run_index = selection["run"]
     config = load_yaml(run_dir / "config.yaml")
     dataset_config = load_yaml(config["dataset_config"])
     image, _, labels = load_dataset(dataset_config)
@@ -135,4 +130,7 @@ def save_full_map(run_dir: str | Path, run_index: int = 0, output_prefix: str | 
     )
     prediction = np.argmax(probabilities, axis=-1).astype(np.uint8) + 1
     prefix = Path(output_prefix) if output_prefix else run_dir / "full_prediction"
-    return save_label_outputs(prediction, prefix, config.get("palette"))
+    paths = save_label_outputs(prediction, prefix, config.get("palette"))
+    save_json({"mode": "full", **selection, "outputs": [str(path) for path in paths]},
+              prefix.parent / (prefix.name + "_info.json"))
+    return paths

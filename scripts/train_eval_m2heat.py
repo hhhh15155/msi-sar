@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
 import json
@@ -42,13 +42,8 @@ def main() -> None:
 
     if eval_config.get("enabled", True):
         requested_run = eval_config.get("run_index", "best")
-        if requested_run == "best":
-            selected = max(metrics["runs"], key=lambda item: item["oa"])
-            run_index = int(selected["run"])
-        else:
-            run_index = int(requested_run)
-        print(f"selected run for labeled maps: {run_index}")
-        eval_output = save_labeled_maps(run_dir, run_index=run_index)
+        eval_output = save_labeled_maps(run_dir, run_index=requested_run)
+        print(f"selected run for labeled maps: {eval_output['run']} seed={eval_output['seed']}")
         for group, paths in eval_output.get("outputs", {}).items():
             for path in paths:
                 print(f"{group}: {path}")

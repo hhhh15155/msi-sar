@@ -1,4 +1,4 @@
-﻿# DFFNet（GRSL 2025，HSI–LiDAR/HSI–SAR 频域融合）
+# DFFNet（GRSL 2025，HSI–LiDAR/HSI–SAR 频域融合）
 
 本目录是 **第三方方法在本项目 MSI–SAR 数据上的基线适配**，不是原论文整网复现，也不属于项目自研方法。
 
@@ -24,7 +24,7 @@ DFFNet(num_classes=8, patch_size=11, spectral_channels=10, sar_channels=4)
 
 ## 已知限制
 
-- **未运行验证**：本地无 GPU/PyTorch 环境，本次只做了语法与结构检查；尚未在服务器上做前向/训练 smoke test，也未产生任何精度数字。
+- **CPU 合成数据验证通过，未完成正式实验**：Windows 本机已有 PyTorch 2.5.1 环境验证了 MSI/SAR `6/1`、`10/4` 和 patch `11/13` 的前向、反向、有限梯度、优化器参数覆盖与 checkpoint 重载一致性；未使用真实数据、未做 GPU 或精度验证。
 - 原仓库**未见明确 LICENSE**；公开可读不等于可复用，仅作研究对照。
 - 原论文的 Berlin/Houston 等数据集精度不能直接迁移到本项目数据。
 
@@ -34,4 +34,8 @@ DFFNet(num_classes=8, patch_size=11, spectral_channels=10, sar_channels=4)
 python scripts/train_eval_dffnet.py --config configs/dffnet_yrd_fs50.yaml
 ```
 
-配置模板：`configs/dffnet_yrd_fs50.yaml`、`configs/dffnet_yrd2509new_fs50.yaml`、`configs/dffnet_grss07_custom.yaml`（与仓库既有 baseline 配置同格式：每类固定训练样本数、5 seeds、200 epochs、Adam）。
+主实验配置：`configs/dffnet_yrd_fs50.yaml`、`configs/dffnet_yrd2509new_fs50.yaml`、`configs/dffnet_grss07_custom.yaml`。已对齐当前主实验的训练数量、5 seeds `202201–202205`、patch 11、200 epochs、train128／test1024、FP32 与 Adam；按最高测试 OA 的运行出图，保留全部运行及汇总指标。详细参数见 [配置索引](../../configs/README.md#新适配基线的主实验配置)。配置／出图流程回归检查通过；正式实验尚未运行。
+
+## 测试与两种出图
+
+`eval_dffnet.py --run <目录>` 只对保存的测试划分重评估。`infer_dffnet.py --run <目录>` 默认选测试 OA 最高的最终 checkpoint，推理全部有标注位置（包括训练位置）出图，不重新计分；图及 `labeled_map_info.json` 与测试指标分开保存。只有用户需要时，加 `--mode full` 才运行全图推理。上述脚本均位于 `scripts/`，默认训练入口仅生成标注图，`infer.save_full_map: false`。

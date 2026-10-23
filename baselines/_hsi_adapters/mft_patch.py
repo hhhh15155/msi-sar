@@ -1,6 +1,6 @@
 """MFT (TGRS 2023) patch-classification adaptation for the MSI-SAR project.
 
-Vendored source: ``vendor/hsi_lidar/MFT-original`` (AnkurDeria/MFT,
+Vendored source: ``vendor/MFT-original`` (AnkurDeria/MFT,
 commit de214e512ff1a8f6aefdf27fc2cb60c75e0f559a).  The released code exists only
 as ``Model/MFT.ipynb``; this module re-implements the model classes (HetConv,
 MCrossAttention, Mlp, Block, TransformerEncoder, MFT) faithfully from that
@@ -22,7 +22,6 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from einops import rearrange
 from torch.nn import Dropout, LayerNorm, Linear
 
 
@@ -107,7 +106,7 @@ class TransformerEncoder(nn.Module):
 class MFTPatch(nn.Module):
     """MFT with a batch-agnostic patch size and band-adaptive spectral stem."""
 
-    def __init__(self, ms_channels, sar_channels, num_classes, patch_size=11, dim=64):
+    def __init__(self, ms_channels, sar_channels, num_classes, patch_size=11, dim=16):
         super().__init__()
         self.patch_size = int(patch_size)
         self.ms_channels = int(ms_channels)
@@ -116,8 +115,8 @@ class MFTPatch(nn.Module):
         spectral_kernel = min(9, max(1, self.ms_channels - 1))
         self.spectral_kernel = spectral_kernel
         self.spectral_out = self.ms_channels - spectral_kernel + 1
-        if feature_dim % 8 != 0:
-            raise ValueError('dim must be divisible by 8 for HetConv groups')
+        if feature_dim != 16:
+            raise ValueError('MFT uses FM=16 to match its 64-channel modality tokens')
         self.conv5 = nn.Sequential(
             nn.Conv3d(1, 8, (spectral_kernel, 3, 3), padding=(0, 1, 1), stride=1),
             nn.BatchNorm3d(8), nn.ReLU())
@@ -155,14 +154,14 @@ class MFTPatch(nn.Module):
         auxiliary = self.lidar_conv(sar)
         auxiliary = auxiliary.reshape(batch, -1, self.patch_size ** 2).transpose(-1, -2)
 
-        wa_l = rearrange(self.token_wA_L.expand(batch, -1, -1), 'b h w -> b w h')
-        attn_l = rearrange(torch.einsum('bij,bjk->bik', auxiliary, wa_l), 'b h w -> b w h').softmax(dim=-1)
+        wa_l = self.token_wA_L.expand(batch, -1, -1).transpose(1, 2)
+        attn_l = torch.einsum('bij,bjk->bik', auxiliary, wa_l).transpose(1, 2).softmax(dim=-1)
         vv_l = torch.einsum('bij,bjk->bik', auxiliary, self.token_wV_L.expand(batch, -1, -1))
         auxiliary = torch.einsum('bij,bjk->bik', attn_l, vv_l)
 
         tokens = spectral.flatten(2).transpose(-1, -2)
-        wa = rearrange(self.token_wA.expand(batch, -1, -1), 'b h w -> b w h')
-        attn = rearrange(torch.einsum('bij,bjk->bik', tokens, wa), 'b h w -> b w h').softmax(dim=-1)
+        wa = self.token_wA.expand(batch, -1, -1).transpose(1, 2)
+        attn = torch.einsum('bij,bjk->bik', tokens, wa).transpose(1, 2).softmax(dim=-1)
         vv = torch.einsum('bij,bjk->bik', tokens, self.token_wV.expand(batch, -1, -1))
         tokens = torch.einsum('bij,bjk->bik', attn, vv)
 

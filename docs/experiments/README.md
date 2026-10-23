@@ -15,7 +15,7 @@
 | 入口 | 状态 |
 | --- | --- |
 | `scripts/train_eval_{dfinet,frekfuse,mghofnet,msfmamba,softformer}.py` | 旧集成基线的训练 + 测试入口（代码保留，结果目录见下） |
-| `scripts/train_eval_{dffnet,m2heat,mft}.py` | 新适配的 HSI–LiDAR 基线，**未运行验证**；见各 `baselines/<model>/README.md` |
+| `scripts/train_eval_{dffnet,m2heat,mft}.py` | 新适配的 HSI–LiDAR 基线，**CPU 合成数据验证通过，未完成正式实验**；见各 `baselines/<model>/README.md` |
 | `scripts/eval_<model>.py`、`scripts/infer_<model>.py` | 已有 run 的评估与整图推理 |
 | `scripts/experiment_grid.py` | 只打印旧基线网格，不启动训练 |
 | `scripts/main_experiment.py` | **已删除**（原用于 V0–V8 队列） |
@@ -26,8 +26,13 @@
 
 - 三个数据集：`yrd`、`yrd2509new`、`grss07`，配置在 `configs/datasets/`。
 - 主实验训练量：YRD 每类 50（8 类共 400）、YRD2509NEW 每类 50（9 类共 450）、GRSS07 custom `[674,1481,752,45,30]`（5 类共 2982）。
-- 固定划分：按类别与种子抽固定训练数量，其余标注像元测试，无验证集；seed `202201`、patch 11、训练 batch 128、测试 batch 1024、FP32 是既有配置值，实际以各 YAML 为准。
-- 已完成实验不重跑；不用测试集选 epoch／超参数／种子。
+- 固定划分：按类别与种子抽固定训练数量，其余标注像元测试，无验证集；patch 11、训练 batch 128、测试 batch 1024、FP32，实际以各 YAML 为准。
+- 2026-10-23 用户指定多次运行按测试 OA 最高者出图。DFFNet／M2Heat／MFT 当前 9 份配置恢复为 `num_runs: 5`、`seeds: [202201,202202,202203,202204,202205]`、`eval.run_index: best`；后续新 baseline 默认沿用这一协议。
+- 每次运行训练 200 epochs，Adam 学习率 `0.001`、权重衰减 `0.0001`；无预训练，训练结束评估最终 checkpoint（即使文件名是 `model_best.pth`）。
+- 已完成实验不重跑；不用测试集选 epoch／超参数。最高测试 OA 仅用于选择展示的分类图，全部种子的测试指标和均值／标准差仍是正式结果；OA 并列时按配置顺序选首个运行，记录实际 run 和 seed，注明“按最高测试 OA 选图”。
+- 汇总标准差沿用现有 `metrics.py` 的 `np.std` 默认值（`ddof=0`，总体标准差）；报告中注明口径，不混用样本标准差。
+- 当前默认仅标注样本出图：用测试 OA 最高的模型推理全部有标注位置（含训练位置），未标注位置留背景。这是绘图推理，不重新计算准确率；保存 `labeled_map_info.json` 记录选图 run／seed／既有测试 OA，不能覆盖 `metrics.json` 或测试重评估的 `eval_metrics.json`。
+- 测试与重评估只推理各次保存的测试划分并计算指标，不调用全图。全图是单独出图模式，`infer.save_full_map: false`；只有用户明确需要时使用 `scripts/infer_<model>.py --mode full`，默认 `--mode labeled`。
 
 ## 结果目录
 

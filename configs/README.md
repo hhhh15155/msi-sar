@@ -11,7 +11,7 @@
 
 | 路径 | 内容 | 状态 |
 | --- | --- | --- |
-| `configs/{dffnet,m2heat,mft}_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml` | 新适配的 HSI–LiDAR 基线（3 模型 × 3 数据集 = 9 份） | **未运行验证** |
+| `configs/{dffnet,m2heat,mft}_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml` | 新适配的 HSI–LiDAR 基线（3 模型 × 3 数据集 = 9 份） | **CPU 合成数据验证通过，未完成正式实验** |
 | `configs/dfinet_*.yaml` | DFI-Net 旧基线（few-shot 网格） | 历史网格，非当前主实验清单 |
 | `configs/frekfuse_*.yaml` | FreKFuse 旧基线（few-shot 网格） | 同上 |
 | `configs/mghofnet_*.yaml` | MGHOFNet 旧基线（few-shot 网格） | 同上 |
@@ -23,6 +23,24 @@
 ## 主实验数据量（仍然有效）
 
 YRD 每类 50（8 类共 400）、YRD2509NEW 每类 50（9 类共 450）、GRSS07 custom `[674,1481,752,45,30]`（5 类共 2982）。说明见 [docs/experiments/README.md](../docs/experiments/README.md)。
+
+### 新适配基线的主实验配置
+
+`dffnet`、`m2heat`、`mft` 的上述 9 份配置已按当前主实验协议对齐：
+
+| 参数 | 当前设置 |
+| --- | --- |
+| 运行次数／随机种子 | `num_runs: 5`，`seeds: [202201,202202,202203,202204,202205]` |
+| patch／训练轮数 | `11`／`200` |
+| 训练／测试 batch | `128`／`1024` |
+| 优化器 | 训练入口使用 Adam；学习率 `0.001`，权重衰减 `0.0001` |
+| 精度 | 训练入口使用 FP32，无 AMP；不是由 YAML 中额外的精度字段控制 |
+| 预处理／划分 | 复用共享数据集配置；整图逐通道 min-max，固定每类训练数量，其余标注像元测试 |
+| MSI／SAR 通道数 | YRD、YRD2509NEW 显式设置为 `10/4`，GRSS07 为 `6/1` |
+| checkpoint／出图运行 | 每次训练结束的最终 checkpoint；`eval.run_index: best`，选测试 OA 最高者出图 |
+| 出图范围 | 默认全部标注位置（含训练位置），不重新计分；`infer.save_full_map: false`，全图仅按需显式调用 |
+
+用户于 2026-10-23 指定恢复多次运行选最高测试 OA 出图，全部运行的测试指标与均值／标准差仍须保留，具体口径以 [实验说明](../docs/experiments/README.md#数据与协议仍然有效) 为准。旧基线历史网格保持原样，输出目录沿用各配置的 `runs_fewshot/` 路径。合成数据检查不代表已完成真实数据训练或精度验证，也不包含 DCMNet、HSLiNets 两个未适配方法。后续引入必须执行 [项目 skill](../.agents/skills/msi-sar-baseline-adaptation/SKILL.md) 与 [模型适配规则](../docs/models/baseline-adaptation.md)。
 
 ## 维护约定
 

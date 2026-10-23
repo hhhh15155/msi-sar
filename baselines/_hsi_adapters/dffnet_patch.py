@@ -1,6 +1,6 @@
 """DFFNet (GRSL 2025) patch-classification adaptation for the MSI-SAR project.
 
-Vendored source: ``vendor/hsi_lidar/DFFNet-original`` (oucailab/DFFNet,
+Vendored source: ``vendor/DFFNet-original`` (oucailab/DFFNet,
 commit a9beb2b2b43b452cfca364160822f0dee9b34462).  Only the dynamic filter
 block and the spectral-spatial adaptive fusion block are imported unchanged;
 the outer network is rebuilt for patch classification with explicit channel
@@ -28,7 +28,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-_VENDOR = Path(__file__).resolve().parents[2] / 'vendor' / 'hsi_lidar' / 'DFFNet-original'
+_VENDOR = Path(__file__).resolve().parents[2] / 'vendor' / 'DFFNet-original'
 
 
 def _load_module(alias: str, relative: str):

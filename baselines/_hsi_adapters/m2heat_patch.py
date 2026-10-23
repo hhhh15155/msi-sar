@@ -1,6 +1,6 @@
 """M2Heat (TCSVT 2026) patch-classification adaptation for the MSI-SAR project.
 
-Vendored source: ``vendor/hsi_lidar/M2Heat-original`` (Weikan0425/M2Heat_HSI_LiDAR,
+Vendored source: ``vendor/M2Heat-original`` (Weikan0425/M2Heat_HSI_LiDAR,
 commit 8fcdce85e92a5d8b92c0a86ca78f835113dd3e3f).  The released ``m2heat.py`` is
 used unchanged; this adapter only maps the project interface.
 
@@ -22,7 +22,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-_VENDOR = Path(__file__).resolve().parents[2] / 'vendor' / 'hsi_lidar' / 'M2Heat-original'
+_VENDOR = Path(__file__).resolve().parents[2] / 'vendor' / 'M2Heat-original'
 
 
 def _load_module(alias: str, relative: str):

@@ -11,9 +11,9 @@
 | `mghofnet/` | MGHOFNet | 项目已集成基线 | 旧基线（结果目录 `runs_fewshot/`，历史网格） | `scripts/train_eval_mghofnet.py`；`configs/mghofnet_*.yaml` |
 | `msfmamba/` | MSFMamba | 项目已集成基线（Mamba，保留） | 旧基线（结果目录 `runs_fewshot/`，历史网格） | `scripts/train_eval_msfmamba.py`；`configs/msfmamba_*.yaml` |
 | `softformer/` | SoftFormer | 项目已集成基线 | 旧基线（结果目录 `runs_fewshot/`，历史网格） | `scripts/train_eval_softformer.py`；`configs/softformer_*.yaml` |
-| `dffnet/` | DFFNet（GRSL 2025，HSI–SAR/LiDAR） | [vendor/DFFNet-original](../vendor/DFFNet-original) | **适配完成、未运行验证**（无精度结果） | `scripts/train_eval_dffnet.py`；`configs/dffnet_*.yaml` |
-| `m2heat/` | M2Heat（TCSVT 2026） | [vendor/M2Heat-original](../vendor/M2Heat-original) | **适配完成、未运行验证**（无精度结果） | `scripts/train_eval_m2heat.py`；`configs/m2heat_*.yaml` |
-| `mft/` | MFT（TGRS 2023） | [vendor/MFT-original](../vendor/MFT-original) | **适配完成、未运行验证**（无精度结果） | `scripts/train_eval_mft.py`；`configs/mft_*.yaml` |
+| `dffnet/` | DFFNet（GRSL 2025，HSI–SAR/LiDAR） | [vendor/DFFNet-original](../vendor/DFFNet-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_dffnet.py`；`configs/dffnet_*.yaml` |
+| `m2heat/` | M2Heat（TCSVT 2026） | [vendor/M2Heat-original](../vendor/M2Heat-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_m2heat.py`；`configs/m2heat_*.yaml` |
+| `mft/` | MFT（TGRS 2023） | [vendor/MFT-original](../vendor/MFT-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_mft.py`；`configs/mft_*.yaml` |
 | `dcmnet/` | DCMNet（TGRS 2025） | [vendor/DCMNet-original](../vendor/DCMNet-original) | **仅源码 + 未适配说明**，不可运行 | — |
 | `hslinets/` | HSLiNets（2024–2025） | [vendor/HSLiNets-original](../vendor/HSLiNets-original) | **仅源码 + 未适配说明**，不可运行 | — |
 
@@ -23,6 +23,8 @@
 - [`split.py`](split.py)：固定训练样本数划分逻辑，被各基线 `dataset.py` 复用。
 
 ## 新增基线时必须做
+
+所有 agent 必须先读 [项目适配 skill](../.agents/skills/msi-sar-baseline-adaptation/SKILL.md) 与 [模型适配规则](../docs/models/baseline-adaptation.md)，在引入任务内主动完成输入、模型接口、训练／评估和配置适配。仅 vendor 收录不算集成完成；纯调研任务不触发实现。
 
 1. 补齐 `model.py / train.py / eval.py / infer.py / dataset.py / io.py / metrics.py / README.md`；
 2. 在本表和 [docs/models/README.md](../docs/models/README.md) 登记；

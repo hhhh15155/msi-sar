@@ -8,6 +8,7 @@
 | --- | --- |
 | 数据放哪里、多少通道、多少类别、如何预处理 | [数据集说明](datasets/README.md) |
 | 模型实现在哪、输入有何限制 | [模型索引](models/README.md)、[对比方法索引](../baselines/README.md) |
+| 新 baseline 如何自动适配、配置与验证必须满足什么 | [模型适配规则](models/baseline-adaptation.md)、[项目 skill](../.agents/skills/msi-sar-baseline-adaptation/SKILL.md) |
 | 训练、评估、推理与结果解释 | [实验说明](experiments/README.md) |
 | 配置哪些是当前有效、哪些是历史网格 | [配置索引](../configs/README.md) |
 | 脚本入口怎么选、哪些是一次性脚本 | [脚本索引](../scripts/README.md) |
