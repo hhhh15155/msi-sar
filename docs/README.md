@@ -17,7 +17,7 @@
 | FDMF／MSAF 适配方式、第二批六项与后台队列 | [文献候选分类实验](experiments/paper-candidates.md) |
 | 三个数据集的主实验样本配置 | [YRD：每类 50](experiments/yrd.md)、[YRD2509NEW：每类 50](experiments/yrd2509new.md)、[GRSS07：custom](experiments/grss07.md) |
 | YRD2509NEW 专项配置与命令 | [YRD2509NEW](experiments/yrd2509new.md) |
-| 哪些论文、仓库与机制值得继续研究 | [调研索引](research/README.md)、[完整合并报告](research/2025-2026-multisource-classification-review.md) |
+| 哪些论文、仓库与机制值得继续研究 | [调研索引](research/README.md)、[完整合并报告](research/2025-2026-multisource-classification-review.md)、[2026-10-23 顶会定向补检](research/2026-10-23-topconference-followup.md) |
 | 如何连接服务器、以哪端为准 | [根目录 AGENTS.md](../AGENTS.md) |
 | 110／116 双服务器的环境、数据同步和 GPU 选择 | [双服务器运行说明](operations/2026-10-17-dual-server-setup.md) |
 | 两端版本如何统一、旧版本备份在哪 | [版本统一记录](operations/2026-10-17-version-unification.md) |
