@@ -16,7 +16,7 @@
 
 ## 2026-10-23 HSI–LiDAR 源码快照
 
-[HSI–LiDAR 第三方代码快照与适配状态](2026-10-23-hsi-lidar-source-snapshot.md)：DFFNet（GRSL 2025）、M2Heat（TCSVT 2026）、DCMNet（TGRS 2025）、MFT（TGRS 2023）、HSLiNets（2024–2025）五个仓库的 commit、快照内容、许可证状态与项目适配状态。只读快照本体在 `vendor/<Name>-original/`；其中 DFFNet、M2Heat、MFT 已在 `baselines/` 完成适配（未运行验证），DCMNet、HSLiNets 仅收录源码（未适配原因见各自 README）。
+[HSI–LiDAR 第三方代码快照与适配状态](2026-10-23-hsi-lidar-source-snapshot.md)：DFFNet（GRSL 2025）、M2Heat（TCSVT 2026）、DCMNet（TGRS 2025）、MFT（TGRS 2023）、HSLiNets（2024–2025）五个仓库的 commit、快照内容、许可证状态与项目适配状态。只读快照本体在 `vendor/<Name>-original/`；五个仓库均已在 `baselines/` 完成适配（DCMNet 的谱核/路由适配、HSLiNets 因缺失中融合类采用早融合变体，详见各自 README）；均未完成正式实验。
 
 ## 来源与证据层次
 

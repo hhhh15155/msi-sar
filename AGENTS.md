@@ -50,7 +50,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 标注有限，但不要求 episodic few-shot 框架。现有 few-shot 命名通常表示每类固定训练样本数，应以配置和实现为准。
 - 分类性能优先，避免没有验证收益的重复模块堆叠；新增机制应有明确问题、对照和消融。
 - 优先采用不依赖 Mamba／SSM 的模型；可用门控，暂不优先使用“中心像素作为 Query 查询跨模态邻域”的融合方式。已有 Mamba 基线不因此删除。
-- 当前没有自研主模型。2026-10-23 按用户要求删除旧自研 V0–V8 版本线及全部相关结果；当前模型库为旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新适配的 HSI–LiDAR 基线（DFFNet、M2Heat、MFT，CPU 合成数据验证通过、未完成正式实验）。改模型前先核实 `baselines/` 与对应 README。
+- 当前没有自研主模型。2026-10-23 按用户要求删除旧自研 V0–V8 版本线及全部相关结果；当前模型库为旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新适配的 HSI–LiDAR 基线（DFFNet、M2Heat、MFT、DCMNet、HSLiNets，均完成合成数据验证、未完成正式实验）。改模型前先核实 `baselines/` 与对应 README。
 
 ## 4. 代码布局与实验规范
 

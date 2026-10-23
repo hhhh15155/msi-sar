@@ -7,6 +7,15 @@ import io
 import unittest
 
 TORCH_AVAILABLE = importlib.util.find_spec("torch") is not None
+EINOPS_AVAILABLE = importlib.util.find_spec("einops") is not None
+
+MODELS = (
+    ("dffnet", "DFFNet"),
+    ("m2heat", "M2Heat"),
+    ("mft", "MFT"),
+    ("dcmnet", "DCMNet"),      # the released routing cells import einops
+    ("hslinets", "HSLiNets"),
+)
 
 
 @unittest.skipUnless(TORCH_AVAILABLE, "PyTorch is unavailable in this Python environment")
@@ -14,7 +23,9 @@ class HsiAdapterModelsTests(unittest.TestCase):
     def test_forward_backward_parameters_and_checkpoint_roundtrip(self):
         import torch
         torch.set_num_threads(1)
-        for name, class_name in (("dffnet", "DFFNet"), ("m2heat", "M2Heat"), ("mft", "MFT")):
+        for name, class_name in MODELS:
+            if name == "dcmnet" and not EINOPS_AVAILABLE:
+                continue
             for ms, sar, classes in ((6, 1, 5), (10, 4, 9)):
                 for patch in (11, 13):
                     with self.subTest(model=name, channels=(ms, sar), patch=patch):

@@ -14,8 +14,8 @@
 | `DFFNet-original/` | `baselines/dffnet/` | HSI–LiDAR/SAR 适配基线（未运行验证） |
 | `M2Heat-original/` | `baselines/m2heat/` | HSI–LiDAR 适配基线（未运行验证） |
 | `MFT-original/` | `baselines/mft/` | notebook 重实现适配基线（未运行验证） |
-| `DCMNet-original/` | `baselines/dcmnet/` | 仅收录源码，未适配 |
-| `HSLiNets-original/` | `baselines/hslinets/` | 仅收录源码，未适配 |
+| `DCMNet-original/` | `baselines/dcmnet/` | HSI–LiDAR 适配基线（合成数据验证通过，未运行正式实验） |
+| `HSLiNets-original/` | `baselines/hslinets/` | 早融合变体适配基线（合成数据验证通过，未运行正式实验） |
 
 ## 规则
 

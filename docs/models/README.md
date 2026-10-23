@@ -16,8 +16,8 @@
 | `dffnet`（第三方适配） | [model.py](../../baselines/dffnet/model.py)：`DFFNet` | [train.py](../../baselines/dffnet/train.py)；`scripts/train_eval_dffnet.py` | `spectral_channels`、`sar_channels` | 新适配基线，**CPU 合成数据验证通过、未完成正式实验**；项目接口 `[B,1,C,H,W]`，2 个 DFFM stage，无预训练 | [README](../../baselines/dffnet/README.md) |
 | `m2heat`（第三方适配） | [model.py](../../baselines/m2heat/model.py)：`M2Heat` | [train.py](../../baselines/m2heat/train.py)；`scripts/train_eval_m2heat.py` | `spectral_channels`、`sar_channels` | 新适配基线，**CPU 合成数据验证通过、未完成正式实验**；热传导 + CFF，输出 softmax 取 log 作 logits | [README](../../baselines/m2heat/README.md) |
 | `mft`（第三方适配） | [model.py](../../baselines/mft/model.py)：`MFT` | [train.py](../../baselines/mft/train.py)；`scripts/train_eval_mft.py` | `spectral_channels`、`sar_channels` | 新适配基线，**CPU 合成数据验证通过、未完成正式实验**；notebook 重实现，谱核随通道数自适应 | [README](../../baselines/mft/README.md) |
-| `dcmnet`（未适配） | 仅 vendor 源码 | — | — | 光谱核与 Cell reshape 强耦合，见说明 | [README](../../baselines/dcmnet/README.md) |
-| `hslinets`（未适配） | 仅 vendor 源码 | — | — | notebook 未定义双模态模型类，见说明 | [README](../../baselines/hslinets/README.md) |
+| `dcmnet`（第三方适配） | [model.py](../../baselines/dcmnet/model.py)：`DCMNet` | [train.py](../../baselines/dcmnet/train.py)；`scripts/train_eval_dcmnet.py` | `spectral_channels`、`sar_channels` | 新适配基线，**合成数据验证通过、未完成正式实验**；路由 Cell 要求 patch 奇数且 ≥9；谱核深度 1；无预训练 | [README](../../baselines/dcmnet/README.md) |
+| `hslinets`（第三方适配） | [model.py](../../baselines/hslinets/model.py)：`HSLiNets` | [train.py](../../baselines/hslinets/train.py)；`scripts/train_eval_hslinets.py` | `spectral_channels`、`sar_channels` | 新适配基线，**早融合变体（LiDAR as additional band）**；原 notebook 中融合类缺失，见 README；无预训练 | [README](../../baselines/hslinets/README.md) |
 
 入口命名约定：`scripts/train_eval_<model>.py`（训练 + 测试指标 + 标签图）、`scripts/eval_<model>.py`（已有 run 的评估）、`scripts/infer_<model>.py`（整图推理）。训练与推理脚本只在用户明确授权后执行。
 

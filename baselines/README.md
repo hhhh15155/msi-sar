@@ -14,12 +14,12 @@
 | `dffnet/` | DFFNet（GRSL 2025，HSI–SAR/LiDAR） | [vendor/DFFNet-original](../vendor/DFFNet-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_dffnet.py`；`configs/dffnet_*.yaml` |
 | `m2heat/` | M2Heat（TCSVT 2026） | [vendor/M2Heat-original](../vendor/M2Heat-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_m2heat.py`；`configs/m2heat_*.yaml` |
 | `mft/` | MFT（TGRS 2023） | [vendor/MFT-original](../vendor/MFT-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_mft.py`；`configs/mft_*.yaml` |
-| `dcmnet/` | DCMNet（TGRS 2025） | [vendor/DCMNet-original](../vendor/DCMNet-original) | **仅源码 + 未适配说明**，不可运行 | — |
-| `hslinets/` | HSLiNets（2024–2025） | [vendor/HSLiNets-original](../vendor/HSLiNets-original) | **仅源码 + 未适配说明**，不可运行 | — |
+| `dcmnet/` | DCMNet（TGRS 2025，动态跨模态特征交互） | [vendor/DCMNet-original](../vendor/DCMNet-original) | **适配完成、合成数据验证通过、未完成正式实验** | `scripts/train_eval_dcmnet.py`；`configs/dcmnet_*.yaml` |
+| `hslinets/` | HSLiNets（2024–2025，早融合变体） | [vendor/HSLiNets-original](../vendor/HSLiNets-original) | **适配完成（早融合变体）、合成数据验证通过、未完成正式实验** | `scripts/train_eval_hslinets.py`；`configs/hslinets_*.yaml` |
 
 ## 共享实现
 
-- [`_hsi_adapters/`](_hsi_adapters)：三个第三方适配基线（dffnet/m2heat/mft）的共享模型实现（`dffnet_patch.py`、`m2heat_patch.py`、`mft_patch.py`），直接加载 `vendor/` 中未改动的上游核心模块。**它不是可训练基线**，不要按模型名引用。
+- [`_hsi_adapters/`](_hsi_adapters)：五个第三方适配基线（dffnet/m2heat/mft/dcmnet/hslinets）的共享模型实现（`dffnet_patch.py`、`m2heat_patch.py`、`mft_patch.py`、`dcmnet_patch.py`、`hslinets_patch.py`），`_hslinets_vendor.py` 为从 HSLiNets notebook 原样抽取的类；直接加载 `vendor/` 中未改动的上游核心模块。**它不是可训练基线**，不要按模型名引用。
 - [`split.py`](split.py)：固定训练样本数划分逻辑，被各基线 `dataset.py` 复用。
 
 ## 新增基线时必须做

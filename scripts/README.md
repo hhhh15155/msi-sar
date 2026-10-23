@@ -17,8 +17,8 @@
 当前基线入口对应关系：
 
 - 旧集成基线：`dfinet`、`frekfuse`、`mghofnet`、`msfmamba`、`softformer`；
-- 新适配基线（CPU 合成数据验证通过、未完成正式实验）：`dffnet`、`m2heat`、`mft`；
-- 新基线配置：`configs/{dffnet,m2heat,mft}_*.yaml`。
+- 新适配基线（CPU 合成数据验证通过、未完成正式实验）：`dffnet`、`m2heat`、`mft`、`dcmnet`、`hslinets`；
+- 新基线配置：`configs/{dffnet,m2heat,mft,dcmnet,hslinets}_*.yaml`。
 
 新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。旧基线入口沿用原接口，不能假定已有相同参数。
 

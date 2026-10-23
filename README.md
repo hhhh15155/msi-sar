@@ -2,7 +2,7 @@
 
 空间配准的多光谱与 SAR 邻域 patch 输入，预测中心像素地物类别。
 
-**2026-10-23 状态变更**：按用户要求，旧自研 V0–V8 版本线及其全部实验结果（本地与 server110／server116）已删除，不保留归档。当前模型库只保留两批对比基线：旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新的高光谱–LiDAR 适配基线（DFFNet、M2Heat、MFT；CPU 合成数据验证通过、未完成正式实验）。DCMNet、HSLiNets 仅收录源码，未适配。详见 [对比方法索引](baselines/README.md) 与 [模型索引](docs/models/README.md)。
+**2026-10-23 状态变更**：按用户要求，旧自研 V0–V8 版本线及其全部实验结果（本地与 server110／server116）已删除，不保留归档。当前模型库只保留两批对比基线：旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新的高光谱–LiDAR 适配基线（DFFNet、M2Heat、MFT；CPU 合成数据验证通过、未完成正式实验）。5 个 HSI–LiDAR 基线均已适配（DCMNet 的谱核/路由适配与 HSLiNets 的早融合变体、缺失中融合类等偏差见各自 README）。详见 [对比方法索引](baselines/README.md) 与 [模型索引](docs/models/README.md)。
 
 **先读 [文档总目录](docs/README.md)**。当前说明以对应配置和实际入口为依据。
 
