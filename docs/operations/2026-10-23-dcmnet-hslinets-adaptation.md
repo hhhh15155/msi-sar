@@ -53,9 +53,11 @@
 - 合成数据（不加载项目数据、不训练实验）：
   - `tests/test_hsi_adapter_models.py` 覆盖 5 模型 ×（6+1 / 10+4 通道）×（patch 11/13）：
     前向输出形状与有限性、反向梯度、优化器参数覆盖、checkpoint 保存/重载一致性；
-  - DCMNet 依赖 vendor 路由模块的 `einops`，在 server110 `gjc` 环境执行；HSLiNets 另在本地
-    已有 PyTorch 环境执行通过。
-- 未完成：真实数据训练、精度、出图。真实数据 smoke test 与正式队列须按用户授权另行执行。
+  - DCMNet 依赖 vendor 路由模块的 `einops`，在 server110 `gjc` 环境运行：**Ran 1 test, OK
+    （20 个组合全部通过，含死模块清理后的梯度覆盖）**；HSLiNets 另在本地已有 PyTorch 环境执行通过。
+- 真实数据链路 smoke（2026-10-23，server110，仅验证可运行，非正式结果）：GRSS07、1 epoch、1 seed，
+  DFFNet / M2Heat / MFT / DCMNet / HSLiNets 五个模型全部 exit 0 并生成 `metrics.json`。
+- 未完成：正式 200 epoch × 5 seeds 实验、精度与出图。正式队列须按用户明确授权另行启动。
 
 ## 未做 / 边界
 
