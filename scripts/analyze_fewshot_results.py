@@ -11,26 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "runs_fewshot"
 OUT = ROOT / "experiment_logs"
-MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer", "fuzzy_transformer")
+MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
 DATASETS = ("yrd", "yrd2509new", "grss07")
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
 FIELDS = ["shot", "model", "dataset", "runs", "oa_mean", "oa_std", "aa_mean", "aa_std",
           "kappa_mean", "kappa_std", "path"]
-
-
-def completed_transformer_metrics(directory: Path) -> tuple[Path, dict] | None:
-    """Select the latest completed attempt, including after an interrupted run."""
-    paths = sorted(directory.glob("run_*/metrics.json"),
-                   key=lambda path: int(path.parent.name[4:]) if path.parent.name[4:].isdigit() else -1,
-                   reverse=True)
-    for path in paths:
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            continue
-        if payload.get("completed") is True:
-            return path, payload
-    return None
 
 
 def main() -> None:
@@ -39,16 +24,10 @@ def main() -> None:
         for model in MODELS:
             for dataset in DATASETS:
                 directory = RUNS / f"fs{shot}" / model / dataset
-                if model == "fuzzy_transformer":
-                    selected = completed_transformer_metrics(directory)
-                    if selected is None:
-                        continue
-                    path, payload = selected
-                else:
-                    path = directory / "run_001" / "metrics.json"
-                    if not path.exists():
-                        continue
-                    payload = json.loads(path.read_text(encoding="utf-8"))
+                path = directory / "run_001" / "metrics.json"
+                if not path.exists():
+                    continue
+                payload = json.loads(path.read_text(encoding="utf-8"))
                 if not payload.get("runs"):
                     continue
                 aggregate = payload.get("aggregate") or {

@@ -8,7 +8,7 @@ from typing import Iterator
 
 
 MODELS = ("dfinet", "frekfuse", "mghofnet", "msfmamba", "softformer")
-AVAILABLE_MODELS = MODELS + ("fuzzy_transformer",)
+AVAILABLE_MODELS = MODELS
 DATASETS = ("yrd", "yrd2509new", "grss07")
 AVAILABLE_DATASETS = DATASETS
 SHOTS = (5, 10, 20, 50, 100, 150, 200)

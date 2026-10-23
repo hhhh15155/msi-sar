@@ -1,32 +1,36 @@
 # 脚本目录索引
 
-`scripts/` 里既有**当前入口**，也有历史一次性脚本。按用途读取，不要默认每个脚本都是当前主流程。
+2026-10-23 删除旧 V0–V8 后，本目录中与 V 线相关的入口已删除：`main_experiment.py`、`generate_main_configs.py`、`generate_paper_candidate_configs.py`、`generate_v6_ablation_configs.py`、`generate_yrd_rerun_configs.py`、`promote_yrd_results.py`、`generate_fuzzy_transformer_configs.py`、`train/eval/infer_fuzzy_transformer.py` 等。
 
 ## 当前入口
 
 | 脚本 | 用途 |
 | --- | --- |
-| `main_experiment.py` | 主实验调度器：`prepare / train / queue / launch / status`，所有正式训练都通过它和 manifest 运行 |
-| `train_eval_<model>.py` | 单个基线的训练 + 测试指标 + 标签图（当前推荐入口，10 个：dfinet、frekfuse、fuzzy_transformer、mghofnet、msfmamba、softformer、dffnet、m2heat、mft、yrd2509new_fewshot） |
+| `train_eval_<model>.py` | 单基线训练 + 测试指标 + 标签图（当前推荐入口） |
 | `eval_<model>.py` | 加载已完成 run 做整图/标签图评估 |
 | `infer_<model>.py` | 全图推理 |
-| `generate_*_configs.py` | 生成配置网格（历史网格与候选配置） |
-| `promote_yrd_results.py` | 结果发布与归档校验 |
+| `experiment_grid.py` | 只打印旧基线实验网格，不启动训练 |
+| `generate_grss07_configs.py`、`generate_msfmamba_configs.py` | 生成旧基线配置网格 |
+| `analyze_fewshot_results.py` | 汇总 `runs_fewshot/` 下旧基线结果 |
+| `performance_analysis.py`、`dump_all_metrics.py` | 结果分析辅助 |
+
+当前基线入口对应关系：
+
+- 旧集成基线：`dfinet`、`frekfuse`、`mghofnet`、`msfmamba`、`softformer`；
+- 新适配基线（未运行验证）：`dffnet`、`m2heat`、`mft`；
+- 新基线配置：`configs/{dffnet,m2heat,mft}_*.yaml`。
 
 ## 数据准备（按需运行，不属于训练入口）
 
-`prepare_grss07.py`、`build_yrd2509new*.py`、`expand_yrd2509new*.py`、`refine_yrd2509new_labels.py`、`rewrite_yrd2509new_mat_compat.py`、`upgrade_yrd2509new_sar14.py`、`align_yrd2509new_class_names.py`、`check_dataset.py`。
+`check_dataset.py`、`prepare_grss07.py`、`build_yrd2509new*.py`、`expand_yrd2509new*.py`、`refine_yrd2509new_labels.py`、`rewrite_yrd2509new_mat_compat.py`、`upgrade_yrd2509new_sar14.py`、`align_yrd2509new_class_names.py`。
 
 ## 分析／一次性脚本
 
-`analyze_*.py`、`feature_analysis*.py`、`performance_analysis.py`、`dump_all_metrics.py`、`experiment_grid.py`、`prepare_grss07.py` 等。它们用于当时的分析或数据修补，**不是可复现实验入口**；后续整理时优先归档到 `scripts/archive/`（本次未移动，避免破坏历史文档引用）。
-
-## 历史入口（保留但不再推荐）
-
-`train_<model>.py`（6 个）是早期单基线入口，功能已由 `train_eval_<model>.py` 覆盖；部分旧 README 仍引用它们。新任务请使用 `train_eval_*`。
+`analyze_*.py`、`feature_analysis*.py` 等用于当时分析，不是可复现实验入口。若确认无文档引用，可统一归档到 `scripts/archive/`。
 
 ## 约定
 
-- 训练必须带配置快照、种子、划分与输出目录记录（`main_experiment.py` 已内置身份校验）；
+- 训练必须带配置快照、种子、划分与输出目录记录；
 - 不新增与 `train_eval_*` 职责重复的入口；
-- 一次性脚本如果仍被文档引用，移动前先更新链接。
+- 一次性脚本如果仍被文档引用，移动前先更新链接；
+- 没有用户明确授权不启动训练或推理。

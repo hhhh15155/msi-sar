@@ -13,9 +13,8 @@ MODEL_SCRIPTS = {
     "mghofnet": ROOT / "scripts" / "train_eval_mghofnet.py",
     "msfmamba": ROOT / "scripts" / "train_eval_msfmamba.py",
     "softformer": ROOT / "scripts" / "train_eval_softformer.py",
-    "fuzzy_transformer": ROOT / "scripts" / "train_eval_fuzzy_transformer.py",
 }
-DEFAULT_MODELS = [model for model in MODEL_SCRIPTS if model != "fuzzy_transformer"]
+DEFAULT_MODELS = list(MODEL_SCRIPTS)
 DEFAULT_SHOTS = [5, 10, 20, 50, 100, 150, 200]
 
 
@@ -28,7 +27,7 @@ def main() -> None:
         nargs="+",
         default=DEFAULT_MODELS,
         choices=sorted(MODEL_SCRIPTS),
-        help="Models to run. Default: existing comparison models; fuzzy_transformer can be selected explicitly.",
+        help="Models to run. Default: all retained comparison models.",
     )
     parser.add_argument(
         "--shots",

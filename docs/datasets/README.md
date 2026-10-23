@@ -54,9 +54,9 @@ GRSS07 的配置显示名及原项目说明对应 Landsat 1994 与 ERS 1994-10-0
 
 ## 预处理与划分的实际差异
 
-2026-10-17：排查 YRD SAR-only 塌缩后，当前 YRD 配置明确改为逐通道 min-max。7 个 YRD 版本统一重跑，复用原划分，网络与训练参数保持不变，见 [修正实验](../experiments/yrd-per-channel-rerun.md)。以下旧包装的差异仍须逐入口核对，不能用新 YAML 反推旧结果的预处理。
+2026-10-17：排查 YRD SAR-only 塌缩后，当前 YRD 配置明确改为逐通道 min-max。旧 V 线的 YRD 修正实验与结果已按用户要求于 2026-10-23 删除（历史见 Git 提交与 AGENTS.md 删除记录）。以下旧包装的差异仍须逐入口核对，不能用新 YAML 反推旧结果的预处理。
 
-共享路径为 [dfinet/dataset.py](../../baselines/dfinet/dataset.py)：DFI-Net、FreKFuse、MSFMamba 及 Fuzzy Transformer 复用其中的读取逻辑。归一化在划分前使用整幅无标签影像的统计量：
+共享路径为 [dfinet/dataset.py](../../baselines/dfinet/dataset.py)：DFI-Net、FreKFuse、MSFMamba 复用其中的读取逻辑。归一化在划分前使用整幅无标签影像的统计量：
 
 - `per_channel_minmax`：每个通道按该图全局最小／最大值缩放。
 - `global_minmax_center`：整个影像立方体统一 min-max，再按全图通道均值中心化。
@@ -68,8 +68,8 @@ GRSS07 的配置显示名及原项目说明对应 Landsat 1994 与 ERS 1994-10-0
 
 ## GRSS07 自定义训练数量
 
-各类训练数量为 `[674, 1481, 752, 45, 30]`，顺序与上述 GRSS07 标签一致。对应文件采用 `configs/<model>_grss07_custom.yaml`；Fuzzy Transformer 示例见 [配置](../../configs/fuzzy_transformer_grss07_custom.yaml)。
+各类训练数量为 `[674, 1481, 752, 45, 30]`，顺序与上述 GRSS07 标签一致。对应文件采用 `configs/<model>_grss07_custom.yaml`，例如 [DFI-Net 配置](../../configs/dfinet_grss07_custom.yaml)。
 
-该配置已确定为 GRSS07 主实验，共 2982 个训练像元。用户于 2026-10-17 反馈已核对其他论文也使用这组计数；此处记录用户核对结果。本次未取得逐篇论文的配置页码／表号，因此不将其表述为助手独立核实或原比赛官方标准。文献与完整协议的记录位置见 [GRSS07 专项说明](../experiments/grss07.md)。
+该配置已确定为 GRSS07 主实验，共 2982 个训练像元。用户于 2026-10-17 反馈已核对其他论文也使用这组计数；此处记录用户核对结果。本次未取得逐篇论文的配置页码／表号，因此不将其表述为助手独立核实或原比赛官方标准。
 
 数据准备／检查命令只在用户要求时执行；本轮没有读取大数组、生成数据或修改标签。

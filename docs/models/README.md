@@ -1,38 +1,31 @@
 # 模型与代码入口
 
-本页索引项目中实际存在的模型和包装入口，依据本轮只读检查。它不等同于论文正式复现认证，也不把文献候选视为已经集成。
+2026-10-23 状态：旧自研 V0–V8 版本线（`models/main_classification.py`、`FuzzyTransformer`、V6 消融、FDMF／MSAF patch、`scripts/main_experiment.py` 调度器）及其全部实验结果已按用户要求删除，不保留归档；历史记录只存在于 Git 提交与本页的删除说明中。本页只索引当前仓库中实际存在的模型入口。
 
-## 当前实现
+## 当前模型
 
-| 模型标识 | 核心实现／类 | 训练包装 | 模态参数 | patch 与适配要点 | 专用说明 |
+| 模型标识 | 核心实现／类 | 训练入口 | 模态参数 | patch 与适配要点 | 专用说明 |
 | --- | --- | --- | --- | --- | --- |
-| `dfinet` | [model.py](../../baselines/dfinet/model.py)：`DFINet` | [train.py](../../baselines/dfinet/train.py) | `spectral_channels`、`sar_channels` | 构造函数接收 `patch_size`；按现有 YAML 使用，不承诺任意大小均已验证 | [README](../../baselines/dfinet/README.md) |
-| `frekfuse` | [frekfuse.py](../../models/frekfuse.py)：`FreKFuse`／`FreKFuseLite` | [train.py](../../baselines/frekfuse/train.py) | `ms_channels`、`sar_channels` | few-shot 配置为 Lite、patch=11；构造默认 32 不是当前实验的强制尺寸 | [README](../../baselines/frekfuse/README.md) |
-| `mghofnet` | [model.py](../../baselines/mghofnet/model.py)：`MGHOFNet` | [train.py](../../baselines/mghofnet/train.py) | `hsi_channels`、`aux_channels` | 由既有 HSI–LiDAR 工程适配；实际输入为 MSI／SAR，保留通道参数历史命名 | [README](../../baselines/mghofnet/README.md) |
-| `softformer` | [model.py](../../baselines/softformer/model.py)：`SoftFormerBaseline` → `SoftFormer` | [train.py](../../baselines/softformer/train.py) | `hsi_channels`、`aux_channels` | patch=11 与内部 `model_img_size=8` 不同；内部图像大小必须可被 4 整除，stem 会中心裁剪 | [README](../../baselines/softformer/README.md) |
-| `msfmamba` | [model.py](../../baselines/msfmamba/model.py)：`MSFMamba` → 作者 `Syn_layer` | [train.py](../../baselines/msfmamba/train.py) | `ms_channels`、`sar_channels` | Mamba／SSM；当前包装限定 patch=11、单层；不足 9 个 MSI 通道时谱轴补零 | [README](../../baselines/msfmamba/README.md) |
-| `fuzzy_transformer` | [fuzzy_transformer.py](../../models/fuzzy_transformer.py)：`FuzzyTransformer` | [train.py](../../baselines/fuzzy_transformer/train.py) | `ms_channels`、`sar_channels` | 两级模糊融合、动态坐标位置编码；正奇数 patch；不依赖 Mamba 或预训练 | [当前模型说明](fuzzy-transformer.md) |
-| `v7_fdmf_fixed` | [fdmf_patch.py](../../models/fdmf_patch.py)：`FrequencyFusion`，共同 `MainClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 单级固定边界高低频融合的分类适配；无预训练，非原分割整网 | [第二批适配说明](../experiments/paper-candidates.md) |
-| `v8_msaf_fixed` | [msaf_patch.py](../../models/msaf_patch.py)：`MSAFPatchClassifier` | `scripts/main_experiment.py` | 6＋1／10＋4 | 浅层 MobileNet、16／24 两级融合，odd patch ≥5；测试关闭随机掩码，两路无预训练 | [第二批适配说明](../experiments/paper-candidates.md) |
-| `dffnet`（第三方适配） | [model.py](../../baselines/dffnet/model.py)：`DFFNet` | [train.py](../../baselines/dffnet/train.py) | `spectral_channels`、`sar_channels` | 项目统一接口 `[B,1,C,H,W]`；DFFNet 频域动态滤波 + SSAFB 适配；2 个 DFFM stage；修正惰性滤波器参数注册；无预训练 | [README](../../baselines/dffnet/README.md) |
-| `m2heat`（第三方适配） | [model.py](../../baselines/m2heat/model.py)：`M2Heat` | [train.py](../../baselines/m2heat/train.py) | `spectral_channels`、`sar_channels` | 热传导 vHeat + 跨频域 CFF；输出 softmax 取 log 作 logits；patch 11；无预训练 | [README](../../baselines/m2heat/README.md) |
-| `mft`（第三方适配） | [model.py](../../baselines/mft/model.py)：`MFT` | [train.py](../../baselines/mft/train.py) | `spectral_channels`、`sar_channels` | 原仓库仅有 notebook；重实现 mCrossPA 模型，谱核随通道数自适应；无预训练 | [README](../../baselines/mft/README.md) |
+| `dfinet` | [model.py](../../baselines/dfinet/model.py)：`DFINet` | [train.py](../../baselines/dfinet/train.py)；`scripts/train_eval_dfinet.py` | `spectral_channels`、`sar_channels` | 旧集成基线；构造接收 `patch_size`，按现有 YAML 使用 | [README](../../baselines/dfinet/README.md) |
+| `frekfuse` | [models/frekfuse.py](../../models/frekfuse.py)：`FreKFuse`／`FreKFuseLite` | [train.py](../../baselines/frekfuse/train.py)；`scripts/train_eval_frekfuse.py` | `ms_channels`、`sar_channels` | 旧集成基线；few-shot 配置为 Lite、patch=11 | [README](../../baselines/frekfuse/README.md) |
+| `mghofnet` | [model.py](../../baselines/mghofnet/model.py)：`MGHOFNet` | [train.py](../../baselines/mghofnet/train.py)；`scripts/train_eval_mghofnet.py` | `hsi_channels`、`aux_channels` | 旧集成基线；由既有 HSI–LiDAR 工程适配，保留历史变量名 | [README](../../baselines/mghofnet/README.md) |
+| `softformer` | [model.py](../../baselines/softformer/model.py)：`SoftFormer` | [train.py](../../baselines/softformer/train.py)；`scripts/train_eval_softformer.py` | `hsi_channels`、`aux_channels` | 旧集成基线；内部 `model_img_size=8`，stem 会中心裁剪 | [README](../../baselines/softformer/README.md) |
+| `msfmamba` | [model.py](../../baselines/msfmamba/model.py)：`MSFMamba` → 作者 `Syn_layer` | [train.py](../../baselines/msfmamba/train.py)；`scripts/train_eval_msfmamba.py` | `ms_channels`、`sar_channels` | 旧集成基线；Mamba／SSM，包装限定 patch=11、单层 | [README](../../baselines/msfmamba/README.md) |
+| `dffnet`（第三方适配） | [model.py](../../baselines/dffnet/model.py)：`DFFNet` | [train.py](../../baselines/dffnet/train.py)；`scripts/train_eval_dffnet.py` | `spectral_channels`、`sar_channels` | 新适配基线，**未运行验证**；项目接口 `[B,1,C,H,W]`，2 个 DFFM stage，无预训练 | [README](../../baselines/dffnet/README.md) |
+| `m2heat`（第三方适配） | [model.py](../../baselines/m2heat/model.py)：`M2Heat` | [train.py](../../baselines/m2heat/train.py)；`scripts/train_eval_m2heat.py` | `spectral_channels`、`sar_channels` | 新适配基线，**未运行验证**；热传导 + CFF，输出 softmax 取 log 作 logits | [README](../../baselines/m2heat/README.md) |
+| `mft`（第三方适配） | [model.py](../../baselines/mft/model.py)：`MFT` | [train.py](../../baselines/mft/train.py)；`scripts/train_eval_mft.py` | `spectral_channels`、`sar_channels` | 新适配基线，**未运行验证**；notebook 重实现，谱核随通道数自适应 | [README](../../baselines/mft/README.md) |
+| `dcmnet`（未适配） | 仅 vendor 源码 | — | — | 光谱核与 Cell reshape 强耦合，见说明 | [README](../../baselines/dcmnet/README.md) |
+| `hslinets`（未适配） | 仅 vendor 源码 | — | — | notebook 未定义双模态模型类，见说明 | [README](../../baselines/hslinets/README.md) |
 
-训练与全图推理统一使用 `scripts/train_eval_<model>.py`、`scripts/eval_<model>.py`、`scripts/infer_<model>.py` 这一命名模式；实际命令和输出位置见 [实验说明](../experiments/README.md)。没有训练授权时，不因为阅读本页就启动这些入口。
+入口命名约定：`scripts/train_eval_<model>.py`（训练 + 测试指标 + 标签图）、`scripts/eval_<model>.py`（已有 run 的评估）、`scripts/infer_<model>.py`（整图推理）。训练与推理脚本只在用户明确授权后执行。
 
-## 模型来源与工程边界
+## 已删除的旧版本
 
-- 第三方快照位于 `vendor/`，MSFMamba 为固定提交子模块。模型专用 README 记录相应来源；公开源码与复用许可证仍需分别核对。
-- `models/__init__.py` 并不是所有基线的统一训练注册器。核实调用链应从具体 `scripts/train_eval_*.py` 到 `baselines/<model>/train.py`，再到实际模型定义。
-- FreKFuse 包含 FFT／频带与门控相关模块；MGHOFNet 核心定义包含大核、门控双向交互和二阶池化相关模块。此处仅索引代码，不在未完成逐层审查时重写其论文创新归属。
-- MSFMamba 包装有纯 PyTorch selective-scan fallback，但计算结构仍属于 Mamba／SSM。不能将“不使用 CUDA 扩展”误写为“不依赖 Mamba 机制”。
-- 当前首选研究方向是不依赖 Mamba 的 MSI–SAR 融合；已有 Mamba 比较基线保留，不为偏好而删除。
-- VBE-Net 已从当前源码移除；历史提交、日志或结果中出现该名称，不代表它仍可由当前实验网格运行。
+旧 V0–V8（MSI-only、SAR-only、concat、FCM–FFM、MAFI、fuzzy、V6 当前模型、FDMF／MSAF 候选）连同 V6 消融、`scripts/main_experiment.py`、对应配置与 tests 已于 2026-10-23 删除；`baselines/fuzzy_transformer/` 同步移除。Git 历史中仍可检索这些文件，但当前代码库不再包含。
 
-## 文献候选与当前代码分开
+## 来源与工程边界
 
-2026-10-17 新增的受控分类系列在 [models/main_classification.py](../../models/main_classification.py)，由独立的 [第一轮实验入口](../../scripts/main_experiment.py) 调用，7 个版本的范围与源码适配边界见 [实验方案](../experiments/main-first-pass.md)。其中 FCM–FFM／MAFI 是共同编码器下的局部分类适配，不表示已接入 CFFormer／EG-CMFNet 原论文整网；旧默认五模型网格保持不变。
-
-MSAF、CFFormer、FDMF 等候选的审查与推荐见 [完整调研报告](../research/2025-2026-multisource-classification-review.md)。2026-10-18 新增 FDMF／MSAF 的实际适配入口与修正见上表；未接入的其他候选仍不能称为已运行。报告中的性能、许可证及实现风险不能直接替换本项目的实验结论。
-
-新增模型时，应补充本索引、专用说明、实际入口和配置，同时记录输入假设、预训练、特殊算子、patch 限制及与现有协议的差异。
+- 第三方快照位于 `vendor/`（见 [vendor/README.md](../../vendor/README.md)）；公开源码与复用许可证需分别核对，多数未见明确 LICENSE。
+- `models/` 目录当前只保留旧基线共享实现 `frekfuse.py`；`models/__init__.py` 不是统一训练注册器。核实调用链应从具体 `scripts/train_eval_*.py` 到 `baselines/<model>/train.py`，再到实际模型定义。
+- 新适配基线尚未在 GPU 上做前向/训练验证，不能写入任何结果表。
+- 不做未验证的模块堆叠；新增模型须同步更新本页、`baselines/README.md`、配置与专用 README。

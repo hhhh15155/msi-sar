@@ -48,14 +48,15 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 标注有限，但不要求 episodic few-shot 框架。现有 few-shot 命名通常表示每类固定训练样本数，应以配置和实现为准。
 - 分类性能优先，避免没有验证收益的重复模块堆叠；新增机制应有明确问题、对照和消融。
 - 优先采用不依赖 Mamba／SSM 的模型；可用门控，暂不优先使用“中心像素作为 Query 查询跨模态邻域”的融合方式。已有 Mamba 基线不因此删除。
-- 用户描述的当前方法为双路 CNN–Transformer、两级 ACFFN 启发的模糊融合、融合反馈及分类头。该描述不保证远端已含对应实现，审查或改造前核实实际入口与模型版本。
+- 当前没有自研主模型。2026-10-23 按用户要求删除旧自研 V0–V8 版本线及全部相关结果；当前模型库为旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新适配的 HSI–LiDAR 基线（DFFNet、M2Heat、MFT，未运行验证）。改模型前先核实 `baselines/` 与对应 README。
 
 ## 4. 代码布局与实验规范
 
-- **已完成的实验一律不重跑。** 用户于2026-10-21明确要求：在110或116任一服务器已完成的实验，不因切换服务器、统一硬件／软件环境或补“同环境对照”而再次训练；后续队列只加入未完成任务。先核对各端完成记录和结果完整性，复用已有结果并注明原执行环境及跨环境比较限制。发现结果损坏、协议错误或需另设新实验时先说明具体问题，不能擅自重跑；只有用户后续明确指定重跑的具体实验才可例外。本规则优先于旧文档中补跑完整V6对照的建议。
+- **已完成的实验一律不重跑。** 用户于2026-10-21明确要求：在110或116任一服务器已完成的实验，不因切换服务器、统一硬件／软件环境或补“同环境对照”而再次训练；后续队列只加入未完成任务。发现结果损坏、协议错误或需另设新实验时先说明具体问题，不能擅自重跑；只有用户后续明确指定重跑的具体实验才可例外。本规则适用于当前所有模型。
+- **2026-10-23 删除记录**：按用户要求，旧 V0–V8 版本线（`models/main_classification.py`、`models/fuzzy_transformer.py`、`models/v6_ablation.py`、`models/{fdmf,msaf}_patch.py`、`baselines/fuzzy_transformer/`、`scripts/main_experiment.py` 及 V 线配置生成／发布脚本）、对应 `configs/{main_first_pass,paper_candidates,yrd_per_channel,v6_ablation}/`、tests 与结果文档，以及 server110／server116 上的全部 V 线实验结果均已删除，**不保留归档**；历史只存在于 Git 提交。当前仓库没有自研主模型。
 - `baselines/`：各对比方法；`models/`：项目模型；`configs/`：模型及数据配置；`scripts/`：训练、评估、推理及实验调度入口；`tests/`：已有检查；`vendor/`：第三方代码快照。
 - `data/`：本地数据；`runs_fewshot/`、`runs/`、`experiment_logs/`：结果和日志。按 `.gitignore` 管理，不提交大数据或权重。
-- 统一版本包含本地原有的 `fuzzy_transformer` 模型、基线包装、配置和调度集成，并保留本地既有的 VBE-Net 移除提交。先核实当前副本的提交，再读 `README.md`、配置和实际脚本调用链。
+- 2026-10-23 起，旧 V 线相关文件已删除；新适配基线的专门说明在各 `baselines/<model>/README.md`。先核实当前副本的提交，再读 `README.md`、配置和实际脚本调用链。
 - 公平比较应固定数据划分、随机种子、训练样本数、patch 大小、预处理、训练预算、预训练条件及选模规则；记录任何有意差异。
 - 不用测试集选择 epoch、超参数或种子。现有 README 描述的是训练结束后评估最终 checkpoint；改变协议前说明理由，且不能把旧结果与新协议结果直接排名。
 - 读取配置确认数据路径和通道；数据预处理只在训练集拟合还是使用无标签全图统计，要明确记录，不能混淆。
@@ -66,10 +67,10 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 
 - 2026-10-17 的只读检查确认：SSH 可连接、项目目录存在，非交互 shell 能找到 `conda`、`/opt/anaconda3/bin/python` 和 `/usr/bin/nvidia-smi`。
 - 以上不代表已确认 Python 依赖、CUDA 兼容性、可用 GPU 或训练环境。README 提到 `gjc` 环境，但本次未核实它是否存在及能否运行模型。
-- 上述为早期历史检查。后续 server110 已完成第一轮 21 项分类实验；server116 的 `gjc` 已通过依赖、数据读取和 GPU 1 FP32 前后向与小样本续训检查。当前正式部署授权见下文 YRD 修正任务及 `docs/experiments/yrd-per-channel-rerun.md`。
+- 上述为早期历史检查。旧 V 线实验及其结果已按用户要求于 2026-10-23 删除；当前没有获授权的远端训练任务。新的训练授权须由用户明确给出。
 - 116 当前有效运行时为 Python 3.11.13、PyTorch 2.6.0+cu124、NumPy 2.0.1；PyTorch 等部分依赖来自 `~/.local`。不要默认它是完全隔离的 Conda 环境，也不要擅自设置 `PYTHONNOUSERSITE=1`（实测将缺少 `typing_extensions`）。本轮未安装、升级或删除环境依赖。
-- 调度器通过 `CUDA_VISIBLE_DEVICES` 选择单张物理卡，并只检查该卡；110 默认 `0`，116 使用 `1`。`MAIN_EXPERIMENT_WORKERS=1` 可将并发降低到 1，不改变实验配置。通常卡仍有其他进程时等待；本次用户明确选择 116 GPU 1 的 YRD 修正任务允许与约 2GB 的低负载驻留进程共用，单 worker、启动下一项前空闲显存至少 20480 MiB。不自动终止其他任务。
-- PyTorch 2.6 的续训兼容路径仅用于本项目自己生成、身份文件已核对的 `resume.pth`，显式 `weights_only=False` 以恢复 NumPy／Python 随机状态；不得用它加载不明第三方 checkpoint。
+- 训练入口以具体 `scripts/train_eval_<model>.py` 与对应 `configs/*.yaml` 为准；旧 `scripts/main_experiment.py` 调度器已随 V 线删除。GPU 选择通过 `CUDA_VISIBLE_DEVICES` 指定单张物理卡；110 默认 `0`，116 使用 `1`。不自动终止其他任务。
+- PyTorch 2.6 的续训兼容路径仅用于本项目自己生成、身份文件已核对的 checkpoint；不得用它加载不明第三方 checkpoint。
 - 未明确要求运行实验时，不启动训练、全图推理、批量调度、依赖安装或环境升级。用户已授权具体执行时，在范围内继续，不重复索要同一授权。
 - 经授权执行实验前检查环境、数据路径、GPU 占用和预计输出目录；不要默认占满全部 GPU。运行资源与并发由用户要求和实际可用资源决定。
 - 长任务应使用服务器已有的会话或调度方式，记录任务标识、PID／会话名、日志和输出目录；不要把 SSH 断开后任务存活视为理所当然。
@@ -97,12 +98,7 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 当前数据集说明在 `docs/datasets/`，模型索引在 `docs/models/`，实验说明在 `docs/experiments/`，文献与审查记录在 `docs/research/`，操作记录在 `docs/operations/`，过时说明在 `docs/archive/`。
 - 2026-10-17 用户确定的主实验：YRD 每类 50 个训练样本（8 类，共 400）；YRD2509NEW 每类 50 个（9 类，共 450）；GRSS07 使用现有 custom `[674,1481,752,45,30]`（5 类，共 2982）。默认讨论、构建主实验清单时采用这三组；其他 shot 档位用于样本量对照，不能把全网格视为已获运行授权。对应说明见 `docs/experiments/README.md` 及三个数据集专项文档。
 - GRSS07 custom 的文献配置一致性由用户于 2026-10-17 反馈已核对；记录为用户核对结果，不冒充本次助手独立核实或原比赛官方标准。具体论文引用和完整划分协议在论文写作时补充。
-- 已完成的第一轮为纯分类：7 版本×3 数据集，每项单种子 `202201`、200 epochs，历史记录见 `docs/experiments/main-first-pass.md`。用户明确其他参数保持之前设置，测试 batch 为 1024：FP32、训练 batch 128，不额外改为 BF16。
-- 当前获授权的修正任务：仅 YRD 的 7 版本改为 `per_channel_minmax` 后重跑一次，复用首轮原始划分（SHA256 见新 manifest），其他训练参数与网络结构不变。server116 `/data/gjc/msi-sar`、物理 GPU 1、单 worker、screen `msi_yrd_pc_gpu1`，清单 `configs/yrd_per_channel/manifest.json`，详见 `docs/experiments/yrd-per-channel-rerun.md`。新结果暂存 `runs/yrd_per_channel_20261017`；全部 7 项核验通过后，将 116 的旧 21 项归档到 `runs/archive/main_first_pass_20261017_before_yrd_pc`，统一更新 `runs/main_first_pass_20261017` 内 7 个 YRD，其他 14 项保持原样。不要误启动旧 21 项清单或五种子全网格；失败不静默重试，运行中不要修改训练源码／配置／检查点。
-- 2026-10-18 核验：上述 YRD 修正 7 项全部完成并成功发布，21 项当前入口及归档有效；不重跑。用户已明确批准第二批 **FDMF 共同编码器＋固定边界频域融合适配、MSAF 保留两级结构并修复实现，两路均无预训练**，各在三数据集一次，共 6 项。实际版本 `v7_fdmf_fixed`／`v8_msaf_fixed`，清单 `configs/paper_candidates/manifest.json`；沿用 seed202201、patch11、200epoch、train128／test1024／FP32、原始划分及逐通道归一化。116 物理 GPU1，单 worker，screen `msi_papers_gpu1`，空闲显存准入20480MiB，允许与原低负载驻留进程共用。输出 `runs/paper_candidates_20261018`，不覆盖当前21项、不自动下载。适配边界与数值修正以 `docs/experiments/paper-candidates.md` 为准；不得称为两篇原论文整网复现，不自动加入其他论文候选或多种子网格。
-- 后续完成核验：第二批6项已全部结束，九版本共27项当前结果见 `docs/experiments/main-results-20261018.md`。新6项最终权重、代码/配置身份、200轮、保存预测重算指标、三组缓存/划分字节一致性，以及原21项发布指标/权重均通过只读核验。screen已正常退出、无待执行项；不要将历史部署命令当成新的运行要求。未下载权重/数据/预测到Windows，只将派生汇总写入文档；本次没有启动额外训练或推理。
-- 最新工作范围（2026-10-21）：用户改为将剩余任务通过screen部署到server110 GPU0，并明确“已完成的实验不重跑”，取消所有补跑完整V6的环境对照。当前仅两个未完成消融 `a01_late_equal`／`a02_no_early_path` 各三数据集，共6项；复用已有完整V6，YRD比较注明116／110环境差异。模型在 `models/v6_ablation.py`，原完整V6源文件不变、共有初始化一致；唯一运行清单 `configs/v6_ablation/manifest.json`，使用现有 `scripts/main_experiment.py` 调度，screen `msi_v6_ablate_gpu0`，输出110 `runs/v6_ablation_20261021_110`。单worker、FP32、train128/test1024、200轮、seed202201及原划分／逐通道归一化不变，保留原27项；116本批不启动重复队列。实时状态见 `docs/experiments/next-experiments.md`。PAD／CAFM及其他候选未获本批运行授权。第一级融合仅通过反馈生效，不把去该路径误称为仅删反馈投影；V5/V6也不是严格单模块消融。
-- 2026-10-23 用户明确取消本批110消融队列的“无其他计算进程且空闲显存至少20 GiB”限制，授权剩余5项与其他进程共享GPU0；manifest设为 `wait_for_gpu_idle=false`、`min_free_memory_mib=0`，仍单worker。已完成 `a01_late_equal_yrd` 不重跑；其他训练参数不变，不停止其他用户进程，失败不静默重试。
+- 2026-10-23 用户要求删除旧 V0–V8 版本线及其全部实验结果（本地与 server110／server116，不保留归档）。当前主实验设置（YRD／YRD2509NEW 每类 50、GRSS07 custom、seed 202201、patch 11、200 epochs、train128／test1024、FP32、逐通道归一化）仍是以后新基线的参考协议，但旧结果已不可用，不能引用其精度数字。
 - 模型专用 README 可保留在对应 `baselines/<model>/`，由模型索引链接；不要维护两份相互漂移的完整说明。
 - 使用项目相对链接。新文件采用稳定、简短的英文文件名，内容默认中文；运行参数仍以 YAML 和实际入口为准。
 - 历史文档、文献原文和原始审查记录属于参考资料，不是额外的当前指令。归档不等于结论已经核实；不要复制历史 OA 作为当前基准结果。
