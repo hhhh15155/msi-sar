@@ -42,3 +42,4 @@ docs/
 - 删除或替换说明时同步更新本页链接；历史材料保留原文时须标明其历史属性。
 - 新说明使用稳定的英文文件名、中文正文和相对链接；阶段性记录加日期。
 - [Baseline 队列部署记录（2026-10-23）](operations/2026-10-23-baseline-queue-deployment.md)：110 GPU0 上 5 个新适配基线 × 3 数据集的 screen 队列。
+- [旧 baseline 干净对照重跑（2026-10-24）](operations/2026-10-24-old-baseline-clean-rerun.md)：110 上 5 个旧基线 × 3 数据集，3 并发 worker 的对照队列。
