@@ -19,6 +19,8 @@
 
 ## 规则
 
+`THSGR-original/`：作者 `jqyang22/THSGR`，commit `dd2a0ef7148c05a1261c38ab94845d9ff7b879a0`，Apache-2.0。仅保存原始 Python、YAML、README 和 LICENSE，不包含数据／权重／图片。项目实现见 [THSGR](../baselines/thsgr/README.md)。
+
 - 只复制代码与说明，**不复制数据集、权重、图片、PDF**；原始代码不做语义修改。
 - 公开可读不等于有复用许可；每个仓库的许可证状态以对应说明为准（多数未见明确 LICENSE）。
 - HSI–LiDAR 五个仓库的来源、commit、快照规则与适配状态见 [docs/research/2026-10-23-hsi-lidar-source-snapshot.md](../docs/research/2026-10-23-hsi-lidar-source-snapshot.md)。

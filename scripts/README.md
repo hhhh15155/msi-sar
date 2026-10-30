@@ -22,7 +22,11 @@
 
 新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。旧基线入口沿用原接口，不能假定已有相同参数。
 
+THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`eval_thsgr.py --run <run目录>`；`infer_thsgr.py --run <run目录>`（默认 labeled）。详见 [THSGR](../baselines/thsgr/README.md)。
+
 ## 数据准备（按需运行，不属于训练入口）
+
+
 
 `check_dataset.py`、`prepare_grss07.py`、`build_yrd2509new*.py`、`expand_yrd2509new*.py`、`refine_yrd2509new_labels.py`、`rewrite_yrd2509new_mat_compat.py`、`upgrade_yrd2509new_sar14.py`、`align_yrd2509new_class_names.py`。
 

@@ -36,6 +36,8 @@
 
 ## 结果目录
 
+THSGR 已接入相同主实验协议，三份配置为 `configs/thsgr_*.yaml`；状态与执行记录见 [THSGR 操作记录](../operations/2026-10-30-thsgr-adaptation.md)，模型细节见 [THSGR README](../../baselines/thsgr/README.md)。
+
 旧基线：`runs_fewshot/fs{shot}/{model}/{dataset}/run_###/`（GRSS07 custom：`runs_fewshot/grss07_custom/{model}/grss07/run_###/`）。新适配基线的 `train.py` 沿用同一目录结构（`output_root` 默认 `runs_fewshot/fs50`），输出配置快照、划分、checkpoint 与指标。
 
 ## 比较限制（仍然适用）

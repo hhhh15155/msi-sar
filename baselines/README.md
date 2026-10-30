@@ -19,6 +19,8 @@
 
 ## 共享实现
 
+THSGR 已按同一结构接入：[`thsgr/`](thsgr/README.md)，核心 [`_hsi_adapters/thsgr_patch.py`](_hsi_adapters/thsgr_patch.py)，入口 `scripts/train_eval_thsgr.py` 与 `configs/thsgr_*.yaml`。运行验证状态见专用 README。
+
 - [`_hsi_adapters/`](_hsi_adapters)：五个第三方适配基线（dffnet/m2heat/mft/dcmnet/hslinets）的共享模型实现（`dffnet_patch.py`、`m2heat_patch.py`、`mft_patch.py`、`dcmnet_patch.py`、`hslinets_patch.py`），`_hslinets_vendor.py` 为从 HSLiNets notebook 原样抽取的类；直接加载 `vendor/` 中未改动的上游核心模块。**它不是可训练基线**，不要按模型名引用。
 - [`split.py`](split.py)：固定训练样本数划分逻辑，被各基线 `dataset.py` 复用。
 

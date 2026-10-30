@@ -21,7 +21,11 @@
 
 入口命名约定：`scripts/train_eval_<model>.py`（训练 + 测试指标 + 标签图）、`scripts/eval_<model>.py`（已有 run 的评估）、`scripts/infer_<model>.py`（整图推理）。训练与推理脚本只在用户明确授权后执行。
 
+新增 **THSGR**：[`model.py`](../../baselines/thsgr/model.py) → `THSGR`，参数 `spectral_channels/sar_channels`，奇数 patch≥9；训练入口 `scripts/train_eval_thsgr.py`，三份主实验 YAML 为 `configs/thsgr_*.yaml`。来源、差异与验证状态见 [模型说明](../../baselines/thsgr/README.md)。
+
 ## 已删除的旧版本
+
+
 
 旧 V0–V8（MSI-only、SAR-only、concat、FCM–FFM、MAFI、fuzzy、V6 当前模型、FDMF／MSAF 候选）连同 V6 消融、`scripts/main_experiment.py`、对应配置与 tests 已于 2026-10-23 删除；`baselines/fuzzy_transformer/` 同步移除。Git 历史中仍可检索这些文件，但当前代码库不再包含。
 

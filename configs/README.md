@@ -44,6 +44,8 @@ YRD 每类 50（8 类共 400）、YRD2509NEW 每类 50（9 类共 450）、GRSS0
 
 ## 维护约定
 
+THSGR 主实验使用 `thsgr_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，沿用上表 5 seeds、200 epochs 与测试／出图协议；入口与差异见 [THSGR](../baselines/thsgr/README.md)。
+
 - 新增当前实验：新建独立配置并写清用途，不要和旧网格混在同一层；
 - 配置生成脚本在 `scripts/generate_*_configs.py`，生成后仍以 YAML 和实际入口为准；
 - 已运行过的配置不得修改（结果身份依赖配置 SHA256）。
