@@ -12,7 +12,7 @@
 - [x] 保留作者异构图编码、双模态卷积调制、图分支与融合分支加权分类；使 MSI 6/10、SAR 1/4、patch 11/13 可用，去除原始未调用分支。
 - [x] 补齐模型包、三个 CLI、三份共享数据配置引用与索引；训练身份记录源版本、配置／数据配置快照、环境和划分。
 - [x] 执行 CPU 合成检查、仓库回归和真实数据 smoke；不安装／升级依赖。
-- [ ] 本地提交并推送 `origin/main`；两服务器仅快进拉取并核对 HEAD，保留现有改动。
+- [x] 本地提交并推送 `origin/main`；两服务器仅快进拉取并核对 HEAD，保留现有改动。
 - [ ] 核对重复结果、GPU 和输出位置后，以单 worker 执行三数据集共 15 次训练；记录会话、PID、日志和任务状态。
 
 ## 已发现的适配点
@@ -46,3 +46,18 @@
 110 GPU0 可用显存约3 GB且高负载；116 GPU1可用约18 GB。选择116物理GPU1、`CUDA_VISIBLE_DEVICES=1`、单worker顺序执行 GRSS07→YRD2509NEW→YRD，避免在两端重复训练。两端都更新相同Git提交。当前原有10模型结果在110环境，本次THSGR将记录116环境；不为补同环境对照重跑已完成模型。
 
 正式输出预定为116 `runs_fewshot/grss07_custom/thsgr/grss07/run_001`、`runs_fewshot/fs50/thsgr/{yrd2509new,yrd}/run_001`；调度记录在 `runs_fewshot/thsgr_queue_20261030/`，screen名 `msi_thsgr_gpu1`。正式启动前再次检查重复结果。
+
+
+### Git同步与部署核验
+
+- 实现提交 `21abda086851fba1b210194631925e4e3aca920a` 已推送 GitHub `origin/main`。
+- 两服务器 `git pull --ff-only origin main` 未成功；改用已推送提交的 Git bundle，经 `git bundle verify`、`git fetch <bundle> main`、`git merge --ff-only FETCH_HEAD` 快进更新。已核对本地、110、116 的实现提交一致；110 原有 vendor/MSFMamba-original 未跟踪内容保留，116工作区干净。
+- 同步后116运行 `OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 /home/wwl/.conda/envs/gjc/bin/python -m unittest discover -s tests -v`：28 tests / OK，无跳过；110运行THSGR专用6项检查全部通过。
+- 116六个数据MAT的SHA256逐项匹配 [数据清单](2026-10-17-dual-server-data-manifest.json)。
+- 本记录的补充提交也推送并快进到两端后，才启动screen。队列固定当时HEAD，不允许运行期间源码漂移；启动时复核两端无THSGR正式结果。
+
+### 正式队列定位
+
+调度器为116 `runs_fewshot/thsgr_queue_20261030/launcher.py`（运行专用，不作为第二训练入口提交源码）。它只调用已提交的三个 `scripts/train_eval_thsgr.py --config ...`，单worker、每个任务启动前至少4 GiB空闲显存；任何失败停止，不自动重试或重训。已完成指标的任务跳过；仅缺图时只出图；发现不完整run则报告并停止。
+
+screen会话：`msi_thsgr_gpu1`。实际启动时间、调度PID、训练PID、命令、配置SHA256、返回码、结果目录及实时状态统一保存到同目录 `queue_status.json` / `queue_status.txt`；日志为 `<setting>.log` 与 `driver.log`。可用 `screen -ls` 和读取状态文件核查，不能把已启动写成已完成实验。各run的 `run_identity.json` 另保存实际代码HEAD、未提交状态、环境及配置身份。
