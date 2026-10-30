@@ -51,3 +51,5 @@ THSGR 主实验使用 `thsgr_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，�
 - 已运行过的配置不得修改（结果身份依赖配置 SHA256）。
 
 GFSFN 主实验：`gfsfn_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，沿用5 seeds、patch11、200 epochs、train128/test1024、最终checkpoint与最高测试OA选标注图协议。见 [GFSFN](../baselines/gfsfn/README.md)。
+
+S²ATNet：`s2atnet_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，沿用5 seeds、200epochs、patch11及统一测试／标注图协议。见 [S²ATNet](../baselines/s2atnet/README.md)。

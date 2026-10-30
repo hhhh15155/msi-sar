@@ -13,3 +13,5 @@
 """
 
 # gfsfn_patch.py: GFSFN native-channel wrapper; see baselines/gfsfn/README.md.
+
+# s2atnet_patch.py: native S2ATNet with per-modality channels and P² tokens.

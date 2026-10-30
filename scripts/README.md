@@ -42,3 +42,5 @@ THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`ev
 - 没有用户明确授权不启动训练或推理。
 
 GFSFN 入口：`train_eval_gfsfn.py --config configs/gfsfn_<setting>.yaml`；`eval_gfsfn.py --run <run目录>`（仅测试）；`infer_gfsfn.py --run <run目录>`（默认全部标注位置，显式 `--mode full` 才推理全图）。见 [GFSFN](../baselines/gfsfn/README.md)。
+
+S²ATNet：`train_eval_s2atnet.py --config configs/s2atnet_<setting>.yaml`；`eval_s2atnet.py --run <run目录>`仅测试；`infer_s2atnet.py --run <run目录>`默认标注样本图，显式 `--mode full` 才做全图。见 [模型说明](../baselines/s2atnet/README.md)。

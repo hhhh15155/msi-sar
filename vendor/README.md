@@ -27,3 +27,5 @@
 - 新 vendor 快照必须在 `baselines/README.md` 与对应基线 README 中登记来源。
 
 `GFSFN-original/`：作者 [Zzp-12/GFSFN](https://github.com/Zzp-12/GFSFN)，commit `065cb808870515b70c4980642895fa45da63a1af`；保存原始README及Python源码，SHA256见目录内 `SOURCE.json`。该提交未见明确仓库许可证，公开可读不代表任意复用许可。项目适配见 [GFSFN](../baselines/gfsfn/README.md)。
+
+`S2ATNet-original/`：作者RSIP-NJUPT/S2ATNet，commit `020d738807e67812c5deea4e819d327c08c7993d`；保留原始Python和README及文件SHA256，未见明确代码许可证。适配见 [S²ATNet](../baselines/s2atnet/README.md)。

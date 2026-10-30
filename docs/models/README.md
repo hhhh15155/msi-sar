@@ -37,3 +37,5 @@
 - 不做未验证的模块堆叠；新增模型须同步更新本页、`baselines/README.md`、配置与专用 README。
 
 新增 **GFSFN**：[`model.py`](../../baselines/gfsfn/model.py) → `GFSFN`，两路通道 `spectral_channels/sar_channels`，奇数 patch≥7（默认11）；训练入口 `scripts/train_eval_gfsfn.py`。模型机制、验证状态和运行命令见 [GFSFN README](../../baselines/gfsfn/README.md)。
+
+新增 **S²ATNet**：[`model.py`](../../baselines/s2atnet/model.py) → `S2ATNet`，两路通道参数 `spectral_channels/sar_channels`，正奇数patch（默认11）、token数P²。来源和验证见 [模型说明](../../baselines/s2atnet/README.md)。

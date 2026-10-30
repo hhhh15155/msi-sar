@@ -1,0 +1,19 @@
+{
+  "repository": "https://github.com/RSIP-NJUPT/S2ATNet",
+  "commit": "020d738807e67812c5deea4e819d327c08c7993d",
+  "license": "No explicit repository code license found at this commit",
+  "files_sha256": {
+    "README.md": "5c629de4d37e6f9d30e43a60e520358360bf25ee1be9db67ae1e93e204a980f3",
+    "main.py": "8adf9e7a5bf57ce715a9bcb65c6cb24bcddca48f770566d408a99317803caacd",
+    "metrics.py": "44334519aab78b9c8e21c66435b0d84b0c82e43d12e3a5b18623f3d3b71a684c",
+    "models/__init__.py": "7afeb76b9ac86962ed7576b0f1d271cb6c165308a689ae794eab3b0091dd240a",
+    "models/s2at/__init__.py": "a591f4bbe16121d7aceae96390be6535f8286594f89111bab1b55e6bb5975534",
+    "models/s2at/cfsm.py": "c03b6302531b4c72dd81c057e4ca0edd295fba78c57df66b207ede293249f36d",
+    "models/s2at/s2at.py": "db5ba666b66c819c61f219254db353520a4ec623dc6bcf915a0e603070577476",
+    "obtain_patches.py": "ff51a0a96facce4bd329785c017146d855e339a67c537ca0c4b7735da2438c8a",
+    "options.py": "65b1095e7397330b5afa16cbef781a48d8a3f1d9648441dd5115eb1f223d6841",
+    "prepare_dataset.py": "c90442540f0028788dc4b663b3515beb7ccf5c4dbfeeca5eb58330d389f11741",
+    "read.py": "941e2ee6d5707d485888d41a965ff3a0124cc67e8eff3072fdd96e6fd9d3e7a0",
+    "utils.py": "aa4cc800402b8c883704756b088aabeeb8b393cf5c2d258f761e555707d87f15"
+  }
+}
