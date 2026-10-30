@@ -39,3 +39,5 @@ Windows默认Python无torch；已有 `C:/Users/goh/.conda/envs/gjc/python.exe` �
 独立只读代码审查未发现可确认的P1/P2/P3；检查了核心继承、尺寸、参数、三份配置、最终checkpoint、测试／标注图分离、选图与来源哈希。
 
 116相同临时验证副本完整回归：`python -m unittest discover -s tests -v`，35 tests / OK，无跳过（17.13秒）；日志 `/tmp/gfsfn-check-20261030-regression.log`。三个CLI的 `--help` 均通过；源码SHA256、语法、文档相对链接和diff空白检查通过。
+
+vendor目录局部 `.gitattributes` 使用 `-text` 保留作者源码原始换行字节；上游原有尾随空白不改写。diff空白检查针对项目新增实现／配置／说明，排除只读上游快照。
