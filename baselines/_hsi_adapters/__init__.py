@@ -11,3 +11,5 @@
 上游代码快照在 `vendor/<Name>-original/`，本目录只做通道/接口/形状适配。
 基线索引见 `baselines/README.md`。
 """
+
+# gfsfn_patch.py: GFSFN native-channel wrapper; see baselines/gfsfn/README.md.

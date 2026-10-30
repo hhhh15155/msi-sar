@@ -32,3 +32,5 @@ THSGR 已按同一结构接入：[`thsgr/`](thsgr/README.md)，核心 [`_hsi_ada
 2. 在本表和 [docs/models/README.md](../docs/models/README.md) 登记；
 3. 在 `configs/` 增加配置并在 README 写明来源、预训练、输入假设与已知偏差；
 4. 标注验证状态：**未运行验证**的基线不得写入主结果表。
+
+GFSFN 已按相同结构接入：[`gfsfn/`](gfsfn/README.md)，核心 `_hsi_adapters/gfsfn_patch.py`；三数据集配置 `configs/gfsfn_*.yaml`。来源、必要差异与验证状态见专用 README。

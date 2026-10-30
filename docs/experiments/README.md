@@ -47,3 +47,5 @@ THSGR 已接入相同主实验协议，三份配置为 `configs/thsgr_*.yaml`；
 3. **无验证集**：训练结束评估最终 checkpoint；不能由文件名推断存在验证集选模。
 4. **环境差异**：不同服务器、依赖版本与残留进程会影响可比性，跨端比较需注明执行环境。
 5. **模型输入假设不同**：各基线的通道命名、patch 限制、预训练与特殊算子需逐模型核对 README。
+
+GFSFN 的三数据集主实验配置为 `configs/gfsfn_*.yaml`，沿用本页协议；执行记录见 [GFSFN操作记录](../operations/2026-10-30-gfsfn-adaptation.md)。

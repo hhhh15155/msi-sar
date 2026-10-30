@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/Zzp-12/GFSFN",
+  "commit": "065cb808870515b70c4980642895fa45da63a1af",
+  "license": "No explicit repository license found at this commit; public source availability is not unrestricted reuse permission",
+  "files_sha256": {
+    "README.md": "5b025dcda95f29872b60fad5f0d8e532136f0f6a8b0f803474b4acf75d8d595b",
+    "newnet.py": "354f044d84c0869c6415ee0da8e719ce0c61822a80c6697162a06dc26bf1d812",
+    "demo.py": "7cd26fe434790009f3f9eeeb9081f7c3815b2fc33bb382d23ab3fb15ad4625c3",
+    "record.py": "ee55788e49009f33177e102976c456d2ddf25c7081ea3fc9a3f5e63f4cbf6134",
+    "utils.py": "767cfcce4b1a0c9ece90f00ddf81599f8e58abb55a716bcbc667f37c0727e5c8"
+  }
+}

@@ -35,3 +35,5 @@
 - `models/` 目录当前只保留旧基线共享实现 `frekfuse.py`；`models/__init__.py` 不是统一训练注册器。核实调用链应从具体 `scripts/train_eval_*.py` 到 `baselines/<model>/train.py`，再到实际模型定义。
 - 新适配基线已通过本地 CPU 合成前向／反向和 checkpoint 检查，尚未在真实数据／GPU 上做正式实验，不能写入精度结果表。
 - 不做未验证的模块堆叠；新增模型须同步更新本页、`baselines/README.md`、配置与专用 README。
+
+新增 **GFSFN**：[`model.py`](../../baselines/gfsfn/model.py) → `GFSFN`，两路通道 `spectral_channels/sar_channels`，奇数 patch≥7（默认11）；训练入口 `scripts/train_eval_gfsfn.py`。模型机制、验证状态和运行命令见 [GFSFN README](../../baselines/gfsfn/README.md)。

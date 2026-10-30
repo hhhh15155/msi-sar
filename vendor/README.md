@@ -25,3 +25,5 @@
 - 公开可读不等于有复用许可；每个仓库的许可证状态以对应说明为准（多数未见明确 LICENSE）。
 - HSI–LiDAR 五个仓库的来源、commit、快照规则与适配状态见 [docs/research/2026-10-23-hsi-lidar-source-snapshot.md](../docs/research/2026-10-23-hsi-lidar-source-snapshot.md)。
 - 新 vendor 快照必须在 `baselines/README.md` 与对应基线 README 中登记来源。
+
+`GFSFN-original/`：作者 [Zzp-12/GFSFN](https://github.com/Zzp-12/GFSFN)，commit `065cb808870515b70c4980642895fa45da63a1af`；保存原始README及Python源码，SHA256见目录内 `SOURCE.json`。该提交未见明确仓库许可证，公开可读不代表任意复用许可。项目适配见 [GFSFN](../baselines/gfsfn/README.md)。

@@ -49,3 +49,5 @@ THSGR 主实验使用 `thsgr_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，�
 - 新增当前实验：新建独立配置并写清用途，不要和旧网格混在同一层；
 - 配置生成脚本在 `scripts/generate_*_configs.py`，生成后仍以 YAML 和实际入口为准；
 - 已运行过的配置不得修改（结果身份依赖配置 SHA256）。
+
+GFSFN 主实验：`gfsfn_{yrd_fs50,yrd2509new_fs50,grss07_custom}.yaml`，沿用5 seeds、patch11、200 epochs、train128/test1024、最终checkpoint与最高测试OA选标注图协议。见 [GFSFN](../baselines/gfsfn/README.md)。

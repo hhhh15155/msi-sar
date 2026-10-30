@@ -40,3 +40,5 @@ THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`ev
 - 不新增与 `train_eval_*` 职责重复的入口；
 - 一次性脚本如果仍被文档引用，移动前先更新链接；
 - 没有用户明确授权不启动训练或推理。
+
+GFSFN 入口：`train_eval_gfsfn.py --config configs/gfsfn_<setting>.yaml`；`eval_gfsfn.py --run <run目录>`（仅测试）；`infer_gfsfn.py --run <run目录>`（默认全部标注位置，显式 `--mode full` 才推理全图）。见 [GFSFN](../baselines/gfsfn/README.md)。
