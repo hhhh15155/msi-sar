@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train MFT and print test metrics.")
+    parser = argparse.ArgumentParser(description="Train mft and print test metrics.")
     parser.add_argument("--config", default="configs/mft_yrd_fs50.yaml")
     args = parser.parse_args()
 

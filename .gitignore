@@ -26,6 +26,7 @@ tmp/
 !.agents/skills/
 .agents/skills/*
 !.agents/skills/msi-sar-baseline-adaptation/
+!.agents/skills/msi-sar-training-protocol/
 *.log
 *.tar.gz
 *.tif

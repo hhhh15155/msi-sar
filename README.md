@@ -1,5 +1,7 @@
 # MSI–SAR 地物分类项目
 
+2026-10-31：全部 baseline 后续统一使用 MGHOFNet 训练流程，见[当前实验协议](docs/experiments/README.md)与[项目训练 skill](.agents/skills/msi-sar-training-protocol/SKILL.md)。已有结果保留原配置；本次只统一代码，不启动正式实验。
+
 空间配准的多光谱与 SAR 邻域 patch 输入，预测中心像素地物类别。
 
 **2026-10-23 状态变更**：按用户要求，旧自研 V0–V8 版本线及其全部实验结果（本地与 server110／server116）已删除，不保留归档。当前模型库只保留两批对比基线：旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新的高光谱–LiDAR 适配基线（DFFNet、M2Heat、MFT；CPU 合成数据验证通过、未完成正式实验）。5 个 HSI–LiDAR 基线均已适配（DCMNet 的谱核/路由适配与 HSLiNets 的早融合变体、缺失中融合类等偏差见各自 README）。详见 [对比方法索引](baselines/README.md) 与 [模型索引](docs/models/README.md)。

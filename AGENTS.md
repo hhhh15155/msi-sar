@@ -66,6 +66,8 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 记录实际入口、配置快照、代码版本及未提交改动、种子、数据划分、环境、预训练权重来源、checkpoint 和指标输出位置。推断结论与实验结果分开写。
 - 不承诺未经实验验证的性能提升；不将已有模块的简单组合直接认定为充分创新。
 
+- **2026-10-31 统一训练流程**：用户指定全部 baseline 采用 MGHOFNet 的训练与数据处理流程。新增或调整训练/配置时必须执行[项目训练 skill](.agents/skills/msi-sar-training-protocol/SKILL.md)，复用公共模块；具体参数以[当前实验协议](docs/experiments/README.md)和 `baselines/protocol.py` 为准。历史结果保留原协议，不因本次统一而重跑；本次用户明确“先不跑”。
+
 ## 5. 远端环境与执行边界
 
 - 2026-10-17 的只读检查确认：SSH 可连接、项目目录存在，非交互 shell 能找到 `conda`、`/opt/anaconda3/bin/python` 和 `/usr/bin/nvidia-smi`。

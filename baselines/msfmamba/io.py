@@ -1,3 +1,2 @@
-"""Shared serialisation utilities."""
-
-from baselines.frekfuse.io import ensure_dir, load_yaml, resolve_path, save_json, save_yaml  # noqa: F401
+"""Shared project paths and serialization."""
+from baselines.io import repo_root, resolve_path, ensure_dir, load_yaml, save_yaml, save_json  # noqa: F401

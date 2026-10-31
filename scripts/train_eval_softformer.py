@@ -10,12 +10,11 @@ sys.path.insert(0, str(ROOT))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train SoftFormer, test, and save labeled maps.")
-    parser.add_argument("--config", default="configs/softformer_yrd_fs5.yaml")
+    parser = argparse.ArgumentParser(description="Train softformer and print test metrics.")
+    parser.add_argument("--config", default="configs/softformer_yrd_fs50.yaml")
     args = parser.parse_args()
 
     from baselines.softformer.eval import save_labeled_maps
-    from baselines.softformer.io import load_yaml
     from baselines.softformer.train import run_training
 
     run_dir = run_training(args.config)
@@ -34,16 +33,17 @@ def main() -> None:
             "Kappa={kappa_mean:.2f}+-{kappa_std:.2f}".format(**aggregate)
         )
 
-    eval_config = load_yaml(run_dir / "config.yaml").get("eval", {})
+    eval_config = {}
+    run_config_path = run_dir / "config.yaml"
+    if run_config_path.exists():
+        from baselines.softformer.io import load_yaml
+
+        eval_config = load_yaml(run_config_path).get("eval", {})
+
     if eval_config.get("enabled", True):
         requested_run = eval_config.get("run_index", "best")
-        if requested_run == "best":
-            selected = max(metrics["runs"], key=lambda item: item["oa"])
-            run_index = int(selected["run"])
-        else:
-            run_index = int(requested_run)
-        print(f"selected run for labeled maps: {run_index}")
-        eval_output = save_labeled_maps(run_dir, run_index=run_index)
+        eval_output = save_labeled_maps(run_dir, run_index=requested_run)
+        print(f"selected run for labeled maps: {eval_output['run']} seed={eval_output['seed']}")
         for group, paths in eval_output.get("outputs", {}).items():
             for path in paths:
                 print(f"{group}: {path}")

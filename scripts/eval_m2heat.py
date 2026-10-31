@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Re-evaluate M2Heat on saved test splits only.")
+    parser = argparse.ArgumentParser(description="Re-evaluate m2heat on saved test splits only.")
     parser.add_argument("--run", required=True)
     args = parser.parse_args()
     from baselines.m2heat.eval import evaluate_run

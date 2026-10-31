@@ -16,7 +16,7 @@ epochs: 200
 num_runs: 5
 seeds: [202201, 202202, 202203, 202204, 202205]
 learning_rate: 0.001
-weight_decay: 0.0001
+weight_decay: 0.01
 eval:
   enabled: true
   run_index: best
@@ -36,3 +36,14 @@ palette:
     - [174, 205, 45]
     - [181, 77, 218]
     - [255, 250, 0]
+
+training_protocol: mghofnet-v1
+optimizer: adamw
+scheduler: cosine
+eta_min: 1.0e-06
+pad_mode: constant
+data_aug: true
+augmentation: mghofnet
+gradient_clip: null
+cudnn_deterministic: true
+cudnn_benchmark: false

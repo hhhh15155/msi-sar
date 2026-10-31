@@ -36,3 +36,5 @@ THSGR 已按同一结构接入：[`thsgr/`](thsgr/README.md)，核心 [`_hsi_ada
 GFSFN 已按相同结构接入：[`gfsfn/`](gfsfn/README.md)，核心 `_hsi_adapters/gfsfn_patch.py`；三数据集配置 `configs/gfsfn_*.yaml`。来源、必要差异与验证状态见专用 README。
 
 S²ATNet：[`s2atnet/`](s2atnet/README.md)，核心 `_hsi_adapters/s2atnet_patch.py`；三数据集主实验 `configs/s2atnet_*.yaml`。状态见专用README。
+
+公共训练与数据流程为 [`protocol.py`](protocol.py)、[`data.py`](data.py)、[`training.py`](training.py)、[`prediction.py`](prediction.py)。全部模型自 2026-10-31 起使用 MGHOFNet 协议，执行规则见[训练 skill](../.agents/skills/msi-sar-training-protocol/SKILL.md)。

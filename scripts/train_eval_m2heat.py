@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train M2Heat and print test metrics.")
+    parser = argparse.ArgumentParser(description="Train m2heat and print test metrics.")
     parser.add_argument("--config", default="configs/m2heat_yrd_fs50.yaml")
     args = parser.parse_args()
 

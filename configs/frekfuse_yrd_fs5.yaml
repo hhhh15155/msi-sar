@@ -20,10 +20,10 @@ test_batch_size: 1024
 epochs: 200
 num_runs: 5
 seeds: [202201, 202202, 202203, 202204, 202205]
-learning_rate: 0.0005
-weight_decay: 0.0001
-eta_min: 0.000001
-gradient_clip: 1.0
+learning_rate: 0.001
+weight_decay: 0.01
+eta_min: 1.0e-06
+gradient_clip: null
 
 eval:
   enabled: true
@@ -33,7 +33,7 @@ eval:
 
 infer:
   batch_size: 1024
-  save_full_map: true
+  save_full_map: false
 
 palette:
   background: [0, 0, 0]
@@ -46,3 +46,12 @@ palette:
     - [174, 205, 45]
     - [181, 77, 218]
     - [255, 250, 0]
+
+training_protocol: mghofnet-v1
+optimizer: adamw
+scheduler: cosine
+pad_mode: constant
+data_aug: true
+augmentation: mghofnet
+cudnn_deterministic: true
+cudnn_benchmark: false

@@ -1,5 +1,7 @@
 # S²ATNet
 
+> **2026-10-31 当前流程**：所有后续运行统一使用 MGHOFNet 训练协议 `mghofnet-v1`，公共实现为 `baselines/{protocol,data,training,prediction}.py`；优化、补零、增强和随机性设置以[当前实验协议](../../docs/experiments/README.md)为准。已完成实验仍属于各自保存的旧配置，本文此前的验证/运行记录不能视为新协议精度。此次只改代码，不启动正式实验；历史重评估按原填充处理。
+
 S²ATNet：两路配准MSI–SAR邻域patch输入，预测中心像素类别。模型标识／目录为 `s2atnet`，采用本项目现有baseline架构。
 
 ## 来源与核心
@@ -19,11 +21,11 @@ S²ATNet：两路配准MSI–SAR邻域patch输入，预测中心像素类别。�
 - 原作者已提供 `hsi_in_channels/lidar_in_channels`；直接设置实际通道数，不做PCA30。两路卷积保留patch空间尺寸，token数为 `P²`，显式传给谱注意力中的Linear层。作者训练选项默认P11、121token；不能使用模型构造器的默认81token搭配11×11。
 - 项目中心像素标签要求正奇数patch；默认11，可配置，所有尺寸相关参数在优化器构建前注册。
 - 加载层 [`s2atnet_patch.py`](../_hsi_adapters/s2atnet_patch.py) 仅在内存AST去除 `timm.models.layers` 导入。其唯一实际调用的 `trunc_normal_` 使用PyTorch原生等价初始化；`to_2tuple`从未使用，作者S²ATNet中DualBlock的drop_path固定0，DropPath分支不会构造。作者文件及所有前向运算保持原样，无需引入timm／torchvision环境依赖；仍使用现有einops。
-- 不运行作者主程序；本项目使用共享划分和整图无标签逐通道min-max、reflect padding、统一增强，无PCA。作者原程序的AdamW、学习率调度、标准化和选模方式不覆盖项目统一协议，差异在此明确记录。
+- 不运行作者主程序；本项目使用共享划分和整图无标签逐通道min-max、constant 补零、统一增强，无PCA。作者原程序的AdamW、学习率调度、标准化和选模方式不覆盖项目统一协议，差异在此明确记录。
 
 ## 配置与运行
 
-三份主配置：`configs/s2atnet_yrd_fs50.yaml`、`configs/s2atnet_yrd2509new_fs50.yaml`、`configs/s2atnet_grss07_custom.yaml`。YRD两组每类50，GRSS07 custom `[674,1481,752,45,30]`；5 seeds 202201–202205，patch11，200epochs，train128/test1024，FP32，Adam lr0.001/wd0.0001，无预训练。
+三份主配置：`configs/s2atnet_yrd_fs50.yaml`、`configs/s2atnet_yrd2509new_fs50.yaml`、`configs/s2atnet_grss07_custom.yaml`。YRD两组每类50，GRSS07 custom `[674,1481,752,45,30]`；5 seeds 202201–202205，patch11，200epochs，train128/test1024，FP32，AdamW lr0.001/wd0.01＋余弦衰减至1e-6，无预训练。
 
 ```bash
 python scripts/train_eval_s2atnet.py --config configs/s2atnet_yrd_fs50.yaml

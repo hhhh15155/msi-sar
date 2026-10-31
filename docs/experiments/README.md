@@ -28,7 +28,9 @@
 - 主实验训练量：YRD 每类 50（8 类共 400）、YRD2509NEW 每类 50（9 类共 450）、GRSS07 custom `[674,1481,752,45,30]`（5 类共 2982）。
 - 固定划分：按类别与种子抽固定训练数量，其余标注像元测试，无验证集；patch 11、训练 batch 128、测试 batch 1024、FP32，实际以各 YAML 为准。
 - 2026-10-23 用户指定多次运行按测试 OA 最高者出图。五个新适配基线（DFFNet／M2Heat／MFT／DCMNet／HSLiNets）当前 15 份配置均为 `num_runs: 5`、`seeds: [202201,202202,202203,202204,202205]`、`eval.run_index: best`；后续新 baseline 默认沿用这一协议。
-- 每次运行训练 200 epochs，Adam 学习率 `0.001`、权重衰减 `0.0001`；无预训练，训练结束评估最终 checkpoint（即使文件名是 `model_best.pth`）。
+- 2026-10-31 起所有模型统一为 MGHOFNet 流程 `mghofnet-v1`：每次运行训练 200 epochs，AdamW 学习率 `0.001`、权重衰减 `0.01`，epoch 后 CosineAnnealingLR（T_max=epochs、eta_min=`0.000001`）；普通交叉熵，无梯度裁剪；无预训练，训练结束评估最终 checkpoint（即使文件名是 `model_best.pth`）。
+- 公共数据流水线：逐通道整图 min-max、constant 补零；50% 不变换、12.5% 水平翻转、12.5% 垂直翻转，三种旋转各约 8.33%，MSI/SAR 同步。cuDNN `deterministic=True`、`benchmark=False`。模型自身结构/宽度/Dropout 保留各自设计。
+- 新运行保存有效配置、`dataset_config.yaml` 和 `training_protocol.json`；历史结果仍按原运行协议解释，不能因为仓库默认改变而改名为新协议结果。历史 reflect 模型重评估保留 reflect；MGHOFNet/SoftFormer 按旧保存 pad_mode；优先读取运行内的数据配置快照，没有历史快照时不能完整保证原预处理身份。
 - 已完成实验不重跑；不用测试集选 epoch／超参数。最高测试 OA 仅用于选择展示的分类图，全部种子的测试指标和均值／标准差仍是正式结果；OA 并列时按配置顺序选首个运行，记录实际 run 和 seed，注明“按最高测试 OA 选图”。
 - 汇总标准差沿用现有 `metrics.py` 的 `np.std` 默认值（`ddof=0`，总体标准差）；报告中注明口径，不混用样本标准差。
 - 当前默认仅标注样本出图：用测试 OA 最高的模型推理全部有标注位置（含训练位置），未标注位置留背景。这是绘图推理，不重新计算准确率；保存 `labeled_map_info.json` 记录选图 run／seed／既有测试 OA，不能覆盖 `metrics.json` 或测试重评估的 `eval_metrics.json`。
@@ -51,3 +53,7 @@ THSGR 已接入相同主实验协议，三份配置为 `configs/thsgr_*.yaml`；
 GFSFN 的三数据集主实验配置为 `configs/gfsfn_*.yaml`，沿用本页协议；执行记录见 [GFSFN操作记录](../operations/2026-10-30-gfsfn-adaptation.md)。
 
 S²ATNet的三数据集配置为 `configs/s2atnet_*.yaml`；沿用本页完整协议。执行记录见 [S²ATNet](../operations/2026-10-30-s2atnet-adaptation.md)。
+
+## 统一流程入口
+
+[项目训练 skill](../../.agents/skills/msi-sar-training-protocol/SKILL.md)固定执行步骤。公共实现为 `baselines/protocol.py`、`data.py`、`training.py`、`prediction.py`；全部 13 个模型入口复用，不另外维护优化器或数据增强。`python -s scripts/check_training_protocol.py` 只审计配置和调用链，不启动训练。变更记录见[统一训练记录](../operations/2026-10-31-unified-training.md)。

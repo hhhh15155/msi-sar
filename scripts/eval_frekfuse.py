@@ -5,19 +5,15 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Evaluate FreKFuse baseline.")
+    parser = argparse.ArgumentParser(description="Re-evaluate frekfuse on saved test splits only.")
     parser.add_argument("--run", required=True)
-    parser.add_argument("--run-index", type=int, default=0)
     args = parser.parse_args()
-
-    from baselines.frekfuse.eval import save_labeled_maps
-
-    print(json.dumps(save_labeled_maps(args.run, args.run_index), indent=2))
+    from baselines.frekfuse.eval import evaluate_run
+    print(json.dumps(evaluate_run(args.run), indent=2))
 
 
 if __name__ == "__main__":

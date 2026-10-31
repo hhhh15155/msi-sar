@@ -1,5 +1,7 @@
 # FreKFuse 基线
 
+> **2026-10-31 当前流程**：所有后续运行统一使用 MGHOFNet 训练协议 `mghofnet-v1`，公共实现为 `baselines/{protocol,data,training,prediction}.py`；优化、补零、增强和随机性设置以[当前实验协议](../../docs/experiments/README.md)为准。已完成实验仍属于各自保存的旧配置，本文此前的验证/运行记录不能视为新协议精度。此次只改代码，不启动正式实验；历史重评估按原填充处理。
+
 当前模型与命令索引见 [模型说明](../../docs/models/README.md)，划分、评估和结果边界见 [实验说明](../../docs/experiments/README.md)。原始说明已原文归档至 [旧版 README](../../docs/archive/2026-10-17/frekfuse-readme.original.md)。
 
 实现由 [models/frekfuse.py](../../models/frekfuse.py) 的 `FreKFuse`／`FreKFuseLite` 提供；包装入口为本目录的 [train.py](train.py)。MSI／SAR 通道数由 `ms_channels`／`sar_channels` 指定；YRD 和 YRD2509NEW 使用 10＋4，GRSS07 使用 6＋1。

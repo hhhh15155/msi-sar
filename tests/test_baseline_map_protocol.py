@@ -12,7 +12,7 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = ("dffnet", "m2heat", "mft", "thsgr")
+MODELS = ('dfinet', 'frekfuse', 'mghofnet', 'msfmamba', 'softformer', 'dffnet', 'm2heat', 'mft', 'dcmnet', 'hslinets', 'thsgr', 'gfsfn', 's2atnet')
 
 
 def load_functions(path: Path, names: tuple[str, ...], dependencies: dict) -> dict:
@@ -60,7 +60,9 @@ class BaselineMapProtocolTests(unittest.TestCase):
         selector = ROOT / "baselines" / "map_selection.py"
         if selector.exists():
             from baselines.map_selection import select_map_run
+            from baselines.protocol import effective_dataset_config
             boundaries["select_map_run"] = select_map_run
+            boundaries["effective_dataset_config"] = effective_dataset_config
         context = load_functions(ROOT / "baselines" / model / "eval.py",
                                  ("evaluate_run", "save_labeled_maps", "save_full_map"), boundaries)
         return context, {"gt": gt, "saved_maps": saved_maps, "records": records, **boundaries}

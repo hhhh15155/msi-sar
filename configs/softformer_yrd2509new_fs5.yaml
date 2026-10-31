@@ -27,8 +27,8 @@ num_runs: 5
 seeds: [202201, 202202, 202203, 202204, 202205]
 data_aug: true
 learning_rate: 0.001
-weight_decay: 0.0001
-eta_min: 0.0
+weight_decay: 0.01
+eta_min: 1.0e-06
 eval:
   enabled: true
   run_index: best
@@ -36,7 +36,7 @@ eval:
   save_labeled_maps: true
 infer:
   batch_size: 1024
-  save_full_map: true
+  save_full_map: false
 palette:
   background: [0, 0, 0]
   colors:
@@ -54,3 +54,11 @@ palette:
     - [251, 154, 153]
     - [80, 80, 80]
 
+
+training_protocol: mghofnet-v1
+optimizer: adamw
+scheduler: cosine
+augmentation: mghofnet
+gradient_clip: null
+cudnn_deterministic: true
+cudnn_benchmark: false

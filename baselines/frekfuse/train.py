@@ -9,18 +9,14 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from baselines.protocol import prepare_training_config
+from baselines.training import set_seed, build_optimizer_scheduler, train_epoch, record_protocol
 from .dataset import PatchDataset, load_dataset, split_from_config
 from .io import ensure_dir, load_yaml, save_json, save_yaml
 from .metrics import aggregate_metrics, classification_metrics
 from .model import FreKFuse, FreKFuseLite
 
 
-def set_seed(seed: int) -> None:
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
 
 
 def resolve_device(device_name: str) -> torch.device:
@@ -110,46 +106,15 @@ def train_one_run(
 
     model = build_model(config, len(labels)).to(device)
 
-    optimizer = torch.optim.AdamW(
-        model.parameters(),
-        lr=float(config.get("learning_rate", 0.0005)),
-        weight_decay=float(config.get("weight_decay", 0.0001)),
-    )
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        optimizer,
-        T_max=int(config["epochs"]),
-        eta_min=float(config.get("eta_min", 0.000001)),
-    )
-
-    ms_c = int(config.get("ms_channels", 10))
-    sar_c = int(config.get("sar_channels", 4))
-    grad_clip = float(config.get("gradient_clip", 1.0))
-
+    optimizer, scheduler = build_optimizer_scheduler(model, config)
     checkpoint_dir = ensure_dir(run_dir / "checkpoints" / f"run_{run_index}")
     log_file = run_dir / "log.txt"
 
-    losses: list[float] = []
-    epochs = int(config["epochs"])
-    for epoch in tqdm(range(1, epochs + 1), desc=f"run {run_index}"):
-        model.train()
-        for images, targets in train_loader:
-            images = images.to(device)
-            targets = targets.to(device)
-            ms, sar = split_modalities(images, ms_c, sar_c)
-            optimizer.zero_grad()
-            output = model(ms=ms, sar=sar, labels=targets)
-            loss = output["losses"]["total"]
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
-            optimizer.step()
-            losses.append(float(loss.item()))
+    for epoch in tqdm(range(1, int(config["epochs"]) + 1), desc=f"run {run_index}"):
+        loss_text = train_epoch(model, train_loader, optimizer, device, config)
         scheduler.step()
-
-        loss_text = np.mean(losses) if losses else 0.0
         if epoch == 1 or epoch % 10 == 0:
             log(f"run={run_index} epoch={epoch} loss={loss_text:.6f}", log_file)
-        losses = []
-
         if epoch % 10 == 0:
             torch.save(model.state_dict(), checkpoint_dir / "model.pth")
 
@@ -166,11 +131,12 @@ def train_one_run(
 
 
 def run_training(config_path: str | Path) -> Path:
-    config = load_yaml(config_path)
+    config = prepare_training_config(load_yaml(config_path))
     dataset_config = load_yaml(config["dataset_config"])
     run_dir = next_run_dir(config.get("output_root", "runs"), config["dataset"])
     ensure_dir(run_dir)
     save_yaml(config, run_dir / "config.yaml")
+    record_protocol(config, dataset_config, run_dir)
 
     image, gt, labels = load_dataset(dataset_config)
     device = resolve_device(config.get("device", "cuda:0"))

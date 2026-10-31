@@ -43,3 +43,5 @@ docs/
 - 新说明使用稳定的英文文件名、中文正文和相对链接；阶段性记录加日期。
 - [Baseline 队列部署记录（2026-10-23）](operations/2026-10-23-baseline-queue-deployment.md)：110 GPU0 上 5 个新适配基线 × 3 数据集的 screen 队列。
 - [旧 baseline 干净对照重跑（2026-10-24）](operations/2026-10-24-old-baseline-clean-rerun.md)：110 上 5 个旧基线 × 3 数据集，3 并发 worker 的对照队列。
+
+[统一训练 skill](../.agents/skills/msi-sar-training-protocol/SKILL.md)与[2026-10-31 实施记录](operations/2026-10-31-unified-training.md)：全部 baseline 后续使用 MGHOFNet 流程，历史结果保留原身份，本次不运行正式实验。

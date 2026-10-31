@@ -54,4 +54,15 @@ spectral_channels: 6
 sar_channels: 1
 batch_size: 128
 learning_rate: 0.001
-weight_decay: 0.0001
+weight_decay: 0.01
+
+training_protocol: mghofnet-v1
+optimizer: adamw
+scheduler: cosine
+eta_min: 1.0e-06
+pad_mode: constant
+data_aug: true
+augmentation: mghofnet
+gradient_clip: null
+cudnn_deterministic: true
+cudnn_benchmark: false

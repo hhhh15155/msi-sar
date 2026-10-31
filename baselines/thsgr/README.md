@@ -1,5 +1,7 @@
 # THSGR
 
+> **2026-10-31 当前流程**：所有后续运行统一使用 MGHOFNet 训练协议 `mghofnet-v1`，公共实现为 `baselines/{protocol,data,training,prediction}.py`；优化、补零、增强和随机性设置以[当前实验协议](../../docs/experiments/README.md)为准。已完成实验仍属于各自保存的旧配置，本文此前的验证/运行记录不能视为新协议精度。此次只改代码，不启动正式实验；历史重评估按原填充处理。
+
 论文：*Boosting Multimodal Remote Sensing Image Classification with Transformer-based Heterogeneously Salient Graph Representation*，IEEE TGRS 2026。
 
 - 作者仓库：https://github.com/jqyang22/THSGR
@@ -19,7 +21,7 @@
 2. SAR 第一层按实际 1/4 通道构造，移除原输入分支中轴置换和求均值的特殊处理；不将 SAR 解释为高度。
 3. **mean-forward 仅训练时启用**：前馈输出与当前训练 batch 均值各占 1/2；测试／重评估／出图时禁止跨样本混合，使同一像素不因批次大小、顺序或出图范围改变预测。向量化替换作者逐样本原位赋值。该行为与作者原始 eval 有差异。
 4. 移除原代码注册但未调用的 CNN 分支、静态图参数、独立 LiDAR 图模块、辅助分类头、未使用的归一化与 skipcat，以及未参与前向的 DropBlock 调度器；不引入新融合模块。保留作者实际调用的共享显著编码／图模块。
-5. 训练对齐项目协议：普通交叉熵、Adam lr0.001/wd0.0001、200 epochs、无 scheduler/预训练，最终 checkpoint 测试；不同于作者的标签平滑、120 epochs、lr0.01、衰减调度及最小训练 loss checkpoint。
+5. 训练对齐项目协议：普通交叉熵、AdamW lr0.001/wd0.01＋余弦衰减至1e-6、200 epochs、无预训练，最终 checkpoint 测试；不同于作者的标签平滑、120 epochs、lr0.01、衰减调度及最小训练 loss checkpoint。
 
 这些差异影响实验解释；项目结果不表示复现作者论文数值，不预先承诺精度。
 

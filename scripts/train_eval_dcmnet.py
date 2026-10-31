@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train DCMNet and print test metrics.")
+    parser = argparse.ArgumentParser(description="Train dcmnet and print test metrics.")
     parser.add_argument("--config", default="configs/dcmnet_yrd_fs50.yaml")
     args = parser.parse_args()
 

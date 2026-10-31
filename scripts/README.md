@@ -7,8 +7,8 @@
 | 脚本 | 用途 |
 | --- | --- |
 | `train_eval_<model>.py` | 单基线训练 + 测试指标 + 标签图（当前推荐入口） |
-| 新基线 `eval_<model>.py` | 加载已完成 run，仅在保存的测试划分上重评估 |
-| 新基线 `infer_<model>.py` | 默认仅标注位置出图；显式 `--mode full` 才做全图 |
+| `eval_<model>.py` | 加载已完成 run，仅在保存的测试划分上重评估 |
+| `infer_<model>.py` | 默认仅标注位置出图；显式 `--mode full` 才做全图 |
 | `experiment_grid.py` | 只打印旧基线实验网格，不启动训练 |
 | `generate_grss07_configs.py`、`generate_msfmamba_configs.py` | 生成旧基线配置网格 |
 | `analyze_fewshot_results.py` | 汇总 `runs_fewshot/` 下旧基线结果 |
@@ -20,7 +20,7 @@
 - 新适配基线（CPU 合成数据验证通过、未完成正式实验）：`dffnet`、`m2heat`、`mft`、`dcmnet`、`hslinets`；
 - 新基线配置：`configs/{dffnet,m2heat,mft,dcmnet,hslinets}_*.yaml`。
 
-新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。旧基线入口沿用原接口，不能假定已有相同参数。
+新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。2026-10-31 起全部 13 个模型采用相同 CLI：`eval_*` 仅重评估测试划分，`infer_*` 默认 labeled，显式 `--mode full` 才做全图。
 
 THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`eval_thsgr.py --run <run目录>`；`infer_thsgr.py --run <run目录>`（默认 labeled）。详见 [THSGR](../baselines/thsgr/README.md)。
 
@@ -44,3 +44,5 @@ THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`ev
 GFSFN 入口：`train_eval_gfsfn.py --config configs/gfsfn_<setting>.yaml`；`eval_gfsfn.py --run <run目录>`（仅测试）；`infer_gfsfn.py --run <run目录>`（默认全部标注位置，显式 `--mode full` 才推理全图）。见 [GFSFN](../baselines/gfsfn/README.md)。
 
 S²ATNet：`train_eval_s2atnet.py --config configs/s2atnet_<setting>.yaml`；`eval_s2atnet.py --run <run目录>`仅测试；`infer_s2atnet.py --run <run目录>`默认标注样本图，显式 `--mode full` 才做全图。见 [模型说明](../baselines/s2atnet/README.md)。
+
+`check_training_protocol.py`：不加载模型、不启动实验，核查全部模型配置及训练调用链遵守 MGHOFNet 统一协议。

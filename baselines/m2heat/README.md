@@ -1,5 +1,7 @@
 # M2Heat（TCSVT 2026，热传导 + 跨频域融合）
 
+> **2026-10-31 当前流程**：所有后续运行统一使用 MGHOFNet 训练协议 `mghofnet-v1`，公共实现为 `baselines/{protocol,data,training,prediction}.py`；优化、补零、增强和随机性设置以[当前实验协议](../../docs/experiments/README.md)为准。已完成实验仍属于各自保存的旧配置，本文此前的验证/运行记录不能视为新协议精度。此次只改代码，不启动正式实验；历史重评估按原填充处理。
+
 本目录是 **第三方方法在本项目 MSI–SAR 数据上的基线适配**，不是原论文整网复现。
 
 - 来源：[Weikan0425/M2Heat_HSI_LiDAR](https://github.com/Weikan0425/M2Heat_HSI_LiDAR)，commit `8fcdce85e92a5d8b92c0a86ca78f835113dd3e3f`；只读快照见 [`vendor/M2Heat-original/`](../../vendor/M2Heat-original)（未复制 LFS 数据集）。
@@ -34,7 +36,7 @@ python scripts/train_eval_m2heat.py --config configs/m2heat_yrd_fs50.yaml
 
 配置：`configs/m2heat_yrd_fs50.yaml`、`configs/m2heat_yrd2509new_fs50.yaml`、`configs/m2heat_grss07_custom.yaml`。
 
-已对齐当前主实验的训练数量、5 seeds `202201–202205`、patch 11、200 epochs、train128／test1024、FP32 与 Adam；按最高测试 OA 的运行出图，保留全部运行及汇总指标。详细参数见 [配置索引](../../configs/README.md#新适配基线的主实验配置)。配置／出图流程回归检查通过；正式实验尚未运行。
+已对齐当前主实验的训练数量、5 seeds `202201–202205`、patch 11、200 epochs、train128／test1024、FP32 与统一 AdamW/余弦调度；按最高测试 OA 的运行出图，保留全部运行及汇总指标。详细参数见 [配置索引](../../configs/README.md#新适配基线的主实验配置)。配置／出图流程回归检查通过；正式实验尚未运行。
 
 ## 测试与两种出图
 

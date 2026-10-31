@@ -1,5 +1,7 @@
 # GFSFN
 
+> **2026-10-31 当前流程**：所有后续运行统一使用 MGHOFNet 训练协议 `mghofnet-v1`，公共实现为 `baselines/{protocol,data,training,prediction}.py`；优化、补零、增强和随机性设置以[当前实验协议](../../docs/experiments/README.md)为准。已完成实验仍属于各自保存的旧配置，本文此前的验证/运行记录不能视为新协议精度。此次只改代码，不启动正式实验；历史重评估按原填充处理。
+
 GFSFN：配准 MSI–SAR 邻域 patch 输入，输出中心像素类别。采用项目现有 baseline 目录、共享数据配置和训练／测试／标注样本出图协议。
 
 ## 来源
@@ -23,7 +25,7 @@ GFSFN：配准 MSI–SAR 邻域 patch 输入，输出中心像素类别。采用
 
 ## 配置与入口
 
-三份主实验配置：`configs/gfsfn_yrd_fs50.yaml`、`configs/gfsfn_yrd2509new_fs50.yaml`、`configs/gfsfn_grss07_custom.yaml`。共享数据配置见 `configs/datasets/`；YRD和YRD2509NEW每类50，GRSS07 custom。5 seeds 202201–202205，patch11，200epochs，train128/test1024，FP32，Adam lr0.001/wd0.0001，无预训练。
+三份主实验配置：`configs/gfsfn_yrd_fs50.yaml`、`configs/gfsfn_yrd2509new_fs50.yaml`、`configs/gfsfn_grss07_custom.yaml`。共享数据配置见 `configs/datasets/`；YRD和YRD2509NEW每类50，GRSS07 custom。5 seeds 202201–202205，patch11，200epochs，train128/test1024，FP32，AdamW lr0.001/wd0.01＋余弦衰减至1e-6，无预训练。
 
 ```bash
 python scripts/train_eval_gfsfn.py --config configs/gfsfn_yrd_fs50.yaml

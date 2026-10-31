@@ -10,8 +10,8 @@ sys.path.insert(0, str(ROOT))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train DFI-Net and print test metrics.")
-    parser.add_argument("--config", default="configs/dfinet_yrd_fs5.yaml")
+    parser = argparse.ArgumentParser(description="Train dfinet and print test metrics.")
+    parser.add_argument("--config", default="configs/dfinet_yrd_fs50.yaml")
     args = parser.parse_args()
 
     from baselines.dfinet.eval import save_labeled_maps
@@ -42,13 +42,8 @@ def main() -> None:
 
     if eval_config.get("enabled", True):
         requested_run = eval_config.get("run_index", "best")
-        if requested_run == "best":
-            selected = max(metrics["runs"], key=lambda item: item["oa"])
-            run_index = int(selected["run"])
-        else:
-            run_index = int(requested_run)
-        print(f"selected run for labeled maps: {run_index}")
-        eval_output = save_labeled_maps(run_dir, run_index=run_index)
+        eval_output = save_labeled_maps(run_dir, run_index=requested_run)
+        print(f"selected run for labeled maps: {eval_output['run']} seed={eval_output['seed']}")
         for group, paths in eval_output.get("outputs", {}).items():
             for path in paths:
                 print(f"{group}: {path}")

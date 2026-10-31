@@ -37,7 +37,7 @@ class S2ATNetIntegrationTests(unittest.TestCase):
             self.assertEqual(config['seeds'], list(range(202201, 202206)))
             self.assertEqual(config['num_runs'], 5)
             self.assertEqual(config['learning_rate'], .001)
-            self.assertEqual(config['weight_decay'], .0001)
+            self.assertEqual(config['weight_decay'], .01)
             self.assertEqual(config['eval']['run_index'], 'best')
             self.assertFalse(config['infer']['save_full_map'])
             split = config['split']

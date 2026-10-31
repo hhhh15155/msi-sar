@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Re-evaluate DCMNet on saved test splits only.")
+    parser = argparse.ArgumentParser(description="Re-evaluate dcmnet on saved test splits only.")
     parser.add_argument("--run", required=True)
     args = parser.parse_args()
     from baselines.dcmnet.eval import evaluate_run

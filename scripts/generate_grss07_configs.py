@@ -6,6 +6,10 @@ from pathlib import Path
 
 import yaml
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from baselines.protocol import TRAINING_DEFAULTS
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = (5, 10, 20, 50, 100, 150, 200)
@@ -115,6 +119,8 @@ def _model_config(model: str, shot: int) -> dict:
         )
     else:
         raise ValueError(f"Unsupported model: {model}")
+    config.update(TRAINING_DEFAULTS)
+    config["infer"]["save_full_map"] = False
     return config
 
 

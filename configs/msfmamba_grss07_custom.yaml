@@ -28,7 +28,7 @@ eval:
   save_labeled_maps: true
 infer:
   batch_size: 1024
-  save_full_map: true
+  save_full_map: false
 palette:
   background:
   - 0
@@ -57,5 +57,15 @@ d_state: 16
 expand: 0.75
 batch_size: 128
 data_aug: true
-learning_rate: 0.0001
-weight_decay: 0.0
+learning_rate: 0.001
+weight_decay: 0.01
+
+training_protocol: mghofnet-v1
+optimizer: adamw
+scheduler: cosine
+eta_min: 1.0e-06
+pad_mode: constant
+augmentation: mghofnet
+gradient_clip: null
+cudnn_deterministic: true
+cudnn_benchmark: false

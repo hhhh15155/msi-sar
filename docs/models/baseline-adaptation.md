@@ -21,7 +21,7 @@
 
 当前完整数值协议以 [实验说明](../experiments/README.md#数据与协议仍然有效) 为主要维护位置，实际运行仍以 YAML 与调用链核对。新 baseline 自动提供 YRD fs50、YRD2509NEW fs50、GRSS07 custom 三份配置，复用共享数据配置、相同划分工具和逐通道整图归一化。不得为每个模型复制一套易漂移的数据定义。
 
-默认 5 seeds `202201–202205`，patch11，200 epochs，train128／test1024，FP32，Adam（lr `0.001`、weight decay `0.0001`），无预训练。模型特有的必要差异要在 README 逐项说明，不做隐式调参。
+默认 5 seeds `202201–202205`，patch11，200 epochs，train128／test1024，FP32，AdamW（lr `0.001`、weight decay `0.01`）＋epoch 后余弦衰减（eta_min `0.000001`），无预训练。所有新模型必须执行[统一训练 skill](../../.agents/skills/msi-sar-training-protocol/SKILL.md)，复用公共训练、数据和预测模块（补零、MGHOFNet 增强、固定 cuDNN 设置、不裁剪梯度）；同时核查配置生成器。模型特有的必要差异要在 README 逐项说明，不做隐式调参。
 
 每次只评估训练结束的最终 checkpoint，不用测试集选 epoch 或超参数。全部预定运行完成后，`eval.run_index: best` 根据各次**测试集 OA** 选最高者出图；并列按配置顺序取首个。图的元数据／日志记录 run、seed、测试 OA 和选图依据。保留每次指标与全部运行的均值／标准差；最高一次不能冒充平均结果。若某次失败，记录缺失并报告不完整，不悄悄用少量运行冒充完整 5 次结果。
 

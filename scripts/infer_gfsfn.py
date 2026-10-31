@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Draw GFSFN predictions; labeled samples by default.")
+    parser = argparse.ArgumentParser(description="Draw gfsfn predictions; labeled samples by default.")
     parser.add_argument("--run", required=True)
     parser.add_argument("--run-index", default="best", help="best test OA, or a zero-based run index")
     parser.add_argument("--mode", choices=("labeled", "full"), default="labeled")

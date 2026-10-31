@@ -9,18 +9,14 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+from baselines.protocol import prepare_training_config
+from baselines.training import set_seed, build_optimizer_scheduler, train_epoch, record_protocol
 from .dataset import PatchDataset, load_dataset, split_from_config
 from .io import ensure_dir, load_yaml, save_json, save_yaml
 from .metrics import aggregate_metrics, classification_metrics
 from .model import MSFMamba
 
 
-def set_seed(seed: int) -> None:
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
 
 
 def resolve_device(device_name: str) -> torch.device:
@@ -94,23 +90,16 @@ def train_one_run(
     test_loader = DataLoader(PatchDataset(image, test_gt, patch_size, data_aug=False), batch_size=test_batch_size)
 
     model = build_model(config, len(labels)).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=float(config.get("learning_rate", 1e-4)), weight_decay=float(config.get("weight_decay", 0.0)))
-    criterion = nn.CrossEntropyLoss()
+    optimizer, scheduler = build_optimizer_scheduler(model, config)
     checkpoint_dir = ensure_dir(run_dir / "checkpoints" / f"run_{run_index}")
     log_file = run_dir / "log.txt"
     for epoch in tqdm(range(1, int(config["epochs"]) + 1), desc=f"run {run_index}"):
-        model.train()
-        losses = []
-        for images, targets in train_loader:
-            ms, sar = split_modalities(images.to(device), config)
-            optimizer.zero_grad()
-            loss = criterion(model(ms, sar), targets.to(device))
-            loss.backward()
-            optimizer.step()
-            losses.append(float(loss.item()))
-        loss_text = float(np.mean(losses)) if losses else 0.0
+        loss_text = train_epoch(model, train_loader, optimizer, device, config)
+        scheduler.step()
         if epoch == 1 or epoch % 10 == 0:
             log(f"run={run_index} epoch={epoch} loss={loss_text:.6f}", log_file)
+        if epoch % 10 == 0:
+            torch.save(model.state_dict(), checkpoint_dir / "model.pth")
 
     torch.save(model.state_dict(), checkpoint_dir / "model_best.pth")
     model.load_state_dict(torch.load(checkpoint_dir / "model_best.pth", map_location=device))
@@ -125,13 +114,14 @@ def train_one_run(
 
 
 def run_training(config_path: str | Path) -> Path:
-    config = load_yaml(config_path)
+    config = prepare_training_config(load_yaml(config_path))
     if config.get("model") != "msfmamba":
         raise ValueError(f"Expected model: msfmamba, got {config.get('model')!r}")
     dataset_config = load_yaml(config["dataset_config"])
     run_dir = next_run_dir(config.get("output_root", "runs"), config["dataset"])
     ensure_dir(run_dir)
     save_yaml(config, run_dir / "config.yaml")
+    record_protocol(config, dataset_config, run_dir)
     image, gt, labels = load_dataset(dataset_config)
     device = resolve_device(config.get("device", "cuda:0"))
     log(f"dataset={config['dataset']} image_shape={image.shape} labels={len(labels)}", run_dir / "log.txt")
