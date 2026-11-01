@@ -68,6 +68,8 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 
 - **2026-10-31 统一训练流程**：用户指定全部 baseline 采用 MGHOFNet 的训练与数据处理流程。新增或调整训练/配置时必须执行[项目训练 skill](.agents/skills/msi-sar-training-protocol/SKILL.md)，复用公共模块；具体参数以[当前实验协议](docs/experiments/README.md)和 `baselines/protocol.py` 为准。历史结果保留原协议，不因本次统一而重跑；本次用户明确“先不跑”。
 
+- **2026-11-01 本轮重跑例外**：用户明确要求把统一后的脚本放在110，用screen后台并发跑主实验，并直接覆盖原结果、删除旧的不一致入口。本轮范围为13模型×三组主实验×5seeds，GPU0，最多3并发；仅授权110对应39个 `run_001` 的替换，不扩展至其他shot、116结果或其他项目。该指令取代本轮“先不跑”及禁止重跑限制；以后任务仍不自动重跑。
+
 ## 5. 远端环境与执行边界
 
 - 2026-10-17 的只读检查确认：SSH 可连接、项目目录存在，非交互 shell 能找到 `conda`、`/opt/anaconda3/bin/python` 和 `/usr/bin/nvidia-smi`。

@@ -46,3 +46,9 @@ GFSFN 入口：`train_eval_gfsfn.py --config configs/gfsfn_<setting>.yaml`；`ev
 S²ATNet：`train_eval_s2atnet.py --config configs/s2atnet_<setting>.yaml`；`eval_s2atnet.py --run <run目录>`仅测试；`infer_s2atnet.py --run <run目录>`默认标注样本图，显式 `--mode full` 才做全图。见 [模型说明](../baselines/s2atnet/README.md)。
 
 `check_training_protocol.py`：不加载模型、不启动实验，核查全部模型配置及训练调用链遵守 MGHOFNet 统一协议。
+
+## 2026-11-01 统一协议后台队列
+
+`run_unified_baselines.py` 只包含13模型×3数据集的39项主实验，适用于本次已明确授权的覆盖重跑。必须指定 `--expected-head`、通过的GPU合成检查 `--memory-profile` 和队列目录；覆盖已有结果另需显式 `--replace-existing`。最多3并发，按显存预留和当前外部占用准入；失败不重试，保存PID、任务日志、replacement_manifest和queue_status。
+
+已删除重复 `train_{dfinet,frekfuse,mghofnet,msfmamba,softformer}.py` 与默认批量全shot的 `train_eval_yrd2509new_fewshot.py`。单项实验统一使用 `train_eval_<model>.py`，不会再维护另一套入口。只打印网格的 `experiment_grid.py` 保留，不负责训练。

@@ -13,14 +13,13 @@ For the YRD MSI-SAR data, the default input split is:
 - first 10 channels: MSI/HSI branch
 - last 4 channels: SAR/auxiliary branch
 
-Edit `configs/mghofnet_yrd.yaml` if another dataset uses different channel
+Edit `configs/mghofnet_yrd_fs50.yaml` if another dataset uses different channel
 counts.
 
 ## Commands
 
 ```bash
-python scripts/train_mghofnet.py --config configs/mghofnet_yrd.yaml
-python scripts/train_eval_mghofnet.py --config configs/mghofnet_yrd.yaml
+python scripts/train_eval_mghofnet.py --config configs/mghofnet_yrd_fs50.yaml
 python scripts/eval_mghofnet.py --run runs/mghofnet/yrd/run_001
 python scripts/infer_mghofnet.py --run runs/mghofnet/yrd/run_001
 ```

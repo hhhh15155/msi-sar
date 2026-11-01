@@ -10,8 +10,7 @@ The original paper code is preserved separately in `vendor/DFI-Net-original/`.
 Run:
 
 ```bash
-python scripts/train_dfinet.py --config configs/dfinet_yrd.yaml
-python scripts/train_eval_dfinet.py --config configs/dfinet_yrd.yaml
+python scripts/train_eval_dfinet.py --config configs/dfinet_yrd_fs50.yaml
 python scripts/eval_dfinet.py --run runs/dfinet/yrd/run_001
 python scripts/infer_dfinet.py --run runs/dfinet/yrd/run_001
 ```

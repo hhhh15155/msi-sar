@@ -19,8 +19,7 @@ default config uses `patch_size: 11` and center crops features to
 ## Commands
 
 ```bash
-python scripts/train_softformer.py --config configs/softformer_yrd.yaml
-python scripts/train_eval_softformer.py --config configs/softformer_yrd.yaml
+python scripts/train_eval_softformer.py --config configs/softformer_yrd_fs50.yaml
 python scripts/eval_softformer.py --run runs/softformer/yrd/run_001
 python scripts/infer_softformer.py --run runs/softformer/yrd/run_001
 ```
