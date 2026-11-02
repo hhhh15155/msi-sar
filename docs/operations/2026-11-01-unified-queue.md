@@ -30,3 +30,8 @@
 - 新结果使用原位置 `runs_fewshot/fs50/<model>/<dataset>/run_001/`，GRSS07为 `runs_fewshot/grss07_custom/<model>/grss07/run_001/`。新config、数据配置、Git版本和协议身份随运行保存；不能在覆盖期间把剩余旧结果和新结果当作同协议汇总。
 - 记录 `queue_status.json/.txt`、driver.log、每项日志、PID、返回码。仅在五种子/权重/协议/最佳OA标注图验证通过后标完成；失败记为failed且不自动重试，其余任务继续。启动时锁定HEAD，源代码改变后停止发新任务并等待已运行任务结束。
 - 本文描述部署和执行方式；实际是否启动/完成，以队列状态和日志为准，不将预检或排队写成完成。
+
+## 2026-11-02 调整
+
+用户当日要求释放并清除 HSLiNets 半成品，先跑其余待跑项，并允许双并发；HSLiNets 三项在非 HSLiNets 项完成后最后重跑。具体操作、副作用与当前状态见 [2026-11-02-hslinets-release-parallel2.md](2026-11-02-hslinets-release-parallel2.md)。
+
