@@ -1,5 +1,7 @@
 # DCMNet 与 HSLiNets 适配记录（2026-10-23）
 
+> **2026-11-02 更新**：按用户要求，HSLiNets 的适配代码、配置、脚本、vendor 快照与结果已删除，不保留归档；本文的 HSLiNets 部分仅作历史记录（删除记录见 [HSLiNets 删除与三端同步](2026-11-02-hslinets-removal.md)）。
+
 用户要求把检索到的两个 HSI–LiDAR 方法适配为项目 baseline。本记录按
 [模型适配规则](../models/baseline-adaptation.md) 与
 [项目 skill](../../.agents/skills/msi-sar-baseline-adaptation/SKILL.md) 执行。

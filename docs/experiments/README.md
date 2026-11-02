@@ -10,12 +10,16 @@
 
 因此本页不再包含旧 21／27 项结果与旧协议描述。
 
+## 2026-11-02 模型删除
+
+按用户要求，HSLiNets（第三方适配）连同代码、三份主实验配置、三个入口脚本、vendor 快照与结果整体删除，不保留归档；统一主实验由 **13 模型 × 3 数据集 = 39 项**减为 **12 模型 × 3 数据集 = 36 项**，HSLiNets 的 3 项取消、不再运行。其余 36 项已在 server110 按统一协议完成主实验（执行记录见 [2026-11-01 统一队列](../operations/2026-11-01-unified-queue.md) 与 [2026-11-02 删除记录](../operations/2026-11-02-hslinets-removal.md)）。
+
 ## 当前可用的实验入口
 
 | 入口 | 状态 |
 | --- | --- |
 | `scripts/train_eval_{dfinet,frekfuse,mghofnet,msfmamba,softformer}.py` | 旧集成基线的训练 + 测试入口（代码保留，结果目录见下） |
-| `scripts/train_eval_{dffnet,m2heat,mft,dcmnet,hslinets}.py` | 新适配的 HSI–LiDAR 基线，**CPU 合成数据验证通过，未完成正式实验**；见各 `baselines/<model>/README.md` |
+| `scripts/train_eval_{dffnet,m2heat,mft,dcmnet}.py` | 新适配的 HSI–LiDAR 基线，CPU 合成数据验证通过、已按统一协议完成 110 主实验；见各 `baselines/<model>/README.md` |
 | `scripts/eval_<model>.py`、`scripts/infer_<model>.py` | 已有 run 的评估与整图推理 |
 | `scripts/experiment_grid.py` | 只打印旧基线网格，不启动训练 |
 | `scripts/main_experiment.py` | **已删除**（原用于 V0–V8 队列） |
@@ -27,7 +31,7 @@
 - 三个数据集：`yrd`、`yrd2509new`、`grss07`，配置在 `configs/datasets/`。
 - 主实验训练量：YRD 每类 50（8 类共 400）、YRD2509NEW 每类 50（9 类共 450）、GRSS07 custom `[674,1481,752,45,30]`（5 类共 2982）。
 - 固定划分：按类别与种子抽固定训练数量，其余标注像元测试，无验证集；patch 11、训练 batch 128、测试 batch 1024、FP32，实际以各 YAML 为准。
-- 2026-10-23 用户指定多次运行按测试 OA 最高者出图。五个新适配基线（DFFNet／M2Heat／MFT／DCMNet／HSLiNets）当前 15 份配置均为 `num_runs: 5`、`seeds: [202201,202202,202203,202204,202205]`、`eval.run_index: best`；后续新 baseline 默认沿用这一协议。
+- 2026-10-23 用户指定多次运行按测试 OA 最高者出图。四个新适配基线（DFFNet／M2Heat／MFT／DCMNet）当前 12 份配置均为 `num_runs: 5`、`seeds: [202201,202202,202203,202204,202205]`、`eval.run_index: best`；后续新 baseline 默认沿用这一协议。
 - 2026-10-31 起所有模型统一为 MGHOFNet 流程 `mghofnet-v1`：每次运行训练 200 epochs，AdamW 学习率 `0.001`、权重衰减 `0.01`，epoch 后 CosineAnnealingLR（T_max=epochs、eta_min=`0.000001`）；普通交叉熵，无梯度裁剪；无预训练，训练结束评估最终 checkpoint（即使文件名是 `model_best.pth`）。
 - 公共数据流水线：逐通道整图 min-max、constant 补零；50% 不变换、12.5% 水平翻转、12.5% 垂直翻转，三种旋转各约 8.33%，MSI/SAR 同步。cuDNN `deterministic=True`、`benchmark=False`。模型自身结构/宽度/Dropout 保留各自设计。
 - 新运行保存有效配置、`dataset_config.yaml` 和 `training_protocol.json`；历史结果仍按原运行协议解释，不能因为仓库默认改变而改名为新协议结果。历史 reflect 模型重评估保留 reflect；MGHOFNet/SoftFormer 按旧保存 pad_mode；优先读取运行内的数据配置快照，没有历史快照时不能完整保证原预处理身份。
@@ -56,4 +60,4 @@ S²ATNet的三数据集配置为 `configs/s2atnet_*.yaml`；沿用本页完整�
 
 ## 统一流程入口
 
-[项目训练 skill](../../.agents/skills/msi-sar-training-protocol/SKILL.md)固定执行步骤。公共实现为 `baselines/protocol.py`、`data.py`、`training.py`、`prediction.py`；全部 13 个模型入口复用，不另外维护优化器或数据增强。`python -s scripts/check_training_protocol.py` 只审计配置和调用链，不启动训练。变更记录见[统一训练记录](../operations/2026-10-31-unified-training.md)。
+[项目训练 skill](../../.agents/skills/msi-sar-training-protocol/SKILL.md)固定执行步骤。公共实现为 `baselines/protocol.py`、`data.py`、`training.py`、`prediction.py`；全部 12 个模型入口复用，不另外维护优化器或数据增强。`python -s scripts/check_training_protocol.py` 只审计配置和调用链，不启动训练。变更记录见[统一训练记录](../operations/2026-10-31-unified-training.md)。

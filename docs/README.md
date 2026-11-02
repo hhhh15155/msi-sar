@@ -1,6 +1,6 @@
 # 项目文档总目录
 
-2026-10-23 按用户要求删除旧自研 V0–V8 版本线及其全部实验结果后，本目录已同步清理：旧结果表、V6 说明与旧批次实验页已删除（历史见 Git 提交）。
+2026-10-23 按用户要求删除旧自研 V0–V8 版本线及其全部实验结果后，本目录已同步清理：旧结果表、V6 说明与旧批次实验页已删除（历史见 Git 提交）。2026-11-02 按用户要求删除 HSLiNets 基线（代码、配置、脚本、vendor 快照与结果），相关索引已同步更新，删除与三端同步记录见 [HSLiNets 删除与三端同步](operations/2026-11-02-hslinets-removal.md)。
 
 ## 按问题找文档
 
@@ -41,7 +41,9 @@ docs/
 - 当前使用说明只保留一个主要维护位置，其他位置用链接导航。
 - 删除或替换说明时同步更新本页链接；历史材料保留原文时须标明其历史属性。
 - 新说明使用稳定的英文文件名、中文正文和相对链接；阶段性记录加日期。
-- [Baseline 队列部署记录（2026-10-23）](operations/2026-10-23-baseline-queue-deployment.md)：110 GPU0 上 5 个新适配基线 × 3 数据集的 screen 队列。
+- [Baseline 队列部署记录（2026-10-23）](operations/2026-10-23-baseline-queue-deployment.md)：110 GPU0 上 5 个新适配基线 × 3 数据集的 screen 队列（历史记录，其中 HSLiNets 已于 2026-11-02 删除）。
 - [旧 baseline 干净对照重跑（2026-10-24）](operations/2026-10-24-old-baseline-clean-rerun.md)：110 上 5 个旧基线 × 3 数据集，3 并发 worker 的对照队列。
+- [统一协议后台队列（2026-11-01）](operations/2026-11-01-unified-queue.md)：13 模型 × 3 数据集共 39 项；[释放 HSLiNets 半成品并双并发续跑（2026-11-02）](operations/2026-11-02-hslinets-release-parallel2.md) 记录其后的任务调整。
+- [HSLiNets 删除与三端同步（2026-11-02）](operations/2026-11-02-hslinets-removal.md)：删除 HSLiNets 全部代码／配置／脚本／快照／结果，统一主实验由 39 项减为 36 项，并记录三端同步。
 
 [统一训练 skill](../.agents/skills/msi-sar-training-protocol/SKILL.md)与[2026-10-31 实施记录](operations/2026-10-31-unified-training.md)：全部 baseline 后续使用 MGHOFNet 流程，历史结果保留原身份，本次不运行正式实验。

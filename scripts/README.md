@@ -1,6 +1,6 @@
 # 脚本目录索引
 
-2026-10-23 删除旧 V0–V8 后，本目录中与 V 线相关的入口已删除：`main_experiment.py`、`generate_main_configs.py`、`generate_paper_candidate_configs.py`、`generate_v6_ablation_configs.py`、`generate_yrd_rerun_configs.py`、`promote_yrd_results.py`、`generate_fuzzy_transformer_configs.py`、`train/eval/infer_fuzzy_transformer.py` 等。
+2026-10-23 删除旧 V0–V8 后，本目录中与 V 线相关的入口已删除：`main_experiment.py`、`generate_main_configs.py`、`generate_paper_candidate_configs.py`、`generate_v6_ablation_configs.py`、`generate_yrd_rerun_configs.py`、`promote_yrd_results.py`、`generate_fuzzy_transformer_configs.py`、`train/eval/infer_fuzzy_transformer.py` 等。2026-11-02 按用户要求删除 HSLiNets 的三个入口 `train_eval_hslinets.py`、`eval_hslinets.py`、`infer_hslinets.py`。
 
 ## 当前入口
 
@@ -17,10 +17,10 @@
 当前基线入口对应关系：
 
 - 旧集成基线：`dfinet`、`frekfuse`、`mghofnet`、`msfmamba`、`softformer`；
-- 新适配基线（CPU 合成数据验证通过、未完成正式实验）：`dffnet`、`m2heat`、`mft`、`dcmnet`、`hslinets`；
-- 新基线配置：`configs/{dffnet,m2heat,mft,dcmnet,hslinets}_*.yaml`。
+- 新适配基线（CPU 合成数据验证通过、已按统一协议完成 110 主实验）：`dffnet`、`m2heat`、`mft`、`dcmnet`；
+- 新基线配置：`configs/{dffnet,m2heat,mft,dcmnet}_*.yaml`。
 
-新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。2026-10-31 起全部 13 个模型采用相同 CLI：`eval_*` 仅重评估测试划分，`infer_*` 默认 labeled，显式 `--mode full` 才做全图。
+新基线 `train_eval_*` 训练后仅生成标注样本图，不自动跑全图。例如 `python scripts/infer_mft.py --run <run目录>` 默认选择测试 OA 最高的运行推理全部标注位置；用户需要全图时再运行同一入口并加 `--mode full`。出图不重新计分。2026-10-31 起全部 12 个模型采用相同 CLI：`eval_*` 仅重评估测试划分，`infer_*` 默认 labeled，显式 `--mode full` 才做全图。
 
 THSGR 入口：`train_eval_thsgr.py --config configs/thsgr_<setting>.yaml`；`eval_thsgr.py --run <run目录>`；`infer_thsgr.py --run <run目录>`（默认 labeled）。详见 [THSGR](../baselines/thsgr/README.md)。
 
@@ -49,6 +49,6 @@ S²ATNet：`train_eval_s2atnet.py --config configs/s2atnet_<setting>.yaml`；`ev
 
 ## 2026-11-01 统一协议后台队列
 
-`run_unified_baselines.py` 只包含13模型×3数据集的39项主实验，适用于本次已明确授权的覆盖重跑。必须指定 `--expected-head`、通过的GPU合成检查 `--memory-profile` 和队列目录；覆盖已有结果另需显式 `--replace-existing`。最多3并发，按显存预留和当前外部占用准入；失败不重试，保存PID、任务日志、replacement_manifest和queue_status。
+`run_unified_baselines.py` 只包含 12 模型 × 3 数据集的 36 项主实验（2026-11-02 删除 HSLiNets 后由 39 项减为 36 项，其中 36 项已按统一协议在 110 完成），适用于本次已明确授权的覆盖重跑。必须指定 `--expected-head`、通过的GPU合成检查 `--memory-profile` 和队列目录；覆盖已有结果另需显式 `--replace-existing`。最多3并发，按显存预留和当前外部占用准入；失败不重试，保存PID、任务日志、replacement_manifest和queue_status。
 
 已删除重复 `train_{dfinet,frekfuse,mghofnet,msfmamba,softformer}.py` 与默认批量全shot的 `train_eval_yrd2509new_fewshot.py`。单项实验统一使用 `train_eval_<model>.py`，不会再维护另一套入口。只打印网格的 `experiment_grid.py` 保留，不负责训练。

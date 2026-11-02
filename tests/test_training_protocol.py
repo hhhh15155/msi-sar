@@ -13,7 +13,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = ('dfinet', 'frekfuse', 'mghofnet', 'msfmamba', 'softformer',
-          'dffnet', 'm2heat', 'mft', 'dcmnet', 'hslinets', 'thsgr', 'gfsfn', 's2atnet')
+          'dffnet', 'm2heat', 'mft', 'dcmnet', 'thsgr', 'gfsfn', 's2atnet')
 
 
 def test_all_checked_in_configs_use_mghofnet_protocol():

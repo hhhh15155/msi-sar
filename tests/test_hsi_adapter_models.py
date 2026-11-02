@@ -14,7 +14,6 @@ MODELS = (
     ("m2heat", "M2Heat"),
     ("mft", "MFT"),
     ("dcmnet", "DCMNet"),      # the released routing cells import einops
-    ("hslinets", "HSLiNets"),
 )
 
 

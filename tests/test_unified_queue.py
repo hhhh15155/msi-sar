@@ -10,8 +10,8 @@ class UnifiedQueueTests(unittest.TestCase):
     def test_plan_is_exactly_the_authorized_main_experiments(self):
         from scripts.run_unified_baselines import make_tasks
         tasks = make_tasks()
-        self.assertEqual(len(tasks), 39)
-        self.assertEqual(len({t['key'] for t in tasks}), 39)
+        self.assertEqual(len(tasks), 36)  # 12 models x 3 datasets after HSLiNets removal
+        self.assertEqual(len({t['key'] for t in tasks}), 36)
         for task in tasks:
             self.assertTrue(task['target'].endswith('/run_001'))
             self.assertNotIn('_fs10', task['config'])

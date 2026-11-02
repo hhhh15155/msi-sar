@@ -12,7 +12,7 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = ('dfinet', 'frekfuse', 'mghofnet', 'msfmamba', 'softformer', 'dffnet', 'm2heat', 'mft', 'dcmnet', 'hslinets', 'thsgr', 'gfsfn', 's2atnet')
+MODELS = ('dfinet', 'frekfuse', 'mghofnet', 'msfmamba', 'softformer', 'dffnet', 'm2heat', 'mft', 'dcmnet', 'thsgr', 'gfsfn', 's2atnet')
 
 
 def load_functions(path: Path, names: tuple[str, ...], dependencies: dict) -> dict:

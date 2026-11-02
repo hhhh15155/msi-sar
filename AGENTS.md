@@ -50,12 +50,13 @@ server116 对应 `ssh server116 'cd /data/gjc/msi-sar && pwd && git status --sho
 - 标注有限，但不要求 episodic few-shot 框架。现有 few-shot 命名通常表示每类固定训练样本数，应以配置和实现为准。
 - 分类性能优先，避免没有验证收益的重复模块堆叠；新增机制应有明确问题、对照和消融。
 - 优先采用不依赖 Mamba／SSM 的模型；可用门控，暂不优先使用“中心像素作为 Query 查询跨模态邻域”的融合方式。已有 Mamba 基线不因此删除。
-- 当前没有自研主模型。2026-10-23 按用户要求删除旧自研 V0–V8 版本线及全部相关结果；当前模型库为旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新适配的 HSI–LiDAR 基线（DFFNet、M2Heat、MFT、DCMNet、HSLiNets，均完成合成数据验证、未完成正式实验）。改模型前先核实 `baselines/` 与对应 README。
+- 当前没有自研主模型。2026-10-23 按用户要求删除旧自研 V0–V8 版本线及全部相关结果；当前模型库为旧集成基线（DFI-Net、FreKFuse、MGHOFNet、MSFMamba、SoftFormer）与新适配的 HSI–LiDAR 基线（DFFNet、M2Heat、MFT、DCMNet，均完成合成数据验证并已在 110 按统一协议完成主实验）。HSLiNets 已于 2026-11-02 按用户要求连同代码、配置、脚本、vendor 快照与结果删除。改模型前先核实 `baselines/` 与对应 README。
 
 ## 4. 代码布局与实验规范
 
 - **已完成的实验一律不重跑。** 用户于2026-10-21明确要求：在110或116任一服务器已完成的实验，不因切换服务器、统一硬件／软件环境或补“同环境对照”而再次训练；后续队列只加入未完成任务。发现结果损坏、协议错误或需另设新实验时先说明具体问题，不能擅自重跑；只有用户后续明确指定重跑的具体实验才可例外。本规则适用于当前所有模型。
 - **2026-10-23 删除记录**：按用户要求，旧 V0–V8 版本线（`models/main_classification.py`、`models/fuzzy_transformer.py`、`models/v6_ablation.py`、`models/{fdmf,msaf}_patch.py`、`baselines/fuzzy_transformer/`、`scripts/main_experiment.py` 及 V 线配置生成／发布脚本）、对应 `configs/{main_first_pass,paper_candidates,yrd_per_channel,v6_ablation}/`、tests 与结果文档，以及 server110／server116 上的全部 V 线实验结果均已删除，**不保留归档**；历史只存在于 Git 提交。当前仓库没有自研主模型。
+- **2026-11-02 删除记录**：按用户要求删除 HSLiNets（第三方适配）全部内容与结果，**不保留归档**——`baselines/hslinets/`、`baselines/_hsi_adapters/hslinets_patch.py` 与 `_hslinets_vendor.py`、`configs/hslinets_*.yaml`、`scripts/{train_eval,eval,infer}_hslinets.py`、`vendor/HSLiNets-original/`、tests 中相关用例，以及 110/116 对应结果；统一主实验由 13 模型×3 数据集（39 项）减为 12×3（36 项）。记录见 `docs/operations/2026-11-02-hslinets-removal.md`。
 - `baselines/`：各对比方法；`models/`：项目模型；`configs/`：模型及数据配置；`scripts/`：训练、评估、推理及实验调度入口；`tests/`：已有检查；`vendor/`：第三方代码快照。
 - `data/`：本地数据；`runs_fewshot/`、`runs/`、`experiment_logs/`：结果和日志。按 `.gitignore` 管理，不提交大数据或权重。
 - 2026-10-23 起，旧 V 线相关文件已删除；新适配基线的专门说明在各 `baselines/<model>/README.md`。先核实当前副本的提交，再读 `README.md`、配置和实际脚本调用链。

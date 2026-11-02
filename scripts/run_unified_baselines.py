@@ -1,4 +1,4 @@
-"""Run only the 39 authorized main experiments, with explicit replacement and GPU admission."""
+"""Run only the 36 authorized main experiments, with explicit replacement and GPU admission."""
 from __future__ import annotations
 
 import argparse
@@ -15,7 +15,7 @@ from datetime import datetime
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = ('mghofnet', 'dfinet', 'frekfuse', 'msfmamba', 'softformer',
-          'dffnet', 'm2heat', 'mft', 'dcmnet', 'hslinets', 'thsgr', 'gfsfn', 's2atnet')
+          'dffnet', 'm2heat', 'mft', 'dcmnet', 'thsgr', 'gfsfn', 's2atnet')
 SETTINGS = (('grss07', 'grss07_custom', 'grss07_custom'),
             ('yrd2509new', 'yrd2509new_fs50', 'fs50'), ('yrd', 'yrd_fs50', 'fs50'))
 SEEDS = list(range(202201, 202206))

@@ -1,4 +1,4 @@
-`baselines/` 存放各对比方法的**项目内包装**。2026-10-23 按用户要求删除旧自研 V0–V8 版本线，`fuzzy_transformer` 基线包同步移除；本索引只列当前实际存在的基线。
+`baselines/` 存放各对比方法的**项目内包装**。2026-10-23 按用户要求删除旧自研 V0–V8 版本线，`fuzzy_transformer` 基线包同步移除；2026-11-02 按用户要求删除 HSLiNets 基线（`baselines/hslinets/`、`_hsi_adapters/hslinets_patch.py` 与 `_hslinets_vendor.py`、三数据集配置、三个入口脚本、`vendor/HSLiNets-original/` 快照与结果），不保留归档。本索引只列当前实际存在的基线。
 
 通用入口约定（见 [模型与代码入口](../docs/models/README.md)）：`scripts/train_eval_<model>.py`、`scripts/eval_<model>.py`、`scripts/infer_<model>.py`。
 
@@ -15,13 +15,12 @@
 | `m2heat/` | M2Heat（TCSVT 2026） | [vendor/M2Heat-original](../vendor/M2Heat-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_m2heat.py`；`configs/m2heat_*.yaml` |
 | `mft/` | MFT（TGRS 2023） | [vendor/MFT-original](../vendor/MFT-original) | **CPU 合成数据验证通过、未完成正式实验**（无精度结果） | `scripts/train_eval_mft.py`；`configs/mft_*.yaml` |
 | `dcmnet/` | DCMNet（TGRS 2025，动态跨模态特征交互） | [vendor/DCMNet-original](../vendor/DCMNet-original) | **适配完成、合成数据验证通过、未完成正式实验** | `scripts/train_eval_dcmnet.py`；`configs/dcmnet_*.yaml` |
-| `hslinets/` | HSLiNets（2024–2025，早融合变体） | [vendor/HSLiNets-original](../vendor/HSLiNets-original) | **适配完成（早融合变体）、合成数据验证通过、未完成正式实验** | `scripts/train_eval_hslinets.py`；`configs/hslinets_*.yaml` |
 
 ## 共享实现
 
 THSGR 已按同一结构接入：[`thsgr/`](thsgr/README.md)，核心 [`_hsi_adapters/thsgr_patch.py`](_hsi_adapters/thsgr_patch.py)，入口 `scripts/train_eval_thsgr.py` 与 `configs/thsgr_*.yaml`。运行验证状态见专用 README。
 
-- [`_hsi_adapters/`](_hsi_adapters)：五个第三方适配基线（dffnet/m2heat/mft/dcmnet/hslinets）的共享模型实现（`dffnet_patch.py`、`m2heat_patch.py`、`mft_patch.py`、`dcmnet_patch.py`、`hslinets_patch.py`），`_hslinets_vendor.py` 为从 HSLiNets notebook 原样抽取的类；直接加载 `vendor/` 中未改动的上游核心模块。**它不是可训练基线**，不要按模型名引用。
+- [`_hsi_adapters/`](_hsi_adapters)：四个第三方适配基线（dffnet/m2heat/mft/dcmnet）的共享模型实现（`dffnet_patch.py`、`m2heat_patch.py`、`mft_patch.py`、`dcmnet_patch.py`），直接加载 `vendor/` 中未改动的上游核心模块。**它不是可训练基线**，不要按模型名引用。
 - [`split.py`](split.py)：固定训练样本数划分逻辑，被各基线 `dataset.py` 复用。
 
 ## 新增基线时必须做
