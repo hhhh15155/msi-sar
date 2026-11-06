@@ -1,5 +1,7 @@
 # 配置目录索引
 
+M2Heat三组核心消融：`m2heat_ablation/*.yaml`（3变体×3数据集）；[说明](../docs/experiments/m2heat-ablation.md)。不新增Full配置。
+
 `configs/` 保存当前配置与旧基线网格。2026-10-23 删除旧自研 V0–V8 后，V 线配置目录（`main_first_pass/`、`paper_candidates/`、`yrd_per_channel/`、`v6_ablation/`）已不存在。2026-11-02 按用户要求删除 HSLiNets 的 3 份主实验配置，仓库内模型配置由 134 份减为 131 份。
 
 ## 数据集配置

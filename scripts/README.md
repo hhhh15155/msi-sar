@@ -1,5 +1,7 @@
 # 脚本目录索引
 
+M2Heat独立消融入口：`train_eval_m2heat_ablation.py`；批量队列 `run_m2heat_ablations.py`；合成检查 `check_m2heat_ablations.py`；汇总 `summarize_m2heat_ablations.py`。命令见[消融说明](../docs/experiments/m2heat-ablation.md)，原训练入口不变。
+
 2026-10-23 删除旧 V0–V8 后，本目录中与 V 线相关的入口已删除：`main_experiment.py`、`generate_main_configs.py`、`generate_paper_candidate_configs.py`、`generate_v6_ablation_configs.py`、`generate_yrd_rerun_configs.py`、`promote_yrd_results.py`、`generate_fuzzy_transformer_configs.py`、`train/eval/infer_fuzzy_transformer.py` 等。2026-11-02 按用户要求删除 HSLiNets 的三个入口 `train_eval_hslinets.py`、`eval_hslinets.py`、`infer_hslinets.py`。
 
 ## 当前入口
