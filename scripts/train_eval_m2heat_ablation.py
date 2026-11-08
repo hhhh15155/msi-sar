@@ -12,9 +12,10 @@ def main():
     parser.add_argument('--config', required=True)
     parser.add_argument('--batch-dir', required=True)
     parser.add_argument('--seed', type=int, choices=range(202201, 202206))
+    parser.add_argument('--variant', help='Module variant to apply to the original dataset configuration')
     args = parser.parse_args()
     from baselines.m2heat.ablation_experiment import train
-    print(train(args.config, args.batch_dir, args.seed), flush=True)
+    print(train(args.config, args.batch_dir, args.seed, variant=args.variant), flush=True)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-"""Preview or run the nine ablation settings (45 seeds); never include Full."""
+"""Preview or run an independent M2Heat ablation suite."""
 from __future__ import annotations
 
 import argparse
@@ -15,7 +15,14 @@ VARIANTS = ('wo_specific_hco', 'wo_shared_hco', 'wo_cff')
 SETTINGS = ('yrd_fs50', 'yrd2509new_fs50', 'grss07_custom')
 
 
-def make_tasks():
+def make_tasks(suite='legacy'):
+    if suite == 'modules':
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        from baselines.m2heat.ablation import MODULE_VARIANTS
+        return [dict(key=f'{variant}_{setting}', variant=variant, dataset=setting.split('_')[0],
+                     config=f'configs/m2heat_{setting}.yaml', status='pending')
+                for variant in MODULE_VARIANTS for setting in SETTINGS]
     return [dict(key=f'{variant}_{setting}', variant=variant, dataset=setting.split('_')[0],
                  config=f'configs/m2heat_ablation/{variant}_{setting}.yaml', status='pending')
             for variant in VARIANTS for setting in SETTINGS]
@@ -40,6 +47,7 @@ def can_start(reservation, active_count, total, foreign_used, free):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--batch-dir', required=True)
+    parser.add_argument('--suite', choices=('legacy', 'modules'), default='legacy')
     parser.add_argument('--gpu', type=int, default=0)
     parser.add_argument('--max-parallel', type=int, choices=(1, 2, 3), default=1)
     parser.add_argument('--reserve-mib', type=int, default=10000,
@@ -47,19 +55,24 @@ def main():
     parser.add_argument('--expected-commit')
     parser.add_argument('--execute', action='store_true', help='Without this flag only print the task list')
     args = parser.parse_args()
-    tasks = make_tasks()
+    tasks = make_tasks(args.suite)
     if not args.execute:
         print(json.dumps(tasks, indent=2)); return
     if not args.expected_commit or git('rev-parse', 'HEAD') != args.expected_commit:
         raise RuntimeError('Execution requires the verified --expected-commit')
     if args.reserve_mib < 1024:
         raise ValueError('Unreasonable memory reservation')
+    gpu_uuid = subprocess.check_output(
+        ['nvidia-smi', f'--id={args.gpu}', '--query-gpu=uuid', '--format=csv,noheader'],
+        text=True).strip()
+    if not gpu_uuid.startswith('GPU-') or '\n' in gpu_uuid:
+        raise RuntimeError(f'Expected one physical GPU UUID for index {args.gpu}')
     directory = Path(args.batch_dir).resolve()
     directory.mkdir(parents=True, exist_ok=False)  # never reuse or overwrite a batch
     (directory / 'logs').mkdir()
-    state = dict(status='running', commit=args.expected_commit, gpu=args.gpu,
+    state = dict(status='running', commit=args.expected_commit, gpu=args.gpu, gpu_uuid=gpu_uuid,
                  pid=os.getpid(), max_parallel=args.max_parallel, reserve_mib=args.reserve_mib,
-                 tasks=tasks)
+                 tasks=tasks, suite=args.suite)
     active = []
     failed = False
     try:
@@ -96,10 +109,12 @@ def main():
                 if can_start(args.reserve_mib, len(active), total, foreign_used, free):
                     log_path = directory / 'logs' / f"{pending['key']}.log"
                     stream = log_path.open('x', encoding='utf-8')
-                    env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(args.gpu),
+                    env = dict(os.environ, CUDA_VISIBLE_DEVICES=gpu_uuid,
                                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2', PYTHONUNBUFFERED='1')
                     command = [sys.executable, '-u', str(ROOT / 'scripts/train_eval_m2heat_ablation.py'),
                                '--config', pending['config'], '--batch-dir', str(directory)]
+                    if args.suite == 'modules':
+                        command += ['--variant', pending['variant']]
                     process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
                     pending.update(status='running', pid=process.pid, log=str(log_path), command=command)
                     active.append((pending, process, stream))

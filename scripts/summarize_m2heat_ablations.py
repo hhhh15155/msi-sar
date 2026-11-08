@@ -15,8 +15,11 @@ def summarize(batch_dir):
     from baselines.io import load_yaml
     from scripts.run_m2heat_ablations import make_tasks
     batch_dir = Path(batch_dir)
+    status_path = batch_dir / 'queue_status.json'
+    suite = json.loads(status_path.read_text(encoding='utf-8')).get('suite', 'legacy') if status_path.exists() else 'legacy'
+    tasks = make_tasks(suite)
     rows, seeds, missing = [], [], []
-    for task in make_tasks():
+    for task in tasks:
         target = batch_dir / task['variant'] / task['dataset']
         try:
             config = validate_config(load_yaml(target / 'config.yaml'))
@@ -26,6 +29,8 @@ def summarize(batch_dir):
             continue
         aggregate = aggregate_metrics(results)
         row = dict(variant=task['variant'], dataset=task['dataset'], n=5, **aggregate)
+        if 'parameters' in results[0]:
+            row['parameters'] = results[0]['parameters']
         for index, name in enumerate(results[0]['class_names']):
             row[f'class_{index}_{name}'] = sum(r['class_acc'][index] for r in results) / 5
         rows.append(row)
@@ -49,7 +54,7 @@ def summarize(batch_dir):
     if missing:
         lines += ['', '未完成／无效项：', '', *['- ' + item for item in missing]]
     (batch_dir / 'summary.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
-    print(f'complete settings={len(rows)}/9; output={batch_dir / "summary.md"}')
+    print(f'complete settings={len(rows)}/{len(tasks)}; output={batch_dir / "summary.md"}')
     return rows
 
 

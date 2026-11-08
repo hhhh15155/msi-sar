@@ -11,10 +11,11 @@ sys.path.insert(0, str(ROOT))
 
 def main():
     import torch
-    from baselines.m2heat.ablation import VARIANTS, M2HeatAblation
+    from baselines.m2heat.ablation import VARIANTS, MODULE_VARIANTS, M2HeatAblation
     from baselines.training import set_seed
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--device', default='cpu')
+    parser.add_argument('--suite', choices=('legacy', 'modules'), default='legacy')
     parser.add_argument('--profile', action='store_true', help='Use protocol train128 and eval1024 batches')
     parser.add_argument('--output')
     args = parser.parse_args()
@@ -24,7 +25,7 @@ def main():
         torch.cuda.init()
     records = []
     for ms, sar, classes in ((10, 4, 8), (10, 4, 9), (6, 1, 5)):
-        for variant in VARIANTS:
+        for variant in MODULE_VARIANTS if args.suite == 'modules' else VARIANTS:
             set_seed(202201)
             if device.type == 'cuda':
                 torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(device)

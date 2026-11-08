@@ -1,5 +1,11 @@
 # M2Heat 核心模块消融
 
+## 2026-11-08 大模块组合
+
+使用 `--suite modules` 运行新方案。Linear Base 直接展平原始 MSI/SAR patch 后接一个线性层。`private` 保留双 Stem 和两个专属 HCLayer，逐元素平均后使用原分类头。`private_shared` 加入原拼接、共享 HCLayer 和 1×1 投影，固定等权相加。`private_fusion` 使用 CFF 和原 `cof1`，从专属路径直接进入分类头。Full 使用原结果作为外部对照。
+
+四组各运行三套现有主实验配置及五个 seeds，共 60 次训练。`train_eval_m2heat_ablation.py --config configs/m2heat_yrd_fs50.yaml --variant private --batch-dir <批次目录>` 可单独运行其中一组。队列状态记录物理 GPU UUID，汇总 CSV 记录参数量。116 使用物理 GPU 0 与现有 `gjc` 环境，进程通过 `LD_PRELOAD=/home/wwl/.conda/envs/gjc/lib/libstdc++.so.6` 使用该环境现有 C++ 库。
+
 ## 范围与实施
 
 2026-11-06 用户确认：不新增、不重跑 Full；保留原模型、训练/评估入口与原配置；另加三个消融。随后授权先同步代码，再在 server110 GPU0 用 screen 部署任务。正式任务为 3 变体 × 3 数据集 × 5 seeds，共 45 次训练。

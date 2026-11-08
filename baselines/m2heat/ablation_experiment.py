@@ -13,7 +13,7 @@ from baselines.protocol import prepare_training_config
 from baselines.training import set_seed, build_optimizer_scheduler, train_epoch, record_protocol
 from baselines.prediction import predict_labeled_samples
 from baselines.map_selection import select_map_run
-from .ablation import M2HeatAblation, VARIANTS
+from .ablation import M2HeatAblation, VARIANTS, MODULE_VARIANTS
 from .dataset import load_dataset, PatchDataset, split_from_config
 from .metrics import aggregate_metrics
 from .train import test_labeled_samples
@@ -24,8 +24,8 @@ SEEDS = list(range(202201, 202206))
 
 def validate_config(config):
     config = prepare_training_config(config)
-    if config.get('ablation') not in VARIANTS:
-        raise ValueError('Only the three requested ablations are supported; Full uses existing results')
+    if config.get('ablation') not in VARIANTS + MODULE_VARIANTS:
+        raise ValueError('Unsupported M2Heat ablation')
     if config.get('seeds') != SEEDS or config.get('num_runs') != 5:
         raise ValueError('Expected five seeds 202201--202205')
     if config.get('model') != 'm2heat' or config.get('dataset') not in ('yrd', 'yrd2509new', 'grss07'):
@@ -59,8 +59,13 @@ def completed_metrics(directory, config):
     return results
 
 
-def train(config_path, batch_dir, seed=None):
-    config = validate_config(load_yaml(config_path))
+def train(config_path, batch_dir, seed=None, variant=None):
+    config = load_yaml(config_path)
+    if variant is not None:
+        if variant not in MODULE_VARIANTS or 'ablation' in config:
+            raise ValueError('Module variants must extend an original M2Heat dataset configuration')
+        config.update(ablation=variant, output_root=str(batch_dir))
+    config = validate_config(config)
     dataset_config = load_yaml(config['dataset_config'])
     device = torch.device(config.get('device', 'cuda:0'))
     if device.type == 'cuda' and not torch.cuda.is_available():
@@ -121,7 +126,8 @@ def train(config_path, batch_dir, seed=None):
             torch.save(model.state_dict(), checkpoint)
             model.load_state_dict(torch.load(checkpoint, map_location=device, weights_only=True))
             metrics = test_labeled_samples(model, test_loader, device, len(labels))
-            metrics.update(run=index, seed=seed, ablation=config['ablation'], class_names=labels)
+            metrics.update(run=index, seed=seed, ablation=config['ablation'], class_names=labels,
+                           parameters=sum(p.numel() for p in model.parameters() if p.requires_grad))
             log(json.dumps(metrics))
             save_json(metrics, target / 'metrics.json')
         del model, optimizer, scheduler
