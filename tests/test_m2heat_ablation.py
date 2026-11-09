@@ -13,6 +13,27 @@ from baselines.m2heat.model import M2Heat
 
 
 class M2HeatAblationTests(unittest.TestCase):
+    def test_private_parts_share_the_head_and_use_disjoint_raw_channel_slots(self):
+        from baselines.m2heat.ablation import M2HeatAblation
+        torch.set_num_threads(1)
+        torch.manual_seed(42)
+        reference = M2HeatAblation('private').net.model
+        for variant, stem, hclayer in (('private_neither', False, False),
+                                       ('private_stem_only', True, False),
+                                       ('private_hclayer_only', False, True)):
+            with self.subTest(variant=variant):
+                torch.manual_seed(42)
+                core = M2HeatAblation(variant).net.model.eval()
+                self.assertEqual(hasattr(core, 'stem_hsi'), stem)
+                self.assertEqual(hasattr(core, 'hclayer_hsi'), hclayer)
+                for name, weight in core.state_dict().items():
+                    torch.testing.assert_close(weight, reference.state_dict()[name], rtol=0, atol=0)
+                if not stem and not hclayer:
+                    msi, sar = torch.randn(2, 10, 11, 11), torch.randn(2, 4, 11, 11)
+                    expected = torch.cat((msi, sar, torch.zeros(2, 50, 11, 11)), dim=1) / 2
+                    with torch.no_grad():
+                        torch.testing.assert_close(core(msi, sar), core.cls(expected), rtol=0, atol=0)
+
     def test_three_variants_match_original_with_requested_bypasses(self):
         # Import here so a missing implementation produces an explicit test failure.
         self.assertIsNotNone(importlib.util.find_spec('baselines.m2heat.ablation'))

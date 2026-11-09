@@ -1,5 +1,11 @@
 # M2Heat 核心模块消融
 
+## 2026-11-09 专属路径的 Stem × HCLayer 对照
+
+使用 `--suite private_parts`。两因素为双 Stem 和双专属 HCLayer。`private_neither` 两者都关闭，`private_stem_only` 仅用双 Stem 的前 64 通道，`private_hclayer_only` 仅用双 HCLayer，两者都开启的 P 复用 116 批次 `20261108_modules_116/private`。四格都使用逐元素平均与原分类头。关闭 Stem 时，通过固定补零把 MSI 放在前 MSI 通道、SAR 放在随后的 SAR 通道，各扩展到 64 通道。这个对齐操作无可训练参数，且在平均前保留两模态的各个原始通道。
+
+三个新组 × 三数据集 × 五个 seeds，共 45 次训练。比较同一 HCLayer 状态下开关 Stem 的差值，以及同一 Stem 状态下开关 HCLayer 的差值。记录 OA、AA、Kappa、逐类准确率和参数量。HCLayer 对比涵盖块内的热传导更新及 FFN。
+
 ## 2026-11-08 大模块组合
 
 使用 `--suite modules` 运行新方案。Linear Base 直接展平原始 MSI/SAR patch 后接一个线性层。`private` 保留双 Stem 和两个专属 HCLayer，逐元素平均后使用原分类头。`private_shared` 加入原拼接、共享 HCLayer 和 1×1 投影，固定等权相加。`private_fusion` 使用 CFF 和原 `cof1`，从专属路径直接进入分类头。Full 使用原结果作为外部对照。

@@ -8,34 +8,55 @@ from baselines._hsi_adapters.m2heat_patch import _m2heat
 
 VARIANTS = ('wo_specific_hco', 'wo_shared_hco', 'wo_cff')
 MODULE_VARIANTS = ('linear_base', 'private', 'private_shared', 'private_fusion')
+PRIVATE_PART_VARIANTS = ('private_neither', 'private_stem_only', 'private_hclayer_only')
+SUITE_VARIANTS = {'legacy': VARIANTS, 'modules': MODULE_VARIANTS, 'private_parts': PRIVATE_PART_VARIANTS}
+CONFIGURED_VARIANTS = MODULE_VARIANTS + PRIVATE_PART_VARIANTS
+
+_NO_PRIVATE_HCLAYERS = ('wo_specific_hco', 'private_neither', 'private_stem_only')
+_NO_STEMS = ('private_neither', 'private_hclayer_only')
+_AVERAGE_PRIVATE_ONLY = ('private',) + PRIVATE_PART_VARIANTS
 
 
 class _AblatedCore(_m2heat.M2Heat):
     def __init__(self, variant: str, **kwargs):
-        if variant not in VARIANTS + MODULE_VARIANTS[1:]:
+        if variant not in VARIANTS + CONFIGURED_VARIANTS or variant == 'linear_base':
             raise ValueError(f'Unsupported M2Heat core variant: {variant!r}')
         # Construct in the original order before removing bypassed parameters:
         # all retained weights and the RNG state match the original initialization.
         super().__init__(**kwargs)
         self.variant = variant
+        self.feature_width = kwargs['dim']
+        if variant in _NO_STEMS and sum(kwargs['num_patches']) > self.feature_width:
+            raise ValueError('Raw modalities must fit in disjoint slots of the feature width')
         removed = {
-            'wo_specific_hco': ('hclayer_hsi', 'hclayer_aux', 'fves_hsi', 'fves_aux'),
             'wo_shared_hco': ('hclayer_fuse', 'fves_fuse'),
             'wo_cff': ('cff',),
-            'private': ('hclayer_fuse', 'fves_fuse', 'proj', 'cff', 'cof1', 'cof2'),
             'private_shared': ('cff', 'cof1', 'cof2'),
             'private_fusion': ('hclayer_fuse', 'fves_fuse', 'proj', 'cof2'),
-        }
-        for name in removed[variant]:
+        }.get(variant, ())
+        if variant in _AVERAGE_PRIVATE_ONLY:
+            removed += ('hclayer_fuse', 'fves_fuse', 'proj', 'cff', 'cof1', 'cof2')
+        if variant in _NO_PRIVATE_HCLAYERS:
+            removed += ('hclayer_hsi', 'hclayer_aux', 'fves_hsi', 'fves_aux')
+        if variant in _NO_STEMS:
+            removed += ('stem_hsi', 'stem_aux')
+        for name in removed:
             delattr(self, name)
 
     def forward(self, hsi, auxiliary):
-        hsi, hsi_gate = self.stem_hsi(hsi).chunk(2, dim=1)
-        auxiliary, aux_gate = self.stem_aux(auxiliary).chunk(2, dim=1)
-        if self.variant != 'wo_specific_hco':
+        if self.variant in _NO_STEMS:
+            msi_channels, sar_channels = hsi.shape[1], auxiliary.shape[1]
+            # Disjoint slots keep the original MSI/SAR bands separate before the mean.
+            hsi = torch.nn.functional.pad(hsi, (0, 0, 0, 0, 0, self.feature_width - msi_channels))
+            auxiliary = torch.nn.functional.pad(auxiliary, (0, 0, 0, 0, msi_channels,
+                                                             self.feature_width - msi_channels - sar_channels))
+        else:
+            hsi, hsi_gate = self.stem_hsi(hsi).chunk(2, dim=1)
+            auxiliary, aux_gate = self.stem_aux(auxiliary).chunk(2, dim=1)
+        if self.variant not in _NO_PRIVATE_HCLAYERS:
             hsi = self.hclayer_hsi(hsi, self.fves_hsi)
             auxiliary = self.hclayer_aux(auxiliary, self.fves_aux)
-        if self.variant == 'private':
+        if self.variant in _AVERAGE_PRIVATE_ONLY:
             return self.cls((hsi + auxiliary) / 2)
         if self.variant == 'private_fusion':
             return self.cls(self.cff(hsi, auxiliary) * self.cof1)

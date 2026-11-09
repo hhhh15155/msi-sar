@@ -16,13 +16,13 @@ SETTINGS = ('yrd_fs50', 'yrd2509new_fs50', 'grss07_custom')
 
 
 def make_tasks(suite='legacy'):
-    if suite == 'modules':
+    if suite != 'legacy':
         if str(ROOT) not in sys.path:
             sys.path.insert(0, str(ROOT))
-        from baselines.m2heat.ablation import MODULE_VARIANTS
+        from baselines.m2heat.ablation import SUITE_VARIANTS
         return [dict(key=f'{variant}_{setting}', variant=variant, dataset=setting.split('_')[0],
                      config=f'configs/m2heat_{setting}.yaml', status='pending')
-                for variant in MODULE_VARIANTS for setting in SETTINGS]
+                for variant in SUITE_VARIANTS[suite] for setting in SETTINGS]
     return [dict(key=f'{variant}_{setting}', variant=variant, dataset=setting.split('_')[0],
                  config=f'configs/m2heat_ablation/{variant}_{setting}.yaml', status='pending')
             for variant in VARIANTS for setting in SETTINGS]
@@ -47,7 +47,7 @@ def can_start(reservation, active_count, total, foreign_used, free):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--batch-dir', required=True)
-    parser.add_argument('--suite', choices=('legacy', 'modules'), default='legacy')
+    parser.add_argument('--suite', choices=('legacy', 'modules', 'private_parts'), default='legacy')
     parser.add_argument('--gpu', type=int, default=0)
     parser.add_argument('--max-parallel', type=int, choices=(1, 2, 3), default=1)
     parser.add_argument('--reserve-mib', type=int, default=10000,
@@ -113,7 +113,7 @@ def main():
                                OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2', PYTHONUNBUFFERED='1')
                     command = [sys.executable, '-u', str(ROOT / 'scripts/train_eval_m2heat_ablation.py'),
                                '--config', pending['config'], '--batch-dir', str(directory)]
-                    if args.suite == 'modules':
+                    if args.suite != 'legacy':
                         command += ['--variant', pending['variant']]
                     process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
                     pending.update(status='running', pid=process.pid, log=str(log_path), command=command)
